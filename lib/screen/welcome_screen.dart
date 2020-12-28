@@ -1,5 +1,6 @@
 import 'package:despesa_app/constant/hero_tag.dart';
 import 'package:despesa_app/screen/login_screen.dart';
+import 'package:despesa_app/screen/sign_up_screen.dart';
 import 'package:flutter/material.dart';
 
 class WelcomeScreen extends StatelessWidget {
@@ -14,7 +15,12 @@ class WelcomeScreen extends StatelessWidget {
   }
 
   void _signUpScreen(BuildContext context) {
-
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => SignUpScreen()
+      )
+    );
   }
 
   @override

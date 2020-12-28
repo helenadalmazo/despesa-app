@@ -13,8 +13,32 @@ class Authentication {
 
   static final String _baseUrl = 'http://10.0.2.2:5000/auth';
 
-  void signUp() {
-    throw 'TODO signUp';
+  Future<Map<String, dynamic>> signUp(String fullName, String username, String password, String confirmPassword) async {
+    final response = await http.post(
+      '$_baseUrl/signup/',
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: json.encode(<String, String> {
+        'full_name': fullName,
+        'username': username,
+        'password': password,
+        'confirm_password': confirmPassword
+      }),
+    );
+
+    Map<String, dynamic> body = json.decode(response.body);
+
+    if (response.statusCode == 200) {
+      return {
+        'success': true
+      };
+    }
+
+    return {
+      'success': false,
+      'message': body['message']
+    };
   }
 
   Future<Map<String, dynamic>> login(String username, String password) async {
