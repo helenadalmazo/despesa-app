@@ -29,74 +29,94 @@ class LoginScreen extends StatelessWidget {
       return;
     }
 
-    String username = _usernameTextEditingController.text;
-    String password = _passwordTextEditingController.text;
+    final String username = _usernameTextEditingController.text;
+    final String password = _passwordTextEditingController.text;
+
+    final Map<String, dynamic> loginResult = await Authentication.instance.login(username, password);
+    if (loginResult['success']) {
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+              builder: (context) => HomeScreen()
+          ),
+          (Route<dynamic> route) => false
+      );
+    } else {
+      final snackBar = SnackBar(
+        content: Text(loginResult['message']),
+      );
+      Scaffold.of(context).showSnackBar(snackBar);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: Container(
-          padding: EdgeInsets.symmetric(
-            horizontal: 32
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Hero(
-                tag: HeroTag.welcome_text,
-                child: Text(
-                  'Bem vindo(a)',
-                  style: Theme.of(context).textTheme.headline4,
-                ),
+      body: Builder(
+        builder: (BuildContext context) {
+          return SafeArea(
+            child: Container(
+              padding: EdgeInsets.symmetric(
+                horizontal: 32
               ),
-              SizedBox(
-                height: 16,
-              ),
-              Form(
-                key: _formGlobalKey,
-                child: Column(
-                  children: [
-                    TextFormField(
-                      controller: _usernameTextEditingController,
-                      validator: _validateUsername,
-                      decoration: InputDecoration(
-                        hintText: 'Usuário',
-                      ),
-                      textInputAction: TextInputAction.next,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Hero(
+                    tag: HeroTag.welcome_text,
+                    child: Text(
+                      'Bem vindo(a)',
+                      style: Theme.of(context).textTheme.headline4,
                     ),
-                    SizedBox(
-                      height: 8,
-                    ),
-                    TextFormField(
-                      controller: _passwordTextEditingController,
-                      validator: _validatePassword,
-                      decoration: InputDecoration(
-                        hintText: 'Senha',
-                      ),
-                      obscureText: true,
-                    ),
-                  ],
-                )
-              ),
-              SizedBox(
-                height: 16,
-              ),
-              Hero(
-                tag: HeroTag.login_button,
-                child: TextButton(
-                  onPressed: () => _login(context),
-                  child: Text(
-                    'ENTRAR'
                   ),
-                ),
-              )
-            ]
-          ),
-        ),
-      )
+                  SizedBox(
+                    height: 16,
+                  ),
+                  Form(
+                    key: _formGlobalKey,
+                    child: Column(
+                      children: [
+                        TextFormField(
+                          controller: _usernameTextEditingController,
+                          validator: _validateUsername,
+                          decoration: InputDecoration(
+                            hintText: 'Usuário',
+                          ),
+                          textInputAction: TextInputAction.next,
+                        ),
+                        SizedBox(
+                          height: 8,
+                        ),
+                        TextFormField(
+                          controller: _passwordTextEditingController,
+                          validator: _validatePassword,
+                          decoration: InputDecoration(
+                            hintText: 'Senha',
+                          ),
+                          obscureText: true,
+                        ),
+                      ],
+                    )
+                  ),
+                  SizedBox(
+                    height: 16,
+                  ),
+                  Hero(
+                    tag: HeroTag.login_button,
+                    child: TextButton(
+                      onPressed: () => _login(context),
+                      child: Text(
+                        'ENTRAR'
+                      ),
+                    ),
+                  )
+                ]
+              ),
+            ),
+          );
+        },
+      ),
     );
   }
 }
