@@ -76,87 +76,91 @@ class SignUpScreen extends StatelessWidget {
       body: Builder(
         builder: (BuildContext context) {
           return SafeArea(
-            child: Container(
-              padding: EdgeInsets.symmetric(
-                horizontal: 32
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Hero(
-                    tag: HeroTag.welcome_text,
-                    child: Text(
-                      'Bem vindo(a)',
-                      style: Theme.of(context).textTheme.headline4,
-                    ),
+            child: Center(
+              child: SingleChildScrollView(
+                child: Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 32,
+                    vertical: 16
                   ),
-                  SizedBox(
-                    height: 16,
-                  ),
-                  Form(
-                    key: _formGlobalKey,
-                    child: Column(
-                      children: [
-                        TextFormField(
-                          controller: _fullNameTextEditingController,
-                          validator: _validateFullName,
-                          decoration: InputDecoration(
-                            hintText: 'Nome completo',
-                          ),
-                          textInputAction: TextInputAction.next,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Hero(
+                        tag: HeroTag.welcome_text,
+                        child: Text(
+                          'Bem vindo(a)',
+                          style: Theme.of(context).textTheme.headline4,
                         ),
-                        SizedBox(
-                          height: 8,
-                        ),
-                        TextFormField(
-                          controller: _usernameTextEditingController,
-                          validator: _validateUsername,
-                          decoration: InputDecoration(
-                            hintText: 'Usuário',
-                          ),
-                          textInputAction: TextInputAction.next,
-                        ),
-                        SizedBox(
-                          height: 8,
-                        ),
-                        TextFormField(
-                          controller: _passwordTextEditingController,
-                          validator: _validatePassword,
-                          decoration: InputDecoration(
-                            hintText: 'Senha',
-                          ),
-                          obscureText: true,
-                        ),
-                        SizedBox(
-                          height: 8,
-                        ),
-                        TextFormField(
-                          controller: _confirmPasswordTextEditingController,
-                          validator: _validateConfirmPassword,
-                          decoration: InputDecoration(
-                            hintText: 'Confirmar senha',
-                          ),
-                          obscureText: true,
-                        ),
-                      ],
-                    )
-                  ),
-                  SizedBox(
-                    height: 16,
-                  ),
-                  Hero(
-                    tag: HeroTag.sign_up_button,
-                    child: TextButton(
-                      onPressed: () => _login(context),
-                      child: Text(
-                        'REGISTRAR'
                       ),
-                    ),
-                  )
-                ]
+                      SizedBox(
+                        height: 16,
+                      ),
+                      Form(
+                        key: _formGlobalKey,
+                        child: Column(
+                          children: [
+                            TextFormField(
+                              controller: _fullNameTextEditingController,
+                              validator: _validateFullName,
+                              decoration: InputDecoration(
+                                hintText: 'Nome completo',
+                              ),
+                              textInputAction: TextInputAction.next,
+                            ),
+                            SizedBox(
+                              height: 8,
+                            ),
+                            TextFormField(
+                              controller: _usernameTextEditingController,
+                              validator: _validateUsername,
+                              decoration: InputDecoration(
+                                hintText: 'Usuário',
+                              ),
+                              textInputAction: TextInputAction.next,
+                            ),
+                            SizedBox(
+                              height: 8,
+                            ),
+                            TextFormField(
+                              controller: _passwordTextEditingController,
+                              validator: _validatePassword,
+                              decoration: InputDecoration(
+                                hintText: 'Senha',
+                              ),
+                              obscureText: true,
+                            ),
+                            SizedBox(
+                              height: 8,
+                            ),
+                            TextFormField(
+                              controller: _confirmPasswordTextEditingController,
+                              validator: _validateConfirmPassword,
+                              decoration: InputDecoration(
+                                hintText: 'Confirmar senha',
+                              ),
+                              obscureText: true,
+                            ),
+                          ],
+                        )
+                      ),
+                      SizedBox(
+                        height: 16,
+                      ),
+                      Hero(
+                        tag: HeroTag.sign_up_button,
+                        child: TextButton(
+                          onPressed: () => _login(context),
+                          child: Text(
+                            'REGISTRAR'
+                          ),
+                        ),
+                      )
+                    ]
+                  ),
+                ),
               ),
-            ),
+            )
           );
         },
       ),
