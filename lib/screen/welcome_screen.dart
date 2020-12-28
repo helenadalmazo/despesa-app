@@ -1,10 +1,9 @@
-import 'package:despesa_app/screen/login_screen.dart';
 import 'package:flutter/material.dart';
 
 class WelcomeScreen extends StatelessWidget {
 
   void _loginScreen(BuildContext context) {
-    
+
   }
 
   void _signUpScreen(BuildContext context) {
