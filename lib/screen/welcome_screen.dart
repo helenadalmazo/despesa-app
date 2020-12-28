@@ -1,9 +1,16 @@
+import 'package:despesa_app/constant/hero_tag.dart';
+import 'package:despesa_app/screen/login_screen.dart';
 import 'package:flutter/material.dart';
 
 class WelcomeScreen extends StatelessWidget {
 
   void _loginScreen(BuildContext context) {
-
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => LoginScreen()
+      )
+    );
   }
 
   void _signUpScreen(BuildContext context) {
@@ -22,9 +29,12 @@ class WelcomeScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Bem vindo(a)',
-                style: Theme.of(context).textTheme.headline4,
+              Hero(
+                tag: HeroTag.welcome_text,
+                child: Text(
+                  'Bem vindo(a)',
+                  style: Theme.of(context).textTheme.headline4,
+                ),
               ),
               SizedBox(
                 height: 8,
@@ -39,10 +49,13 @@ class WelcomeScreen extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  TextButton(
-                    onPressed: () => _loginScreen(context),
-                    child: Text(
-                      'ENTRAR'
+                  Hero(
+                    tag: HeroTag.login_button,
+                    child: TextButton(
+                      onPressed: () => _loginScreen(context),
+                      child: Text(
+                        'ENTRAR'
+                      ),
                     ),
                   ),
                   TextButton(
