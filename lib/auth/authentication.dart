@@ -8,6 +8,14 @@ class Authentication {
   String _token;
   int _expiresIn;
 
+  User _currentUser;
+
+  Future<User> get currentUser async {
+    if (_currentUser != null) return _currentUser;
+    _currentUser = await _me();
+    return _currentUser;
+  }
+
   Authentication._privateConstructor();
   static final Authentication instance = Authentication._privateConstructor();
 
@@ -71,6 +79,18 @@ class Authentication {
   }
 
   Future<User> _me() async {
-    throw 'TODO me';
+    final response = await http.get(
+      '$_baseUrl/me/',
+      headers: <String, String>{
+        'Authorization': 'Bearer $_token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      Map<String, dynamic> body = json.decode(response.body);
+      return User.fromJson(body);
+    }
+
+    throw Exception('TODO me exception');
   }
 }
