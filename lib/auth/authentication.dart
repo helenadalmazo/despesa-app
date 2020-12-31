@@ -24,7 +24,7 @@ class Authentication {
   Future<Map<String, dynamic>> signUp(String fullName, String username, String password, String confirmPassword) async {
     final response = await http.post(
       '$_baseUrl/signup/',
-      headers: <String, String>{
+      headers: <String, String> {
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: json.encode(<String, String> {
@@ -55,7 +55,7 @@ class Authentication {
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
-      body: json.encode(<String, String>{
+      body: json.encode(<String, String> {
         'username': username,
         'password': password
       }),
@@ -78,11 +78,15 @@ class Authentication {
     };
   }
 
+  String getAuthorization() {
+    return 'Bearer $_token';
+  }
+
   Future<User> _me() async {
     final response = await http.get(
       '$_baseUrl/me/',
-      headers: <String, String>{
-        'Authorization': 'Bearer $_token',
+      headers: <String, String> {
+        'Authorization': getAuthorization(),
       },
     );
 
