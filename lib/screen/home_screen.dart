@@ -53,16 +53,30 @@ class _HomeScreenState extends State<HomeScreen> {
     return null;
   }
 
-  void _saveGroup() async {
-    final String groupName = _groupNameTextEditingController.text;
-    Group save = await GroupRepository.instance.save(groupName);
+  void _saveGroup(String name) async {
+    Group save = await GroupRepository.instance.save(name);
     setState(() {
       groupList.add(save);
     });
   }
 
-  void _showNewGroupModalBottomSheet(BuildContext context) {
-    _groupNameTextEditingController.text = "";
+  void _updateGroup(String name, int id,  int index) async {
+    final String groupName = _groupNameTextEditingController.text;
+    Group update = await GroupRepository.instance.update(id, groupName);
+    setState(() {
+      groupList[index] = update;
+    });
+  }
+
+  void _deleteGroup(int id, int index) async {
+    Map<String, dynamic> delete = await GroupRepository.instance.delete(id);
+    setState(() {
+      groupList.removeAt(index);
+    });
+  }
+
+  void _showGroupModalBottomSheet(BuildContext context, Function function, [Group group, int index]) {
+    _groupNameTextEditingController.text = group == null ? "" : group.name;
 
     showModalBottomSheet<void>(
       context: context,
@@ -93,7 +107,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       alignment: Alignment.centerRight,
                       child: TextButton(
                         onPressed: () {
-                          _saveGroup();
+                          function(_groupNameTextEditingController.text, group == null ? null : group.id, index);
                           Navigator.pop(context);
                         },
                         child: Text(
@@ -111,12 +125,74 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  void _showDeleteGroupDialog(BuildContext context, Group group, int index) {
+    showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Remover grupo'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('Você quer realmente remover esse grupo?'),
+                Text('Essa ação não pode ser desfeita.'),
+              ],
+            ),
+          ),
+          actions: <Widget> [
+            TextButton(
+              child: Text('Não'),
+              onPressed: () {
+                Navigator.pop(context, false);
+              },
+            ),
+            TextButton(
+              child: Text('Sim'),
+              onPressed: () {
+                _deleteGroup(group.id, index);
+                Navigator.pop(context, true);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showGroupOptionsModalBottomSheet(BuildContext context, Group group, int index) {
+    showModalBottomSheet<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return Wrap(
+          children: [
+            ListTile(
+              onTap: () {
+                Navigator.pop(context);
+                _showGroupModalBottomSheet(context, _updateGroup, group, index);
+              },
+              leading: Icon(Icons.edit),
+              title: Text('Editar grupo'),
+            ),
+            ListTile(
+              onTap: () {
+                Navigator.pop(context);
+                _showDeleteGroupDialog(context, group, index);
+              },
+              leading: Icon(Icons.delete),
+              title: Text('Remover grupo'),
+            )
+          ],
+        );
+      }
+    );
+  }
+
   void _groupScreen(BuildContext context, int id) {
     Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => GroupScreen(id: id)
-      )
+        context,
+        MaterialPageRoute(
+            builder: (context) => GroupScreen(id: id)
+        )
     );
   }
 
@@ -160,7 +236,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Container(
                     margin: EdgeInsets.only(right: 8),
                     child: FloatingActionButton(
-                      onPressed: () => _showNewGroupModalBottomSheet(context),
+                      onPressed: () => _showGroupModalBottomSheet(context, _saveGroup),
                       child: Icon(
                         Icons.add
                       ),
@@ -170,16 +246,17 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             ),
           ),
-          for (var group in groupList)
+          for (var index = 0; index < groupList.length; index++)
             InkWell(
-              onTap: () => _groupScreen(context, group.id),
+              onLongPress: () => _showGroupOptionsModalBottomSheet(context, groupList[index], index),
+              onTap: () => _groupScreen(context, groupList[index].id),
               child: Container(
                 padding: EdgeInsets.symmetric(
                   horizontal: 32,
                   vertical: 16
                 ),
                 child: Text(
-                  group.name,
+                  groupList[index].name,
                   style: Theme.of(context).textTheme.headline6
                 )
               ),
