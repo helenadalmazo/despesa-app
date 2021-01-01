@@ -202,7 +202,12 @@ class _HomeScreenState extends State<HomeScreen> {
       body: ListView(
         children: [
           Container(
-            padding: EdgeInsets.all(32),
+            padding: EdgeInsets.only(
+              top: 32,
+              right: 32,
+              bottom: 16,
+              left: 32
+            ),
             decoration: BoxDecoration(
               color: Theme.of(context).primaryColorLight,
             ),
