@@ -263,11 +263,11 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Container(
                 padding: EdgeInsets.symmetric(
                   horizontal: 32,
-                  vertical: 16
+                  vertical: 32
                 ),
                 child: Text(
                   _groupList[index].name,
-                  style: Theme.of(context).textTheme.headline6
+                  style: Theme.of(context).textTheme.subtitle1
                 )
               ),
             ),
