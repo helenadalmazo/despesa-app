@@ -3,6 +3,8 @@ import 'package:despesa_app/clipper/isosceles_trapezoid_clipper.dart';
 import 'package:despesa_app/model/group_model.dart';
 import 'package:despesa_app/model/user.dart';
 import 'package:despesa_app/repository/group_repository.dart';
+import 'package:despesa_app/screen/group_screen.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -15,6 +17,8 @@ class _HomeScreenState extends State<HomeScreen> {
   String fullName;
   List<Group> groupList = [];
   bool loading = true;
+
+  final TextEditingController _groupNameTextEditingController = TextEditingController();
 
   @override
   void initState() {
@@ -40,6 +44,71 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       groupList = list;
     });
+  }
+
+  String _validateGroupName(String value) {
+    if (value.isEmpty) {
+      return "Campo obrigatório";
+    }
+    return null;
+  }
+
+  void _saveGroup() async {
+    final String groupName = _groupNameTextEditingController.text;
+    Group save = await GroupRepository.instance.save(groupName);
+    setState(() {
+      groupList.add(save);
+    });
+  }
+
+  void _showNewGroupModalBottomSheet(BuildContext context) {
+    _groupNameTextEditingController.text = "";
+
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      builder: (BuildContext context) {
+        return Padding(
+          padding: MediaQuery.of(context).viewInsets,
+          child: Container(
+            padding: EdgeInsets.symmetric(
+              horizontal: 32,
+              vertical: 16
+            ),
+            child: Wrap(
+              children: [
+                Column(
+                  children: [
+                    TextFormField(
+                      controller: _groupNameTextEditingController,
+                      validator: _validateGroupName,
+                      decoration: InputDecoration(
+                        hintText: 'Novo grupo',
+                      ),
+                    ),
+                    SizedBox(
+                      height: 8,
+                    ),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: TextButton(
+                        onPressed: () {
+                          _saveGroup();
+                          Navigator.pop(context);
+                        },
+                        child: Text(
+                          'Salvar'
+                        )
+                      ),
+                    )
+                  ],
+                )
+              ],
+            )
+          ),
+        );
+      }
+    );
   }
 
   @override
@@ -82,7 +151,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Container(
                     margin: EdgeInsets.only(right: 8),
                     child: FloatingActionButton(
-                      onPressed: null,
+                      onPressed: () => _showNewGroupModalBottomSheet(context),
                       child: Icon(
                         Icons.add
                       ),
