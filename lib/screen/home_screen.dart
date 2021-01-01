@@ -14,9 +14,9 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
 
-  String fullName;
-  List<Group> groupList = [];
-  bool loading = true;
+  String _fullName;
+  List<Group> _groupList = [];
+  bool _loading = true;
 
   final TextEditingController _groupNameTextEditingController = TextEditingController();
 
@@ -24,25 +24,47 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
 
-    getCurrentUser();
-    getGroupList();
+    _getCurrentUser();
+    _getGroupList();
 
     setState(() {
-      loading = false;
+      _loading = false;
     });
   }
 
-  void getCurrentUser() async {
+  void _getCurrentUser() async {
     User currentUser = await Authentication.instance.currentUser;
     setState(() {
-      fullName = currentUser.fullName;
+      _fullName = currentUser.fullName;
     });
   }
 
-  void getGroupList() async {
+  void _getGroupList() async {
     List<Group> list = await GroupRepository.instance.list();
     setState(() {
-      groupList = list;
+      _groupList = list;
+    });
+  }
+
+  void _saveGroup(String name) async {
+    Group save = await GroupRepository.instance.save(name);
+    setState(() {
+      _groupList.add(save);
+    });
+  }
+
+  void _updateGroup(String name, int id,  int index) async {
+    final String groupName = _groupNameTextEditingController.text;
+    Group update = await GroupRepository.instance.update(id, groupName);
+    setState(() {
+      _groupList[index] = update;
+    });
+  }
+
+  void _deleteGroup(int id, int index) async {
+    Map<String, dynamic> delete = await GroupRepository.instance.delete(id);
+    setState(() {
+      _groupList.removeAt(index);
     });
   }
 
@@ -51,28 +73,6 @@ class _HomeScreenState extends State<HomeScreen> {
       return "Campo obrigatório";
     }
     return null;
-  }
-
-  void _saveGroup(String name) async {
-    Group save = await GroupRepository.instance.save(name);
-    setState(() {
-      groupList.add(save);
-    });
-  }
-
-  void _updateGroup(String name, int id,  int index) async {
-    final String groupName = _groupNameTextEditingController.text;
-    Group update = await GroupRepository.instance.update(id, groupName);
-    setState(() {
-      groupList[index] = update;
-    });
-  }
-
-  void _deleteGroup(int id, int index) async {
-    Map<String, dynamic> delete = await GroupRepository.instance.delete(id);
-    setState(() {
-      groupList.removeAt(index);
-    });
   }
 
   void _showGroupModalBottomSheet(BuildContext context, Function function, [Group group, int index]) {
@@ -189,10 +189,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _groupScreen(BuildContext context, int id) {
     Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => GroupScreen(id: id)
-        )
+      context,
+      MaterialPageRoute(
+          builder: (context) => GroupScreen(id: id)
+      )
     );
   }
 
@@ -207,7 +207,7 @@ class _HomeScreenState extends State<HomeScreen> {
               color: Theme.of(context).primaryColorLight,
             ),
             child: Text(
-              'Olá, $fullName',
+              'Olá, $_fullName',
               style: Theme.of(context).textTheme.headline5
             ),
           ),
@@ -246,17 +246,17 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             ),
           ),
-          for (var index = 0; index < groupList.length; index++)
+          for (var index = 0; index < _groupList.length; index++)
             InkWell(
-              onLongPress: () => _showGroupOptionsModalBottomSheet(context, groupList[index], index),
-              onTap: () => _groupScreen(context, groupList[index].id),
+              onLongPress: () => _showGroupOptionsModalBottomSheet(context, _groupList[index], index),
+              onTap: () => _groupScreen(context, _groupList[index].id),
               child: Container(
                 padding: EdgeInsets.symmetric(
                   horizontal: 32,
                   vertical: 16
                 ),
                 child: Text(
-                  groupList[index].name,
+                  _groupList[index].name,
                   style: Theme.of(context).textTheme.headline6
                 )
               ),
