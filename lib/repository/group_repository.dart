@@ -46,4 +46,20 @@ class GroupRepository {
 
     throw Exception('TODO group save exception');
   }
+
+  Future<Group> get(int id) async {
+    final response = await http.get(
+      '$_baseUrl/$id',
+      headers: <String, String> {
+        'Authorization': Authentication.instance.getAuthorization(),
+      }
+    );
+
+    if (response.statusCode == 200) {
+      Map<String, dynamic> body = json.decode(response.body);
+      return Group.fromJson(body);
+    }
+
+    throw Exception('TODO group get exception');
+  }
 }

@@ -111,6 +111,15 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  void _groupScreen(BuildContext context, int id) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => GroupScreen(id: id)
+      )
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -163,7 +172,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           for (var group in groupList)
             InkWell(
-              onTap: null,
+              onTap: () => _groupScreen(context, group.id),
               child: Container(
                 padding: EdgeInsets.symmetric(
                   horizontal: 32,
