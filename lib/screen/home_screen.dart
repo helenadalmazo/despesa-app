@@ -107,7 +107,12 @@ class _HomeScreenState extends State<HomeScreen> {
                       alignment: Alignment.centerRight,
                       child: TextButton(
                         onPressed: () {
-                          function(_groupNameTextEditingController.text, group == null ? null : group.id, index);
+                          if (group == null) {
+                            function(_groupNameTextEditingController.text);
+                          } else {
+                            function(_groupNameTextEditingController.text, group.id, index);
+                          }
+
                           Navigator.pop(context);
                         },
                         child: Text(
