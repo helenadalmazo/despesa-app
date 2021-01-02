@@ -1,4 +1,4 @@
-import 'package:despesa_app/model/group_model.dart';
+import 'package:despesa_app/model/group.dart';
 import 'package:despesa_app/repository/group_repository.dart';
 import 'package:flutter/material.dart';
 
@@ -79,7 +79,7 @@ class _GroupScreenState extends State<GroupScreen> {
               child: Text('Despesas')
           ),
           Center(
-              child: Text('Usuários')
+            child: Text('Usuários')
           ),
         ],
       ),

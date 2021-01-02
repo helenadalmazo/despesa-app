@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:despesa_app/auth/authentication.dart';
-import 'package:despesa_app/model/group_model.dart';
+import 'package:despesa_app/model/group.dart';
 import 'package:http/http.dart' as http;
 
 class GroupRepository {
