@@ -198,26 +198,24 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Theme.of(context).primaryColorDark,
+        toolbarHeight: 96,
+        title: Container(
+          padding: EdgeInsets.only(
+            left: 16,
+          ),
+          child: Text(
+            'Olá, $_fullName',
+          ),
+        ),
+      ),
       body: ListView(
         children: [
           Container(
-            padding: EdgeInsets.only(
-              top: 32,
-              right: 32,
-              bottom: 16,
-              left: 32
-            ),
             decoration: BoxDecoration(
-              color: Theme.of(context).primaryColorLight,
-            ),
-            child: Text(
-              'Olá, $_fullName',
-              style: Theme.of(context).textTheme.headline5
-            ),
-          ),
-          Container(
-            decoration: BoxDecoration(
-              color: Theme.of(context).primaryColorLight
+              color: Theme.of(context).primaryColorDark
             ),
             child: Stack(
               children: [

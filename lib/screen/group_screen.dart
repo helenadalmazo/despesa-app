@@ -61,44 +61,27 @@ class _GroupScreenState extends State<GroupScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Container(
-              padding: EdgeInsets.only(
-                top: 32,
-                right: 32,
-                bottom: 16,
-                left: 32
-              ),
-              decoration: BoxDecoration(
-                color: Theme.of(context).primaryColorLight,
-              ),
-              child: Text(
-                  _group == null ? '' : _group.name,
-                style: Theme.of(context).textTheme.headline5
-              ),
-            ),
-            Expanded(
-              child: PageView(
-                controller: _pageController,
-                onPageChanged: _onPageChanged,
-                children: <Widget>[
-                  Center(
-                    child: Text('Inicial')
-                  ),
-                  Center(
-                    child: Text('Despesas')
-                  ),
-                  Center(
-                    child: Text('Usuários')
-                  ),
-                ],
-              )
-            )
-          ],
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Theme.of(context).primaryColorDark,
+        title: Text(
+          _group == null ? '' : _group.name,
         ),
+      ),
+      body: PageView(
+        controller: _pageController,
+        onPageChanged: _onPageChanged,
+        children: <Widget>[
+          Center(
+              child: Text('Inicial')
+          ),
+          Center(
+              child: Text('Despesas')
+          ),
+          Center(
+              child: Text('Usuários')
+          ),
+        ],
       ),
       bottomNavigationBar: BottomNavigationBar(
         onTap: _onTapButtonNavigation,
