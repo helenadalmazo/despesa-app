@@ -4,6 +4,7 @@ import 'package:despesa_app/model/group_model.dart';
 import 'package:despesa_app/model/user.dart';
 import 'package:despesa_app/repository/group_repository.dart';
 import 'package:despesa_app/screen/group_screen.dart';
+import 'package:despesa_app/utils/text_form_field_validator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -68,13 +69,6 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  String _validateGroupName(String value) {
-    if (value.isEmpty) {
-      return "Campo obrigatório";
-    }
-    return null;
-  }
-
   void _showGroupModalBottomSheet(BuildContext context, Function function, [Group group, int index]) {
     _groupNameTextEditingController.text = group == null ? "" : group.name;
 
@@ -95,7 +89,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     TextFormField(
                       controller: _groupNameTextEditingController,
-                      validator: _validateGroupName,
+                      validator: TextFormFieldValidator.validateMandatory,
                       decoration: InputDecoration(
                         hintText: 'Novo grupo',
                       ),

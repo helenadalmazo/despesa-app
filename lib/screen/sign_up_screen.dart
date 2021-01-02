@@ -1,6 +1,7 @@
 import 'package:despesa_app/auth/authentication.dart';
 import 'package:despesa_app/constant/hero_tag.dart';
 import 'package:despesa_app/screen/home_screen.dart';
+import 'package:despesa_app/utils/text_form_field_validator.dart';
 import 'package:flutter/material.dart';
 
 class SignUpScreen extends StatelessWidget {
@@ -11,34 +12,6 @@ class SignUpScreen extends StatelessWidget {
   final TextEditingController _usernameTextEditingController = TextEditingController();
   final TextEditingController _passwordTextEditingController = TextEditingController();
   final TextEditingController _confirmPasswordTextEditingController = TextEditingController();
-
-  String _validateFullName(String value) {
-    if (value.isEmpty) {
-      return "Campo obrigatório";
-    }
-    return null;
-  }
-
-  String _validateUsername(String value) {
-    if (value.isEmpty) {
-      return "Campo obrigatório";
-    }
-    return null;
-  }
-
-  String _validatePassword(String value) {
-    if (value.isEmpty) {
-      return "Campo obrigatório";
-    }
-    return null;
-  }
-
-  String _validateConfirmPassword(String value) {
-    if (value.isEmpty) {
-      return "Campo obrigatório";
-    }
-    return null;
-  }
 
   Future<void> _login(BuildContext context) async {
     if (!_formGlobalKey.currentState.validate()) {
@@ -102,7 +75,7 @@ class SignUpScreen extends StatelessWidget {
                           children: [
                             TextFormField(
                               controller: _fullNameTextEditingController,
-                              validator: _validateFullName,
+                              validator: TextFormFieldValidator.validateMandatory,
                               decoration: InputDecoration(
                                 hintText: 'Nome completo',
                               ),
@@ -113,7 +86,7 @@ class SignUpScreen extends StatelessWidget {
                             ),
                             TextFormField(
                               controller: _usernameTextEditingController,
-                              validator: _validateUsername,
+                              validator: TextFormFieldValidator.validateMandatory,
                               decoration: InputDecoration(
                                 hintText: 'Usuário',
                               ),
@@ -124,7 +97,7 @@ class SignUpScreen extends StatelessWidget {
                             ),
                             TextFormField(
                               controller: _passwordTextEditingController,
-                              validator: _validatePassword,
+                              validator: TextFormFieldValidator.validateMandatory,
                               decoration: InputDecoration(
                                 hintText: 'Senha',
                               ),
@@ -135,7 +108,7 @@ class SignUpScreen extends StatelessWidget {
                             ),
                             TextFormField(
                               controller: _confirmPasswordTextEditingController,
-                              validator: _validateConfirmPassword,
+                              validator: TextFormFieldValidator.validateMandatory,
                               decoration: InputDecoration(
                                 hintText: 'Confirmar senha',
                               ),

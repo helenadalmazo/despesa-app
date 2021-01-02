@@ -1,6 +1,7 @@
 import 'package:despesa_app/auth/authentication.dart';
 import 'package:despesa_app/constant/hero_tag.dart';
 import 'package:despesa_app/screen/home_screen.dart';
+import 'package:despesa_app/utils/text_form_field_validator.dart';
 import 'package:flutter/material.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -9,20 +10,6 @@ class LoginScreen extends StatelessWidget {
 
   final TextEditingController _usernameTextEditingController = TextEditingController();
   final TextEditingController _passwordTextEditingController = TextEditingController();
-
-  String _validateUsername(String value) {
-    if (value.isEmpty) {
-      return "Campo obrigatório";
-    }
-    return null;
-  }
-
-  String _validatePassword(String value) {
-    if (value.isEmpty) {
-      return "Campo obrigatório";
-    }
-    return null;
-  }
 
   Future<void> _login(BuildContext context) async {
     if (!_formGlobalKey.currentState.validate()) {
@@ -81,7 +68,7 @@ class LoginScreen extends StatelessWidget {
                           children: [
                             TextFormField(
                               controller: _usernameTextEditingController,
-                              validator: _validateUsername,
+                              validator: TextFormFieldValidator.validateMandatory,
                               decoration: InputDecoration(
                                 hintText: 'Usuário',
                               ),
@@ -92,7 +79,7 @@ class LoginScreen extends StatelessWidget {
                             ),
                             TextFormField(
                               controller: _passwordTextEditingController,
-                              validator: _validatePassword,
+                              validator: TextFormFieldValidator.validateMandatory,
                               decoration: InputDecoration(
                                 hintText: 'Senha',
                               ),
