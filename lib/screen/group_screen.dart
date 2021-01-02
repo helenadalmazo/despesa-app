@@ -13,9 +13,9 @@ class GroupScreen extends StatefulWidget {
 
 class _GroupScreenState extends State<GroupScreen> {
 
-  Group group;
+  Group _group;
 
-  bool loading = true;
+  bool _loading = true;
 
   int _bottomNavigationCurrentIndex = 0;
 
@@ -27,17 +27,17 @@ class _GroupScreenState extends State<GroupScreen> {
   void initState() {
     super.initState();
 
-    getGroup();
+    _getGroup();
 
     setState(() {
-      loading = false;
+      _loading = false;
     });
   }
 
-  void getGroup() async {
+  void _getGroup() async {
     Group get = await GroupRepository.instance.get(widget.id);
     setState(() {
-      group = get;
+      _group = get;
     });
   }
 
@@ -76,7 +76,7 @@ class _GroupScreenState extends State<GroupScreen> {
                 color: Theme.of(context).primaryColorLight,
               ),
               child: Text(
-                loading ? '' : group.name,
+                  _group == null ? '' : _group.name,
                 style: Theme.of(context).textTheme.headline5
               ),
             ),
