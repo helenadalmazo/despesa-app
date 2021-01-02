@@ -24,7 +24,7 @@ class LoginScreen extends StatelessWidget {
       Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(
-              builder: (context) => HomeScreen()
+            builder: (context) => HomeScreen()
           ),
           (Route<dynamic> route) => false
       );
