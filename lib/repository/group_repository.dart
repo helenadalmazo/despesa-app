@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:despesa_app/auth/authentication.dart';
+import 'package:despesa_app/exception/not_found_exception.dart';
 import 'package:despesa_app/model/group.dart';
 import 'package:http/http.dart' as http;
 
@@ -96,5 +97,42 @@ class GroupRepository {
     }
 
     throw Exception('TODO group delete exception');
+  }
+
+  Future<Group> addUser(int id, String username) async {
+    final response = await http.get(
+      '$_baseUrl/$id/adduser/$username',
+      headers: <String, String> {
+        'Authorization': Authentication.instance.getAuthorization(),
+      }
+    );
+
+    Map<String, dynamic> body = json.decode(response.body);
+
+    if (response.statusCode == 404) {
+      throw NotFoundException.fromJson(body);
+    }
+
+    if (response.statusCode == 200) {
+      return Group.fromJson(body);
+    }
+
+    throw Exception('TODO group addUser exception');
+  }
+
+  Future<Group> removeUser(int id, int userId) async {
+    final response = await http.get(
+        '$_baseUrl/$id/removeuser/$userId',
+        headers: <String, String> {
+          'Authorization': Authentication.instance.getAuthorization(),
+        }
+    );
+
+    if (response.statusCode == 200) {
+      Map<String, dynamic> body = json.decode(response.body);
+      return Group.fromJson(body);
+    }
+
+    throw Exception('TODO group removeUser exception');
   }
 }
