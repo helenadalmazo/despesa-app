@@ -91,7 +91,7 @@ class _GroupScreenState extends State<GroupScreen> {
     });
   }
 
-  void _showDeleteGroupDialog(BuildContext context, int userId) {
+  void _showDeleteUserDialog(BuildContext context, int userId) {
     showDialog<void>(
       context: context,
       builder: (BuildContext context) {
@@ -254,7 +254,7 @@ class _GroupScreenState extends State<GroupScreen> {
                           ),
                           IconButton(
                             icon: Icon(Icons.close),
-                            onPressed: () => _showDeleteGroupDialog(context, _group.users[index].id)
+                            onPressed: () => _showDeleteUserDialog(context, _group.users[index].id)
                           )
                         ],
                         )
