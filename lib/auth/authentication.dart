@@ -8,13 +8,7 @@ class Authentication {
   String _token;
   int _expiresIn;
 
-  User _currentUser;
-
-  Future<User> get currentUser async {
-    if (_currentUser != null) return _currentUser;
-    _currentUser = await _me();
-    return _currentUser;
-  }
+  User currentUser;
 
   Authentication._privateConstructor();
   static final Authentication instance = Authentication._privateConstructor();
@@ -66,6 +60,7 @@ class Authentication {
     if (response.statusCode == 200) {
       _token = body['token'];
       _expiresIn = body['expires_in'];
+      currentUser = await _me();
 
       return {
         'success': true

@@ -25,18 +25,11 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
 
-    _getCurrentUser();
+    _fullName = Authentication.instance.currentUser.fullName;
     _getGroupList();
 
     setState(() {
       _loading = false;
-    });
-  }
-
-  void _getCurrentUser() async {
-    User currentUser = await Authentication.instance.currentUser;
-    setState(() {
-      _fullName = currentUser.fullName;
     });
   }
 
