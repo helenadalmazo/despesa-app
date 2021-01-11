@@ -5,6 +5,7 @@ import 'package:despesa_app/model/group.dart';
 import 'package:despesa_app/model/user.dart';
 import 'package:despesa_app/repository/group_repository.dart';
 import 'package:despesa_app/utils/text_form_field_validator.dart';
+import 'package:despesa_app/widget/list_header.dart';
 import 'package:flutter/material.dart';
 
 class GroupScreen extends StatefulWidget {
@@ -124,7 +125,9 @@ class _GroupScreenState extends State<GroupScreen> {
     );
   }
 
-  void _showUserModalBottomSheet(BuildContext context) {
+  void _showUserModalBottomSheet(Map<String, dynamic> params) {
+    BuildContext context = params['context'];
+
     _userNameTextEditingController.text = "";
 
     showModalBottomSheet<void>(
@@ -199,40 +202,11 @@ class _GroupScreenState extends State<GroupScreen> {
             builder: (BuildContext context) {
               return ListView(
                 children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).primaryColorDark
-                    ),
-                    child: Stack(
-                      children: [
-                        Positioned.fill(
-                          child: Align(
-                            alignment: Alignment.bottomCenter,
-                            child: ClipPath(
-                              clipper: IsoscelesTrapezoidClipper(),
-                              child: Container(
-                                height: 32,
-                                decoration: BoxDecoration(
-                                  color: Theme.of(context).scaffoldBackgroundColor
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        Align(
-                          alignment: Alignment.bottomRight,
-                          child: Container(
-                            margin: EdgeInsets.only(right: 8),
-                            child: FloatingActionButton(
-                              onPressed: () => _showUserModalBottomSheet(context),
-                              child: Icon(
-                                Icons.add
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                  ListHeader(
+                    buttonFunction: _showUserModalBottomSheet,
+                    buttonFunctionParams: {
+                      'context': context
+                    }
                   ),
                   for (var index = 0; index < _group.users.length; index++)
                     Container(

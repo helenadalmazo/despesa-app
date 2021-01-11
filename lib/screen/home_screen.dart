@@ -5,6 +5,7 @@ import 'package:despesa_app/model/user.dart';
 import 'package:despesa_app/repository/group_repository.dart';
 import 'package:despesa_app/screen/group_screen.dart';
 import 'package:despesa_app/utils/text_form_field_validator.dart';
+import 'package:despesa_app/widget/list_header.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -60,6 +61,10 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       _groupList.removeAt(index);
     });
+  }
+
+  void _showGroupModalBottomSheetCallback(Map<String, dynamic> params) {
+    _showGroupModalBottomSheet(params['context'], params['function']);
   }
 
   void _showGroupModalBottomSheet(BuildContext context, Function function, [Group group, int index]) {
@@ -206,40 +211,12 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: ListView(
         children: [
-          Container(
-            decoration: BoxDecoration(
-              color: Theme.of(context).primaryColorDark
-            ),
-            child: Stack(
-              children: [
-                Positioned.fill(
-                  child: Align(
-                    alignment: Alignment.bottomCenter,
-                    child: ClipPath(
-                      clipper: IsoscelesTrapezoidClipper(),
-                      child: Container(
-                        height: 32,
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).scaffoldBackgroundColor
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                Align(
-                  alignment: Alignment.bottomRight,
-                  child: Container(
-                    margin: EdgeInsets.only(right: 8),
-                    child: FloatingActionButton(
-                      onPressed: () => _showGroupModalBottomSheet(context, _saveGroup),
-                      child: Icon(
-                        Icons.add
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
+          ListHeader(
+            buttonFunction: _showGroupModalBottomSheetCallback,
+            buttonFunctionParams: {
+              'context': context,
+              'function': _saveGroup
+            }
           ),
           for (var index = 0; index < _groupList.length; index++)
             InkWell(
