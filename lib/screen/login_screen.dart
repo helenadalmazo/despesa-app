@@ -1,6 +1,7 @@
 import 'package:despesa_app/auth/authentication.dart';
 import 'package:despesa_app/constant/hero_tag.dart';
 import 'package:despesa_app/screen/home_screen.dart';
+import 'package:despesa_app/utils/scaffold_utils.dart';
 import 'package:despesa_app/utils/text_form_field_validator.dart';
 import 'package:flutter/material.dart';
 
@@ -21,19 +22,20 @@ class LoginScreen extends StatelessWidget {
 
     final Map<String, dynamic> loginResult = await Authentication.instance.login(username, password);
     if (loginResult['success']) {
-      Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(
-            builder: (context) => HomeScreen()
-          ),
-          (Route<dynamic> route) => false
-      );
+      _homeScreen(context);
     } else {
-      final snackBar = SnackBar(
-        content: Text(loginResult['message']),
-      );
-      Scaffold.of(context).showSnackBar(snackBar);
+      ScaffoldUtils.showSnackBar(context, loginResult['message']);
     }
+  }
+
+  void _homeScreen(BuildContext context) {
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(
+        builder: (context) => HomeScreen()
+      ),
+      (Route<dynamic> route) => false
+    );
   }
 
   @override
