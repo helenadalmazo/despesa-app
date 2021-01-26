@@ -64,12 +64,15 @@ class WelcomeScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-                  TextButton(
-                    onPressed: () => _signUpScreen(context),
-                    child: Text(
-                      'REGISTRAR'
-                    ),
-                  ),
+                  Hero(
+                    tag: HeroTag.sign_up_button,
+                    child: TextButton(
+                      onPressed: () => _signUpScreen(context),
+                      child: Text(
+                        'REGISTRAR'
+                      ),
+                    )
+                  )
                 ],
               )
             ],
