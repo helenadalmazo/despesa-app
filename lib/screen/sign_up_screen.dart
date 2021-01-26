@@ -1,6 +1,7 @@
 import 'package:despesa_app/auth/authentication.dart';
 import 'package:despesa_app/constant/hero_tag.dart';
 import 'package:despesa_app/screen/home_screen.dart';
+import 'package:despesa_app/utils/scaffold_utils.dart';
 import 'package:despesa_app/utils/text_form_field_validator.dart';
 import 'package:flutter/material.dart';
 
@@ -28,19 +29,28 @@ class SignUpScreen extends StatelessWidget {
     );
 
     if (signUpResult['success']) {
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(
-            builder: (context) => HomeScreen()
-        ),
-        (Route<dynamic> route) => false
+      final Map<String, dynamic> loginResult = await Authentication.instance.login(
+          username, password
       );
+
+      if (loginResult['success']) {
+        _homeScreen(context);
+      } else {
+        ScaffoldUtils.showSnackBar(context, loginResult['message']);
+      }
     } else {
-      final snackBar = SnackBar(
-        content: Text(signUpResult['message']),
-      );
-      Scaffold.of(context).showSnackBar(snackBar);
+      ScaffoldUtils.showSnackBar(context, signUpResult['message']);
     }
+  }
+
+  void _homeScreen(BuildContext context) {
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(
+        builder: (context) => HomeScreen()
+      ),
+      (Route<dynamic> route) => false
+    );
   }
 
   @override
