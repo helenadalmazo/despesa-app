@@ -1,4 +1,4 @@
-import 'user.dart';
+import 'package:despesa_app/model/user.dart';
 
 class Group {
   final int id;
