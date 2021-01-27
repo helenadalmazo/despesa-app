@@ -1,8 +1,9 @@
 import 'package:despesa_app/auth/authentication.dart';
-import 'package:despesa_app/clipper/isosceles_trapezoid_clipper.dart';
 import 'package:despesa_app/exception/not_found_exception.dart';
+import 'package:despesa_app/model/expense.dart';
 import 'package:despesa_app/model/group.dart';
 import 'package:despesa_app/model/user.dart';
+import 'package:despesa_app/repository/expense_repository.dart';
 import 'package:despesa_app/repository/group_repository.dart';
 import 'package:despesa_app/utils/text_form_field_validator.dart';
 import 'package:despesa_app/widget/list_header.dart';
@@ -21,6 +22,8 @@ class _GroupScreenState extends State<GroupScreen> {
 
   Group _group;
 
+  List<Expense> _expenses = [];
+
   bool _loading = true;
 
   int _bottomNavigationCurrentIndex = 0;
@@ -34,15 +37,26 @@ class _GroupScreenState extends State<GroupScreen> {
   @override
   void initState() {
     super.initState();
-
-    _getGroup();
-
-    setState(() {
-      _loading = false;
+    _load().then((_) {
+      setState(() {
+        _loading = true;
+      });
     });
   }
 
-  void _getGroup() async {
+  Future<void> _load() async {
+    await _listExpenses();
+    await _getGroup();
+  }
+
+  Future<void> _listExpenses() async {
+    List<Expense> list = await ExpenseRepository.instance.list();
+    setState(() {
+      _expenses = list;
+    });
+  }
+
+  Future<void> _getGroup() async {
     Group get = await GroupRepository.instance.get(widget.id);
     setState(() {
       _group = get;
@@ -193,10 +207,42 @@ class _GroupScreenState extends State<GroupScreen> {
         onPageChanged: _onPageChanged,
         children: <Widget>[
           Center(
-              child: Text('Inicial')
+            child: Text('Inicial')
           ),
-          Center(
-              child: Text('Despesas')
+          Builder(
+            builder: (BuildContext context) {
+              return ListView(
+                children: [
+                  ListHeader(
+                    buttonFunction: _expenseScreen,
+                    buttonFunctionParams: {
+                      'context': context
+                    }
+                  ),
+                  for (var index = 0; index < _expenses.length; index++)
+                    Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 32,
+                        vertical: 16
+                      ),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              _expenses[index].name,
+                              style: Theme.of(context).textTheme.subtitle1
+                            )
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.delete),
+                            onPressed: () => null
+                          )
+                        ],
+                      )
+                    )
+                ]
+              );
+            },
           ),
           Builder(
             builder: (BuildContext context) {
@@ -222,7 +268,7 @@ class _GroupScreenState extends State<GroupScreen> {
                           ),
                           Expanded(
                             child: Text(
-                                _getUserNameText(_group.users[index]),
+                              _getUserNameText(_group.users[index]),
                               style: Theme.of(context).textTheme.subtitle1
                             )
                           ),
