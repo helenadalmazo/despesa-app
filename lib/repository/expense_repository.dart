@@ -26,4 +26,28 @@ class ExpenseRepository {
 
     throw Exception('TODO expense list exception');
   }
+
+  Future<Expense> save(int groupId, String name, double value, String description, List<Map<String, dynamic>> items) async {
+    final response = await http.post(
+      '$_baseUrl',
+      headers: <String, String> {
+        'Authorization': Authentication.instance.getAuthorization(),
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: json.encode(<String, dynamic> {
+        'group_id': groupId,
+        'name': name,
+        'value': value,
+        'description': description,
+        'items': items
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      Map<String, dynamic> body = json.decode(response.body);
+      return Expense.fromJson(body);
+    }
+
+    throw Exception('TODO expense save exception');
+  }
 }
