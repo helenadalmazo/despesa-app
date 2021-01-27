@@ -72,7 +72,7 @@ class LoginScreen extends StatelessWidget {
                               controller: _usernameTextEditingController,
                               validator: TextFormFieldValidator.validateMandatory,
                               decoration: InputDecoration(
-                                hintText: 'Usuário',
+                                labelText: 'Usuário',
                               ),
                               textInputAction: TextInputAction.next,
                             ),
@@ -83,7 +83,7 @@ class LoginScreen extends StatelessWidget {
                               controller: _passwordTextEditingController,
                               validator: TextFormFieldValidator.validateMandatory,
                               decoration: InputDecoration(
-                                hintText: 'Senha',
+                                labelText: 'Senha',
                               ),
                               obscureText: true,
                             ),

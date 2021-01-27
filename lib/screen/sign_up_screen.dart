@@ -87,7 +87,7 @@ class SignUpScreen extends StatelessWidget {
                               controller: _fullNameTextEditingController,
                               validator: TextFormFieldValidator.validateMandatory,
                               decoration: InputDecoration(
-                                hintText: 'Nome completo',
+                                labelText: 'Nome completo',
                               ),
                               textInputAction: TextInputAction.next,
                             ),
@@ -98,7 +98,7 @@ class SignUpScreen extends StatelessWidget {
                               controller: _usernameTextEditingController,
                               validator: TextFormFieldValidator.validateMandatory,
                               decoration: InputDecoration(
-                                hintText: 'Usuário',
+                                labelText: 'Usuário',
                               ),
                               textInputAction: TextInputAction.next,
                             ),
@@ -109,7 +109,7 @@ class SignUpScreen extends StatelessWidget {
                               controller: _passwordTextEditingController,
                               validator: TextFormFieldValidator.validateMandatory,
                               decoration: InputDecoration(
-                                hintText: 'Senha',
+                                labelText: 'Senha',
                               ),
                               obscureText: true,
                             ),
@@ -120,7 +120,7 @@ class SignUpScreen extends StatelessWidget {
                               controller: _confirmPasswordTextEditingController,
                               validator: TextFormFieldValidator.validateMandatory,
                               decoration: InputDecoration(
-                                hintText: 'Confirmar senha',
+                                labelText: 'Confirmar senha',
                               ),
                               obscureText: true,
                             ),
