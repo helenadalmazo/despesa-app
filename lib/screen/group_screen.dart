@@ -5,6 +5,7 @@ import 'package:despesa_app/model/group.dart';
 import 'package:despesa_app/model/user.dart';
 import 'package:despesa_app/repository/expense_repository.dart';
 import 'package:despesa_app/repository/group_repository.dart';
+import 'package:despesa_app/screen/expense_screen.dart';
 import 'package:despesa_app/utils/text_form_field_validator.dart';
 import 'package:despesa_app/widget/list_header.dart';
 import 'package:flutter/material.dart';
@@ -191,6 +192,19 @@ class _GroupScreenState extends State<GroupScreen> {
     );
   }
 
+  void _expenseScreen(Map<String, dynamic> params) {
+    BuildContext context = params['context'];
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ExpenseScreen(
+          groupId: _group.id,
+        )
+      )
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -277,7 +291,7 @@ class _GroupScreenState extends State<GroupScreen> {
                             onPressed: () => _showDeleteUserDialog(context, _group.users[index].id)
                           )
                         ],
-                        )
+                      )
                     ),
                 ],
               );
