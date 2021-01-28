@@ -4,12 +4,16 @@ class Expense {
   final int id;
   final int groupId;
   final String name;
+  final double value;
+  final String description;
   final List<ExpenseItem> items;
 
   Expense({
     this.id,
     this.groupId,
     this.name,
+    this.value,
+    this.description,
     this.items
   });
 
@@ -20,6 +24,8 @@ class Expense {
       id: json['id'],
       groupId: json['group_id'],
       name: json['name'],
+      value: json['value'],
+      description: json['description'],
       items: jsonItems.map((dynamic item) => ExpenseItem.fromJson(item)).toList(),
     );
   }

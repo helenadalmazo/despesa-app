@@ -6,6 +6,7 @@ import 'package:despesa_app/model/user.dart';
 import 'package:despesa_app/repository/expense_repository.dart';
 import 'package:despesa_app/repository/group_repository.dart';
 import 'package:despesa_app/screen/expense_screen.dart';
+import 'package:despesa_app/utils/money_utils.dart';
 import 'package:despesa_app/utils/text_form_field_validator.dart';
 import 'package:despesa_app/widget/list_header.dart';
 import 'package:flutter/material.dart';
@@ -211,7 +212,6 @@ class _GroupScreenState extends State<GroupScreen> {
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Theme.of(context).primaryColorDark,
-        toolbarHeight: 96,
         title: Text(
           _group == null ? '' : _group.name,
         ),
@@ -242,9 +242,22 @@ class _GroupScreenState extends State<GroupScreen> {
                       child: Row(
                         children: [
                           Expanded(
-                            child: Text(
-                              _expenses[index].name,
-                              style: Theme.of(context).textTheme.subtitle1
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  _expenses[index].name,
+                                  style: Theme.of(context).textTheme.headline6
+                                ),
+                                Text(
+                                  MoneyUtils.formatCurrency(_expenses[index].value),
+                                  style: Theme.of(context).textTheme.subtitle1
+                                ),
+                                Text(
+                                  _expenses[index].description,
+                                  style: Theme.of(context).textTheme.caption
+                                )
+                              ],
                             )
                           ),
                           IconButton(
