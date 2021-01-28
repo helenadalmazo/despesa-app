@@ -142,7 +142,7 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
   }
 
   bool validateUsersStep() {
-    return _users.isEmpty;
+    return _users.isNotEmpty;
   }
 
   List<StepValidate> _validateStepList() => [
@@ -212,7 +212,7 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
             ? StepState.complete
             : StepState.indexed,
       content: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
@@ -237,6 +237,14 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
               )
             ],
           ),
+          _users.isEmpty
+              ? Text(
+                'Você precisa selecionar pelo menos um usuário',
+                style: TextStyle(
+                  color: Theme.of(context).errorColor,
+                ),
+              )
+              : Container(),
           for (var user in _users)
             Container(
               height: 48,
@@ -270,11 +278,6 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
               ],
             )
           ),
-          _users != null && _users.isEmpty
-              ? Text(
-                  'Você precisa selecionar pelo menos um usuário',
-                )
-              : Text('')
         ],
       )
     ),
