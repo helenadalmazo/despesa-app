@@ -87,7 +87,16 @@ class _GroupScreenState extends State<GroupScreen> {
     return '${user.fullName} ${isCurrentUser ? '(Você)' : ''}';
   }
 
-  void _addUser(BuildContext context, String username) async {
+  Future<void> _deleteExpense(Expense expense) async {
+    Map<String, dynamic> deleteResponse = await ExpenseRepository.instance.delete(expense.id);
+    if (deleteResponse['success']) {
+      setState(() {
+        _expenses.remove(expense);
+      });
+    }
+  }
+
+  Future<void> _addUser(BuildContext context, String username) async {
     try {
       Group addUser = await GroupRepository.instance.addUser(_group.id, username);
       setState(() {
@@ -108,16 +117,17 @@ class _GroupScreenState extends State<GroupScreen> {
     });
   }
 
-  void _showDeleteUserDialog(BuildContext context, int userId) {
+  void _showDeleteExpenseDialog(BuildContext context, Expense expense) {
     showDialog<void>(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Remover grupo'),
+          title: Text('Excluir despesa'),
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-                Text('Você quer realmente remover esse usuário do grupo?'),
+                Text('Você quer realmente excluir essa despesa?'),
+                Text('Essa ação não pode ser desfeita.'),
               ],
             ),
           ),
@@ -131,7 +141,7 @@ class _GroupScreenState extends State<GroupScreen> {
             TextButton(
               child: Text('Sim'),
               onPressed: () {
-                _removeUser(userId);
+                _deleteExpense(expense);
                 Navigator.pop(context, true);
               },
             ),
@@ -141,7 +151,7 @@ class _GroupScreenState extends State<GroupScreen> {
     );
   }
 
-  void _showUserModalBottomSheet(Map<String, dynamic> params) {
+  void _showAddUserModalBottomSheet(Map<String, dynamic> params) {
     BuildContext context = params['context'];
 
     _userNameTextEditingController.text = "";
@@ -193,17 +203,59 @@ class _GroupScreenState extends State<GroupScreen> {
     );
   }
 
-  void _expenseScreen(Map<String, dynamic> params) {
+  void _showRemoveUserDialog(BuildContext context, int userId) {
+    showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Remover usuário'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('Você quer realmente remover esse usuário do grupo?'),
+              ],
+            ),
+          ),
+          actions: <Widget> [
+            TextButton(
+              child: Text('Não'),
+              onPressed: () {
+                Navigator.pop(context, false);
+              },
+            ),
+            TextButton(
+              child: Text('Sim'),
+              onPressed: () {
+                _removeUser(userId);
+                Navigator.pop(context, true);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _expenseScreen(Map<String, dynamic> params) async {
     BuildContext context = params['context'];
 
-    Navigator.push(
+    bool result = await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => ExpenseScreen(
           groupId: _group.id,
+          expenseId: params['expenseId']
         )
       )
     );
+
+    if (result == null) {
+      return;
+    }
+
+    if (result) {
+      _listExpenses();
+    }
   }
 
   @override
@@ -234,38 +286,41 @@ class _GroupScreenState extends State<GroupScreen> {
                     }
                   ),
                   for (var index = 0; index < _expenses.length; index++)
-                    Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 32,
-                        vertical: 16
-                      ),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  _expenses[index].name,
-                                  style: Theme.of(context).textTheme.headline6
-                                ),
-                                Text(
-                                  MoneyUtils.formatCurrency(_expenses[index].value),
-                                  style: Theme.of(context).textTheme.subtitle1
-                                ),
-                                Text(
-                                  _expenses[index].description,
-                                  style: Theme.of(context).textTheme.caption
-                                )
-                              ],
+                    InkWell(
+                      onTap: () => _expenseScreen({'context': context, 'expenseId': _expenses[index].id}),
+                      child: Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 32,
+                          vertical: 16
+                        ),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    _expenses[index].name,
+                                    style: Theme.of(context).textTheme.headline6
+                                  ),
+                                  Text(
+                                    MoneyUtils.formatCurrency(_expenses[index].value),
+                                    style: Theme.of(context).textTheme.subtitle1
+                                  ),
+                                  Text(
+                                    _expenses[index].description,
+                                    style: Theme.of(context).textTheme.caption
+                                  )
+                                ],
+                              )
+                            ),
+                            IconButton(
+                              icon: Icon(Icons.delete),
+                              onPressed: () => _showDeleteExpenseDialog(context, _expenses[index])
                             )
-                          ),
-                          IconButton(
-                            icon: Icon(Icons.delete),
-                            onPressed: () => null
-                          )
-                        ],
-                      )
+                          ],
+                        )
+                      ),
                     )
                 ]
               );
@@ -276,7 +331,7 @@ class _GroupScreenState extends State<GroupScreen> {
               return ListView(
                 children: [
                   ListHeader(
-                    buttonFunction: _showUserModalBottomSheet,
+                    buttonFunction: _showAddUserModalBottomSheet,
                     buttonFunctionParams: {
                       'context': context
                     }
@@ -301,7 +356,7 @@ class _GroupScreenState extends State<GroupScreen> {
                           ),
                           IconButton(
                             icon: Icon(Icons.close),
-                            onPressed: () => _showDeleteUserDialog(context, _group.users[index].id)
+                            onPressed: () => _showRemoveUserDialog(context, _group.users[index].id)
                           )
                         ],
                       )

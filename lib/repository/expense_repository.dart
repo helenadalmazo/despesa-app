@@ -50,4 +50,58 @@ class ExpenseRepository {
 
     throw Exception('TODO expense save exception');
   }
+
+  Future<Expense> update(int expenseId, String name, double value, String description, List<Map<String, dynamic>> items) async {
+    final response = await http.put(
+      '$_baseUrl/$expenseId',
+      headers: <String, String> {
+        'Authorization': Authentication.instance.getAuthorization(),
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: json.encode(<String, dynamic> {
+        'name': name,
+        'value': value,
+        'description': description,
+        'items': items
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      Map<String, dynamic> body = json.decode(response.body);
+      return Expense.fromJson(body);
+    }
+
+    throw Exception('TODO expense update exception');
+  }
+
+  Future<Expense> get(int id) async {
+    final response = await http.get(
+        '$_baseUrl/$id',
+        headers: <String, String> {
+          'Authorization': Authentication.instance.getAuthorization(),
+        }
+    );
+
+    if (response.statusCode == 200) {
+      Map<String, dynamic> body = json.decode(response.body);
+      return Expense.fromJson(body);
+    }
+
+    throw Exception('TODO expense get exception');
+  }
+
+  Future<Map<String, dynamic>> delete(int id) async {
+    final response = await http.delete(
+      '$_baseUrl/$id',
+      headers: <String, String> {
+        'Authorization': Authentication.instance.getAuthorization(),
+      },
+    );
+
+    if (response.statusCode == 200) {
+      return json.decode(response.body);
+    }
+
+    throw Exception('TODO expense delete exception');
+  }
 }

@@ -1,3 +1,4 @@
+import 'package:despesa_app/model/expense.dart';
 import 'package:despesa_app/model/group.dart';
 import 'package:despesa_app/model/user.dart';
 import 'package:despesa_app/repository/expense_repository.dart';
@@ -11,8 +12,13 @@ typedef bool StepValidate();
 
 class ExpenseScreen extends StatefulWidget {
   final int groupId;
+  final int expenseId;
 
-  const ExpenseScreen({Key key, this.groupId}) : super(key: key);
+  const ExpenseScreen({
+    Key key,
+    @required this.groupId,
+    this.expenseId
+  }) : super(key: key);
 
   @override
   _ExpenseScreenState createState() => _ExpenseScreenState();
@@ -21,8 +27,8 @@ class ExpenseScreen extends StatefulWidget {
 class _ExpenseScreenState extends State<ExpenseScreen> {
 
   Group _group;
-
   List<User> _users = [];
+  Expense _expense;
 
   bool _loading = true;
 
@@ -48,6 +54,7 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
 
   Future<void> _load() async {
     await _getGroup();
+    await _getExpense();
   }
 
   Future<void> _getGroup() async {
@@ -55,6 +62,22 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
     setState(() {
       _group = get;
       _users = _group.users.toList();
+    });
+  }
+
+  Future<void> _getExpense() async {
+    if (widget.expenseId == null) return;
+
+    Expense get = await ExpenseRepository.instance.get(widget.expenseId);
+    setState(() {
+      _expense = get;
+
+      List<int> usersId = _expense.items.map((item) => item.userId).toList();
+      _users = _group.users.where((user) => usersId.contains(user.id)).toList();
+
+      _nameTextEditingController.value = TextEditingValue(text: _expense.name);
+      _valueTextEditingController.value = TextEditingValue(text: _expense.value.toString());
+      _descriptionTextEditingController.value = TextEditingValue(text: _expense.description);
     });
   }
 
@@ -102,12 +125,17 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
       );
     }
 
-    await ExpenseRepository.instance.save(_group.id, name, value, description, items);
-    Navigator.pop(context);
+    if (_expense == null) {
+      await ExpenseRepository.instance.save(_group.id, name, value, description, items);
+    } else {
+      await ExpenseRepository.instance.update(_expense.id, name, value, description, items);
+    }
+
+    Navigator.pop(context, true);
   }
 
   void _close(BuildContext context) {
-    Navigator.pop(context);
+    Navigator.pop(context, false);
   }
 
   String _getContinueButtonText() {
@@ -166,9 +194,6 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
               controller: _nameTextEditingController,
               validator: TextFormFieldValidator.validateMandatory,
               textInputAction: TextInputAction.next,
-              inputFormatters: [
-
-              ],
               decoration: InputDecoration(
                 labelText: 'Despesa'
               ),
