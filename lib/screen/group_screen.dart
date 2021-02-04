@@ -1,3 +1,4 @@
+import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:despesa_app/auth/authentication.dart';
 import 'package:despesa_app/exception/not_found_exception.dart';
 import 'package:despesa_app/model/expense.dart';
@@ -5,8 +6,11 @@ import 'package:despesa_app/model/group.dart';
 import 'package:despesa_app/model/user.dart';
 import 'package:despesa_app/repository/expense_repository.dart';
 import 'package:despesa_app/repository/group_repository.dart';
+import 'package:despesa_app/repository/statistic_repository.dart';
 import 'package:despesa_app/screen/expense_screen.dart';
+import 'package:despesa_app/utils/date_utils.dart';
 import 'package:despesa_app/utils/money_utils.dart';
+import 'package:despesa_app/utils/percentage_utils.dart';
 import 'package:despesa_app/utils/text_form_field_validator.dart';
 import 'package:despesa_app/widget/list_header.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +25,10 @@ class GroupScreen extends StatefulWidget {
 }
 
 class _GroupScreenState extends State<GroupScreen> {
+
+  double _totalValue = 0;
+  List<Map<String, dynamic>> _statisticValueByUser;
+  List<Map<String, dynamic>> _statisticValueByYearMonth;
 
   Group _group;
 
@@ -47,8 +55,19 @@ class _GroupScreenState extends State<GroupScreen> {
   }
 
   Future<void> _load() async {
+    await _getStatistics();
     await _listExpenses();
     await _getGroup();
+  }
+
+  Future<void> _getStatistics() async {
+    List<Map<String, dynamic>> statisticValueByUserResponse = await StatisticRepository.instance.listValueGroupedByUser(widget.id);
+    List<Map<String, dynamic>> statisticValueByYearMonthResponse = await StatisticRepository.instance.listValueGroupedByYearMonth(widget.id);
+    setState(() {
+      _totalValue = statisticValueByUserResponse.map((statistic) => statistic['value']).reduce((value, element) => value + element);
+      _statisticValueByUser = statisticValueByUserResponse;
+      _statisticValueByYearMonth = statisticValueByYearMonthResponse;
+    });
   }
 
   Future<void> _listExpenses() async {
@@ -258,6 +277,8 @@ class _GroupScreenState extends State<GroupScreen> {
     }
   }
 
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -272,8 +293,88 @@ class _GroupScreenState extends State<GroupScreen> {
         controller: _pageController,
         onPageChanged: _onPageChanged,
         children: <Widget>[
-          Center(
-            child: Text('Inicial')
+          Builder(
+            builder: (BuildContext context) {
+              return Container(
+                padding: EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 8
+                ),
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Divisão dos valores por usuário',
+                        style: Theme.of(context).textTheme.headline6,
+                      ),
+                      Expanded(
+                        child: _statisticValueByUser == null
+                          ? Center(child: CircularProgressIndicator())
+                          : Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                    child: charts.PieChart(
+                                      [
+                                        charts.Series<Map<String, dynamic>, String>(
+                                          id: 'statisticValueByUser',
+                                          domainFn: (Map<String, dynamic> statistic, _) => statistic['user'],
+                                          measureFn: (Map<String, dynamic> statistic, _) => statistic['value'],
+                                          data: _statisticValueByUser,
+                                          labelAccessorFn: (Map<String, dynamic> statistic, _) => PercentageUtils.format(statistic['value']/_totalValue * 100),
+                                        )
+                                      ],
+                                      animate: false,
+                                      layoutConfig: charts.LayoutConfig(
+                                        leftMarginSpec: charts.MarginSpec.fixedPixel(0),
+                                        topMarginSpec: charts.MarginSpec.fixedPixel(0),
+                                        rightMarginSpec: charts.MarginSpec.fixedPixel(8),
+                                        bottomMarginSpec:charts.MarginSpec.fixedPixel(0),
+                                      ),
+                                      behaviors: [
+                                        charts.DatumLegend(
+                                          position: charts.BehaviorPosition.top,
+                                          outsideJustification: charts.OutsideJustification.startDrawArea,
+                                        )
+                                      ],
+                                      defaultRenderer: charts.ArcRendererConfig(
+                                        arcWidth: 60,
+                                        arcRendererDecorators: [
+                                          charts.ArcLabelDecorator(
+                                            labelPosition: charts.ArcLabelPosition.inside
+                                          ),
+                                        ],
+                                      ),
+                                  )
+                              ),
+                            ],
+                        )
+                      ),
+                      SizedBox(
+                        height: 16
+                      ),
+                      Text('Divisão dos valores por mês/ano',
+                        style: Theme.of(context).textTheme.headline6,
+                      ),
+                      Expanded(
+                        child: _statisticValueByYearMonth == null
+                        ? Center(child: CircularProgressIndicator())
+                        : charts.BarChart(
+                            [
+                              charts.Series<Map<String, dynamic>, String>(
+                                id: 'statisticValueByYearMonth',
+                                domainFn: (Map<String, dynamic> statistic, _) => DateUtils.formatYearMonth(statistic['date']),
+                                measureFn: (Map<String, dynamic> statistic, _) => statistic['value'],
+                                data: _statisticValueByYearMonth,
+                              )
+                            ],
+                            animate: false,
+                          ),
+                      )
+                    ]
+                ),
+              );
+            },
           ),
           Builder(
             builder: (BuildContext context) {
