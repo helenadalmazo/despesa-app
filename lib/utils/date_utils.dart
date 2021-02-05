@@ -1,5 +1,17 @@
 class DateUtils {
 
+  static String format(String value) {
+    List<String> slipValue = value.split("-");
+
+    String year = slipValue[0];
+    String month = slipValue[1];
+    String day = slipValue[1];
+
+    month = _getMonthAbbreviation(month);
+
+    return "$day/$month/$year";
+  }
+
   static String formatYearMonth(String value) {
     List<String> slipValue = value.split("-");
 

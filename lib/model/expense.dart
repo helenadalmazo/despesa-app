@@ -2,6 +2,8 @@ import 'package:despesa_app/model/expense_item.dart';
 
 class Expense {
   final int id;
+  final int createdBy;
+  final String dateCreated;
   final int groupId;
   final String name;
   final double value;
@@ -10,6 +12,8 @@ class Expense {
 
   Expense({
     this.id,
+    this.createdBy,
+    this.dateCreated,
     this.groupId,
     this.name,
     this.value,
@@ -22,6 +26,8 @@ class Expense {
 
     return Expense(
       id: json['id'],
+      createdBy: json['created_by'],
+      dateCreated: json['date_created'],
       groupId: json['group_id'],
       name: json['name'],
       value: json['value'],

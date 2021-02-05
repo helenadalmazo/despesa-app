@@ -3,6 +3,7 @@ import 'package:despesa_app/model/group.dart';
 import 'package:despesa_app/model/user.dart';
 import 'package:despesa_app/repository/expense_repository.dart';
 import 'package:despesa_app/repository/group_repository.dart';
+import 'package:despesa_app/utils/date_utils.dart';
 import 'package:despesa_app/utils/money_utils.dart';
 import 'package:despesa_app/utils/text_form_field_validator.dart';
 import 'package:flutter/cupertino.dart';
@@ -29,6 +30,7 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
   Group _group;
   List<User> _users = [];
   Expense _expense;
+  User _createdBy;
 
   bool _loading = true;
 
@@ -73,6 +75,8 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
       _expense = get;
 
       List<int> usersId = _expense.items.map((item) => item.userId).toList();
+
+      _createdBy = _group.users.firstWhere((user) => user.id == _expense.id);
       _users = _group.users.where((user) => usersId.contains(user.id)).toList();
 
       _nameTextEditingController.value = TextEditingValue(text: _expense.name);
@@ -179,6 +183,33 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
     () { return true; },
   ];
 
+  List<Widget> _getCreationData() {
+    if (_expense == null) return [];
+
+    return [
+      TextFormField(
+        enabled: false,
+        initialValue: _createdBy.fullName,
+        decoration: InputDecoration(
+          labelText: 'Criado por',
+        )
+      ),
+      SizedBox(
+        height: 8,
+      ),
+      TextFormField(
+        enabled: false,
+        initialValue: DateUtils.format(_expense.dateCreated),
+        decoration: InputDecoration(
+          labelText: 'Data de criação'
+        ),
+      ),
+      SizedBox(
+        height: 8,
+      ),
+    ];
+  }
+
   List<Step> _steps(BuildContext context) => [
     Step(
       title: Text('Despesa'),
@@ -190,12 +221,13 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
         key: _formGlobalKey,
         child: Column(
           children: [
+            ..._getCreationData(),
             TextFormField(
               controller: _nameTextEditingController,
               validator: TextFormFieldValidator.validateMandatory,
               textInputAction: TextInputAction.next,
               decoration: InputDecoration(
-                labelText: 'Despesa'
+                labelText: 'Despesa',
               ),
             ),
             SizedBox(
