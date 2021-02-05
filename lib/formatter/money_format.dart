@@ -1,4 +1,4 @@
-class MoneyUtils {
+class MoneyFormat {
 
   static String formatCurrency(double value) {
     String valueWithTwoDecimalPoint = value.toStringAsFixed(2);

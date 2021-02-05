@@ -1,4 +1,4 @@
-class PercentageUtils {
+class PercentageFormat {
 
   static String format(double value) {
     String valueWithTwoDecimalPoint = value.toStringAsFixed(2);

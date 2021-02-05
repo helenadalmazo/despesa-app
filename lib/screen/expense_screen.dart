@@ -1,10 +1,10 @@
+import 'package:despesa_app/formatter/date_format.dart';
+import 'package:despesa_app/formatter/money_format.dart';
 import 'package:despesa_app/model/expense.dart';
 import 'package:despesa_app/model/group.dart';
 import 'package:despesa_app/model/user.dart';
 import 'package:despesa_app/repository/expense_repository.dart';
 import 'package:despesa_app/repository/group_repository.dart';
-import 'package:despesa_app/utils/date_utils.dart';
-import 'package:despesa_app/utils/money_utils.dart';
 import 'package:despesa_app/utils/text_form_field_validator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -101,7 +101,7 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
     String valueString = _valueTextEditingController.text.replaceAll(",", ".");
     double value = double.parse(valueString);
 
-    return MoneyUtils.formatCurrency(value);
+    return MoneyFormat.formatCurrency(value);
   }
 
   String _getSplitValue() {
@@ -110,7 +110,7 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
     String valueString = _valueTextEditingController.text.replaceAll(",", ".");
     double splitValue = double.parse(valueString) / _users.length;
 
-    return MoneyUtils.formatCurrency(splitValue);
+    return MoneyFormat.formatCurrency(splitValue);
   }
 
   void _complete(BuildContext context) async {
@@ -199,7 +199,7 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
       ),
       TextFormField(
         enabled: false,
-        initialValue: DateUtils.format(_expense.dateCreated),
+        initialValue: DateFormat.format(_expense.dateCreated),
         decoration: InputDecoration(
           labelText: 'Data de criação'
         ),

@@ -1,6 +1,9 @@
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:despesa_app/auth/authentication.dart';
 import 'package:despesa_app/exception/not_found_exception.dart';
+import 'package:despesa_app/formatter/date_format.dart';
+import 'package:despesa_app/formatter/money_format.dart';
+import 'package:despesa_app/formatter/percentage_format.dart';
 import 'package:despesa_app/model/expense.dart';
 import 'package:despesa_app/model/group.dart';
 import 'package:despesa_app/model/user.dart';
@@ -8,9 +11,6 @@ import 'package:despesa_app/repository/expense_repository.dart';
 import 'package:despesa_app/repository/group_repository.dart';
 import 'package:despesa_app/repository/statistic_repository.dart';
 import 'package:despesa_app/screen/expense_screen.dart';
-import 'package:despesa_app/utils/date_utils.dart';
-import 'package:despesa_app/utils/money_utils.dart';
-import 'package:despesa_app/utils/percentage_utils.dart';
 import 'package:despesa_app/utils/text_form_field_validator.dart';
 import 'package:despesa_app/widget/list_header.dart';
 import 'package:flutter/material.dart';
@@ -321,7 +321,7 @@ class _GroupScreenState extends State<GroupScreen> {
                                           domainFn: (Map<String, dynamic> statistic, _) => statistic['user'],
                                           measureFn: (Map<String, dynamic> statistic, _) => statistic['value'],
                                           data: _statisticValueByUser,
-                                          labelAccessorFn: (Map<String, dynamic> statistic, _) => PercentageUtils.format(statistic['value']/_totalValue * 100),
+                                          labelAccessorFn: (Map<String, dynamic> statistic, _) => PercentageFormat.format(statistic['value']/_totalValue * 100),
                                         )
                                       ],
                                       animate: false,
@@ -363,7 +363,7 @@ class _GroupScreenState extends State<GroupScreen> {
                             [
                               charts.Series<Map<String, dynamic>, String>(
                                 id: 'statisticValueByYearMonth',
-                                domainFn: (Map<String, dynamic> statistic, _) => DateUtils.formatYearMonth(statistic['date']),
+                                domainFn: (Map<String, dynamic> statistic, _) => DateFormat.formatYearMonth(statistic['date']),
                                 measureFn: (Map<String, dynamic> statistic, _) => statistic['value'],
                                 data: _statisticValueByYearMonth,
                               )
@@ -405,7 +405,7 @@ class _GroupScreenState extends State<GroupScreen> {
                                     style: Theme.of(context).textTheme.headline6
                                   ),
                                   Text(
-                                    MoneyUtils.formatCurrency(_expenses[index].value),
+                                    MoneyFormat.formatCurrency(_expenses[index].value),
                                     style: Theme.of(context).textTheme.subtitle1
                                   ),
                                   Text(

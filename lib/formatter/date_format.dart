@@ -1,4 +1,4 @@
-class DateUtils {
+class DateFormat {
 
   static String format(String value) {
     List<String> slipValue = value.split("-");
