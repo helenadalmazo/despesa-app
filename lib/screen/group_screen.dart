@@ -6,6 +6,7 @@ import 'package:despesa_app/formatter/money_format.dart';
 import 'package:despesa_app/formatter/percentage_format.dart';
 import 'package:despesa_app/model/expense.dart';
 import 'package:despesa_app/model/group.dart';
+import 'package:despesa_app/model/group_user_role.dart';
 import 'package:despesa_app/model/user.dart';
 import 'package:despesa_app/repository/expense_repository.dart';
 import 'package:despesa_app/repository/group_repository.dart';
@@ -104,6 +105,12 @@ class _GroupScreenState extends State<GroupScreen> {
   String _getUserNameText(User user) {
     bool isCurrentUser = Authentication.instance.currentUser.username == user.username;
     return '${user.fullName} ${isCurrentUser ? '(Você)' : ''}';
+  }
+
+  String _getGroupUserRoleText(GroupUserRole groupUserRole) {
+    if (groupUserRole == GroupUserRole.OWNER) return "Dono";
+    if (groupUserRole == GroupUserRole.ADMIN) return "Administrador";
+    return "Usuário";
   }
 
   Future<void> _deleteExpense(Expense expense) async {
@@ -450,9 +457,18 @@ class _GroupScreenState extends State<GroupScreen> {
                             width: 16,
                           ),
                           Expanded(
-                            child: Text(
-                              _getUserNameText(_group.users[index].user),
-                              style: Theme.of(context).textTheme.subtitle1
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  _getUserNameText(_group.users[index].user),
+                                  style: Theme.of(context).textTheme.headline6
+                                ),
+                                Text(
+                                  _getGroupUserRoleText(_group.users[index].role),
+                                  style: Theme.of(context).textTheme.subtitle1
+                                ),
+                              ],
                             )
                           ),
                           IconButton(

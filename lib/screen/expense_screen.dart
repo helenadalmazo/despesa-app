@@ -283,7 +283,13 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
                           _updateUsers(groupUser.user, selected);
                         },
                         avatar: CircleAvatar(
-                          child: Icon(Icons.account_circle),
+                          child: Text(
+                            groupUser.user.getAcronym(),
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 14
+                            )
+                          ),
                         ),
                         label: Text(groupUser.user.fullName),
                       )
