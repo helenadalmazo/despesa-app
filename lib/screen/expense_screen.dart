@@ -170,6 +170,13 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
         : setState(() => _currentStep--);
   }
 
+  void _onStepTapped(BuildContext context, int nextStep) {
+    Function validateFunction = _validateStepList()[_currentStep];
+    if (!validateFunction()) return;
+
+    setState(() => _currentStep = nextStep);
+  }
+
   bool validateExpenseStep() {
     return _formGlobalKey.currentState.validate();
   }
@@ -373,6 +380,7 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
               currentStep: _currentStep,
               onStepContinue: () => _onStepContinue(context),
               onStepCancel: () => _onStepCancel(context),
+              onStepTapped: (int nextStep) => _onStepTapped(context, nextStep),
               controlsBuilder: (BuildContext context, { VoidCallback onStepContinue, VoidCallback onStepCancel }) {
                 return Container(
                   padding: EdgeInsets.only(top: 16),
