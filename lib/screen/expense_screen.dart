@@ -88,7 +88,8 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
       if (selected) {
         _users.add(user);
       } else {
-        _users.remove(user);
+        int index = _users.indexWhere((u) => u.id == user.id);
+        _users.removeAt(index);
       }
     });
   }
