@@ -10,7 +10,7 @@ class User {
   });
 
   User.fromJson(Map<String, dynamic> json)
-      : id = json['id'],
-        username = json['username'],
-        fullName = json['full_name'];
+      : id = json["id"],
+        username = json["username"],
+        fullName = json["full_name"];
 }

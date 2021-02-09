@@ -55,9 +55,16 @@ class _GroupScreenState extends State<GroupScreen> {
   }
 
   Future<void> _load() async {
+    await _getGroup();
     await _getStatistics();
     await _listExpenses();
-    await _getGroup();
+  }
+
+  Future<void> _getGroup() async {
+    Group get = await GroupRepository.instance.get(widget.id);
+    setState(() {
+      _group = get;
+    });
   }
 
   Future<void> _getStatistics() async {
@@ -71,16 +78,9 @@ class _GroupScreenState extends State<GroupScreen> {
   }
 
   Future<void> _listExpenses() async {
-    List<Expense> list = await ExpenseRepository.instance.list();
+    List<Expense> list = await ExpenseRepository.instance.list(widget.id);
     setState(() {
       _expenses = list;
-    });
-  }
-
-  Future<void> _getGroup() async {
-    Group get = await GroupRepository.instance.get(widget.id);
-    setState(() {
-      _group = get;
     });
   }
 
@@ -107,7 +107,7 @@ class _GroupScreenState extends State<GroupScreen> {
   }
 
   Future<void> _deleteExpense(Expense expense) async {
-    Map<String, dynamic> deleteResponse = await ExpenseRepository.instance.delete(expense.id);
+    Map<String, dynamic> deleteResponse = await ExpenseRepository.instance.delete(_group.id, expense.id);
     if (deleteResponse['success']) {
       setState(() {
         _expenses.remove(expense);
@@ -409,7 +409,7 @@ class _GroupScreenState extends State<GroupScreen> {
                                     style: Theme.of(context).textTheme.subtitle1
                                   ),
                                   Text(
-                                    _expenses[index].description,
+                                    _expenses[index].description ?? 'Sem descrição',
                                     style: Theme.of(context).textTheme.caption
                                   )
                                 ],
@@ -451,13 +451,13 @@ class _GroupScreenState extends State<GroupScreen> {
                           ),
                           Expanded(
                             child: Text(
-                              _getUserNameText(_group.users[index]),
+                              _getUserNameText(_group.users[index].user),
                               style: Theme.of(context).textTheme.subtitle1
                             )
                           ),
                           IconButton(
                             icon: Icon(Icons.close),
-                            onPressed: () => _showRemoveUserDialog(context, _group.users[index].id)
+                            onPressed: () => _showRemoveUserDialog(context, _group.users[index].user.id)
                           )
                         ],
                       )

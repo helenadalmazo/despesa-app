@@ -1,9 +1,9 @@
-import 'package:despesa_app/model/user.dart';
+import 'package:despesa_app/model/group_user.dart';
 
 class Group {
   final int id;
   final String name;
-  final List<User> users;
+  final List<GroupUser> users;
 
   Group({
     this.id,
@@ -12,12 +12,12 @@ class Group {
   });
 
   factory Group.fromJson(Map<String, dynamic> json) {
-    List<dynamic> jsonUsers = json['users'];
+    List<dynamic> jsonUsers = json["users"];
 
     return Group(
-      id: json['id'],
-      name: json['name'],
-      users: jsonUsers.map((dynamic item) => User.fromJson(item)).toList(),
+      id: json["id"],
+      name: json["name"],
+      users: jsonUsers.map((dynamic item) => GroupUser.fromJson(item)).toList(),
     );
   }
 }

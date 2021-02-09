@@ -9,11 +9,11 @@ class ExpenseRepository {
   ExpenseRepository.privateConstructor();
   static final ExpenseRepository instance = ExpenseRepository.privateConstructor();
 
-  static final String _baseUrl = 'http://10.0.2.2:5000/expense';
+  static final String _baseUrl = 'http://10.0.2.2:5000/expense/group';
 
-  Future<List<Expense>> list() async {
+  Future<List<Expense>> list(int groupId) async {
     final response = await http.get(
-      _baseUrl,
+      "$_baseUrl/$groupId",
       headers: <String, String> {
         'Authorization': Authentication.instance.getAuthorization(),
       }
@@ -29,7 +29,7 @@ class ExpenseRepository {
 
   Future<Expense> save(int groupId, String name, double value, String description, List<Map<String, dynamic>> items) async {
     final response = await http.post(
-      '$_baseUrl',
+      '$_baseUrl/$groupId',
       headers: <String, String> {
         'Authorization': Authentication.instance.getAuthorization(),
         'Content-Type': 'application/json; charset=UTF-8',
@@ -51,9 +51,9 @@ class ExpenseRepository {
     throw Exception('TODO expense save exception');
   }
 
-  Future<Expense> update(int expenseId, String name, double value, String description, List<Map<String, dynamic>> items) async {
+  Future<Expense> update(int groupId, int id, String name, double value, String description, List<Map<String, dynamic>> items) async {
     final response = await http.put(
-      '$_baseUrl/$expenseId',
+      '$_baseUrl/$groupId/$id',
       headers: <String, String> {
         'Authorization': Authentication.instance.getAuthorization(),
         'Content-Type': 'application/json; charset=UTF-8',
@@ -74,9 +74,9 @@ class ExpenseRepository {
     throw Exception('TODO expense update exception');
   }
 
-  Future<Expense> get(int id) async {
+  Future<Expense> get(int groupId, int id) async {
     final response = await http.get(
-        '$_baseUrl/$id',
+        '$_baseUrl/$groupId/$id',
         headers: <String, String> {
           'Authorization': Authentication.instance.getAuthorization(),
         }
@@ -90,9 +90,9 @@ class ExpenseRepository {
     throw Exception('TODO expense get exception');
   }
 
-  Future<Map<String, dynamic>> delete(int id) async {
+  Future<Map<String, dynamic>> delete(int groupId, int id) async {
     final response = await http.delete(
-      '$_baseUrl/$id',
+      '$_baseUrl/$groupId/$id',
       headers: <String, String> {
         'Authorization': Authentication.instance.getAuthorization(),
       },

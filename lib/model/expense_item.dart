@@ -1,19 +1,21 @@
+import 'package:despesa_app/model/user.dart';
+
 class ExpenseItem {
   final int id;
-  final int userId;
+  final User user;
   final double value;
 
   ExpenseItem({
     this.id,
-    this.userId,
+    this.user,
     this.value
   });
 
   factory ExpenseItem.fromJson(Map<String, dynamic> json) {
     return ExpenseItem(
-      id: json['id'],
-      userId: json['user_id'],
-      value: json['value']
+      id: json["id"],
+      user: User.fromJson(json["user"]),
+      value: json["value"]
     );
   }
 }

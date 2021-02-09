@@ -1,10 +1,10 @@
 import 'package:despesa_app/model/expense_item.dart';
+import 'package:despesa_app/model/user.dart';
 
 class Expense {
   final int id;
-  final int createdBy;
+  final User createdBy;
   final String dateCreated;
-  final int groupId;
   final String name;
   final double value;
   final String description;
@@ -14,7 +14,6 @@ class Expense {
     this.id,
     this.createdBy,
     this.dateCreated,
-    this.groupId,
     this.name,
     this.value,
     this.description,
@@ -22,16 +21,15 @@ class Expense {
   });
 
   factory Expense.fromJson(Map<String, dynamic> json) {
-    List<dynamic> jsonItems = json['items'];
+    List<dynamic> jsonItems = json["items"];
 
     return Expense(
-      id: json['id'],
-      createdBy: json['created_by'],
-      dateCreated: json['date_created'],
-      groupId: json['group_id'],
-      name: json['name'],
-      value: json['value'],
-      description: json['description'],
+      id: json["id"],
+      createdBy: User.fromJson(json["created_by"]),
+      dateCreated: json["date_created"],
+      name: json["name"],
+      value: json["value"],
+      description: json["description"],
       items: jsonItems.map((dynamic item) => ExpenseItem.fromJson(item)).toList(),
     );
   }

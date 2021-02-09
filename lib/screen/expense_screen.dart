@@ -2,6 +2,7 @@ import 'package:despesa_app/formatter/date_format.dart';
 import 'package:despesa_app/formatter/money_format.dart';
 import 'package:despesa_app/model/expense.dart';
 import 'package:despesa_app/model/group.dart';
+import 'package:despesa_app/model/group_user_role.dart';
 import 'package:despesa_app/model/user.dart';
 import 'package:despesa_app/repository/expense_repository.dart';
 import 'package:despesa_app/repository/group_repository.dart';
@@ -30,7 +31,6 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
   Group _group;
   List<User> _users = [];
   Expense _expense;
-  User _createdBy;
 
   bool _loading = true;
 
@@ -63,25 +63,23 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
     Group get = await GroupRepository.instance.get(widget.groupId);
     setState(() {
       _group = get;
-      _users = _group.users.toList();
+      _users = _group.users.map((groupUserRole) => groupUserRole.user).toList();
     });
   }
 
   Future<void> _getExpense() async {
     if (widget.expenseId == null) return;
 
-    Expense get = await ExpenseRepository.instance.get(widget.expenseId);
+    Expense get = await ExpenseRepository.instance.get(widget.groupId, widget.expenseId);
     setState(() {
       _expense = get;
-
-      List<int> usersId = _expense.items.map((item) => item.userId).toList();
-
-      _createdBy = _group.users.firstWhere((user) => user.id == _expense.id);
-      _users = _group.users.where((user) => usersId.contains(user.id)).toList();
+      _users = _expense.items.map((item) => item.user).toList();
 
       _nameTextEditingController.value = TextEditingValue(text: _expense.name);
       _valueTextEditingController.value = TextEditingValue(text: _expense.value.toString());
-      _descriptionTextEditingController.value = TextEditingValue(text: _expense.description);
+      if (_expense.description != null) {
+        _descriptionTextEditingController.value = TextEditingValue(text: _expense.description);
+      }
     });
   }
 
@@ -132,7 +130,7 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
     if (_expense == null) {
       await ExpenseRepository.instance.save(_group.id, name, value, description, items);
     } else {
-      await ExpenseRepository.instance.update(_expense.id, name, value, description, items);
+      await ExpenseRepository.instance.update(_group.id, _expense.id, name, value, description, items);
     }
 
     Navigator.pop(context, true);
@@ -189,7 +187,7 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
     return [
       TextFormField(
         enabled: false,
-        initialValue: _createdBy.fullName,
+        initialValue: _expense.createdBy.fullName,
         decoration: InputDecoration(
           labelText: 'Criado por',
         )
@@ -278,16 +276,16 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
                   direction: Axis.horizontal,
                   spacing: 8,
                   children: [
-                    for (var user in _group.users)
+                    for (var groupUser in _group.users)
                       ChoiceChip(
-                        selected: _users.contains(user),
+                        selected: _users.contains(groupUser.user),
                         onSelected: (bool selected) {
-                          _updateUsers(user, selected);
+                          _updateUsers(groupUser.user, selected);
                         },
                         avatar: CircleAvatar(
                           child: Icon(Icons.account_circle),
                         ),
-                        label: Text(user.fullName),
+                        label: Text(groupUser.user.fullName),
                       )
                   ],
                 )
