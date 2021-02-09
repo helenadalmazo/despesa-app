@@ -115,6 +115,9 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
     String name = _nameTextEditingController.text;
     double value = double.parse(_valueTextEditingController.text);
     String description = _descriptionTextEditingController.text;
+    if (description.isEmpty) {
+      description = null;
+    }
 
     List<Map<String, dynamic>> items = [];
     double splitValue = value / _users.length;
@@ -246,7 +249,6 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
             ),
             TextFormField(
               controller: _descriptionTextEditingController,
-              validator: TextFormFieldValidator.validateMandatory,
               keyboardType: TextInputType.multiline,
               minLines: 3,
               maxLines: 5,
