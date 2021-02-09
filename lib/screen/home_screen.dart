@@ -225,10 +225,19 @@ class _HomeScreenState extends State<HomeScreen> {
                   horizontal: 32,
                   vertical: 32
                 ),
-                child: Text(
-                  _groupList[index].name,
-                  style: Theme.of(context).textTheme.headline6
-                )
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      _groupList[index].name,
+                      style: Theme.of(context).textTheme.headline6
+                    ),
+                    Text(
+                      _groupList[index].users.map((groupUser) => groupUser.user.fullName).join(", "),
+                      style: Theme.of(context).textTheme.subtitle1
+                    )
+                  ],
+                ),
               ),
             ),
         ]
