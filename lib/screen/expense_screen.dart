@@ -278,7 +278,7 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
                   children: [
                     for (var groupUser in _group.users)
                       ChoiceChip(
-                        selected: _users.contains(groupUser.user),
+                        selected: _users.map((user) => user.id).toList().contains(groupUser.user.id),
                         onSelected: (bool selected) {
                           _updateUsers(groupUser.user, selected);
                         },
