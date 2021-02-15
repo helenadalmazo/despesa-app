@@ -112,6 +112,20 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
     return MoneyFormat.formatCurrency(splitValue);
   }
 
+  String _getCreatedBy() {
+    if (_expense == null) {
+      return Authentication.instance.currentUser.fullName;
+    }
+    return _expense.createdBy.fullName;
+  }
+
+  String _getDateCreated() {
+    if (_expense == null) {
+      return DateFormat.now();
+    }
+    return DateFormat.format(_expense.dateCreated);
+  }
+
   void _complete(BuildContext context) async {
     String name = _nameTextEditingController.text;
     double value = double.parse(_valueTextEditingController.text);
@@ -191,42 +205,6 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
     validateUsersStep,
     () { return true; },
   ];
-
-  List<Widget> _getCreationData() {
-    String createdBy;
-    String dateCreated;
-
-    if (_expense == null) {
-      createdBy = Authentication.instance.currentUser.fullName;
-      dateCreated = DateFormat.now();
-    } else {
-      createdBy = _expense.createdBy.fullName;
-      dateCreated = DateFormat.format(_expense.dateCreated);
-    }
-
-    return [
-      TextFormField(
-        enabled: false,
-        initialValue: createdBy,
-        decoration: InputDecoration(
-          labelText: 'Criado por',
-        )
-      ),
-      SizedBox(
-        height: 8,
-      ),
-      TextFormField(
-        enabled: false,
-        initialValue: dateCreated,
-        decoration: InputDecoration(
-          labelText: 'Data de criação'
-        ),
-      ),
-      SizedBox(
-        height: 8,
-      ),
-    ];
-  }
 
   List<Step> _steps(BuildContext context) => [
     Step(
@@ -369,7 +347,23 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
       content: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ..._getCreationData()
+          TextFormField(
+            enabled: false,
+            initialValue: _getCreatedBy(),
+            decoration: InputDecoration(
+              labelText: 'Criado por',
+            )
+          ),
+          SizedBox(
+            height: 8,
+          ),
+          TextFormField(
+            enabled: false,
+            initialValue: _getDateCreated(),
+            decoration: InputDecoration(
+              labelText: 'Data de criação'
+            ),
+          ),
         ]
       )
     )
