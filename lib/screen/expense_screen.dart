@@ -1,3 +1,4 @@
+import 'package:despesa_app/auth/authentication.dart';
 import 'package:despesa_app/formatter/date_format.dart';
 import 'package:despesa_app/formatter/money_format.dart';
 import 'package:despesa_app/model/expense.dart';
@@ -192,12 +193,21 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
   ];
 
   List<Widget> _getCreationData() {
-    if (_expense == null) return [];
+    String createdBy;
+    String dateCreated;
+
+    if (_expense == null) {
+      createdBy = Authentication.instance.currentUser.fullName;
+      dateCreated = DateFormat.now();
+    } else {
+      createdBy = _expense.createdBy.fullName;
+      dateCreated = DateFormat.format(_expense.dateCreated);
+    }
 
     return [
       TextFormField(
         enabled: false,
-        initialValue: _expense.createdBy.fullName,
+        initialValue: createdBy,
         decoration: InputDecoration(
           labelText: 'Criado por',
         )
@@ -207,7 +217,7 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
       ),
       TextFormField(
         enabled: false,
-        initialValue: DateFormat.format(_expense.dateCreated),
+        initialValue: dateCreated,
         decoration: InputDecoration(
           labelText: 'Data de criação'
         ),
@@ -229,7 +239,6 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
         key: _formGlobalKey,
         child: Column(
           children: [
-            ..._getCreationData(),
             TextFormField(
               controller: _nameTextEditingController,
               validator: TextFormFieldValidator.validateMandatory,
@@ -352,12 +361,17 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
       )
     ),
     Step(
-      title: Text('Arquivos'),
+      title: Text('Geral'),
       isActive: _currentStep == 2,
       state: _currentStep == 2
           ? StepState.editing
           : StepState.indexed,
-      content: Text('Pitch black malt barleywine specific gravity wort chiller balthazar pitch.')
+      content: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ..._getCreationData()
+        ]
+      )
     )
   ];
 

@@ -1,5 +1,17 @@
 class DateFormat {
 
+  static String now() {
+    DateTime now = DateTime.now();
+
+    String day = now.day.toString().padLeft(2, "0");
+    String month = now.month.toString().padLeft(2, "0");
+    String year = now.year.toString();
+
+    month = _getMonthAbbreviation(month);
+
+    return "$day/$month/$year";
+  }
+
   static String format(String value) {
     List<String> slipValue = value.split("-");
 
