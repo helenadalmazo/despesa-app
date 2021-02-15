@@ -30,10 +30,8 @@ class User {
 
   Color getColor() {
     int firstLetterCodeUnit = this.fullName
-        .toUpperCase()
-        .replaceAll(RegExp("[^A-Z]"), "")
         .split("")
-        .map((value) => value.codeUnitAt(0) - 64)
+        .map((value) => value.codeUnitAt(0))
         .reduce((value, element) => value + element);
 
     double slit = firstLetterCodeUnit / Colors.primaries.length;
