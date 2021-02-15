@@ -1,15 +1,17 @@
+import 'package:despesa_app/model/group.dart';
+import 'package:despesa_app/model/group_user.dart';
 import 'package:despesa_app/model/group_user_role.dart';
 import 'package:despesa_app/model/user.dart';
 import 'package:despesa_app/repository/group_repository.dart';
 import 'package:flutter/material.dart';
 
 class UserScreen extends StatefulWidget {
-  final int groupId;
+  final Group group;
   final User user;
 
   const UserScreen({
     Key key,
-    @required this.groupId,
+    @required this.group,
     @required this.user
   }) : super(key: key);
 
@@ -19,15 +21,35 @@ class UserScreen extends StatefulWidget {
 
 class _UserScreenState extends State<UserScreen> {
 
+  bool _isNewUser = true;
+
   GroupUserRole _groupUserRole = GroupUserRole.USER;
 
-  Future<void> _addUser(BuildContext context) async {
-    await GroupRepository.instance.addUser(
-      widget.groupId,
-      widget.user.id,
-      _groupUserRole.toString().split(".").last
+  @override
+  void initState() {
+    super.initState();
+
+    GroupUser groupUser = widget.group.users.firstWhere(
+      (groupUser) => groupUser.user.id == widget.user.id,
+      orElse: () => null
     );
-    Navigator.pop(context);
+
+    if (groupUser != null) {
+      _isNewUser = false;
+      _groupUserRole = groupUser.role;
+    }
+  }
+
+  Future<void> _addUser(BuildContext context) async {
+    String role = _groupUserRole.toString().split(".").last;
+
+    if (_isNewUser) {
+      await GroupRepository.instance.addUser(widget.group.id, widget.user.id, role);
+      Navigator.pop(context);
+    } else {
+      await GroupRepository.instance.updateUser(widget.group.id, widget.user.id, role);
+    }
+
     Navigator.pop(context, true);
   }
 

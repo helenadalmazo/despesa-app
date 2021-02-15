@@ -12,6 +12,7 @@ import 'package:despesa_app/repository/group_repository.dart';
 import 'package:despesa_app/repository/statistic_repository.dart';
 import 'package:despesa_app/screen/expense_screen.dart';
 import 'package:despesa_app/screen/user_list_screen.dart';
+import 'package:despesa_app/screen/user_screen.dart';
 import 'package:despesa_app/widget/list_header.dart';
 import 'package:flutter/material.dart';
 
@@ -215,6 +216,26 @@ class _GroupScreenState extends State<GroupScreen> {
     }
   }
 
+  Future<void> _userScreen(BuildContext context, User user) async {
+    bool result = await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => UserScreen(
+            group: _group,
+            user: user
+          )
+        )
+    );
+
+    if (result == null) {
+      return;
+    }
+
+    if (result) {
+      _getGroup();
+    }
+  }
+
   Future<void> _userListScreen(Map<String, dynamic> params) async {
     BuildContext context = params['context'];
 
@@ -222,7 +243,7 @@ class _GroupScreenState extends State<GroupScreen> {
       context,
       MaterialPageRoute(
         builder: (context) => UserListScreen(
-          groupId: _group.id,
+          group: _group,
         )
       )
     );
@@ -395,46 +416,50 @@ class _GroupScreenState extends State<GroupScreen> {
                     }
                   ),
                   for (var index = 0; index < _group.users.length; index++)
-                    Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 32,
-                        vertical: 16
-                      ),
-                      child: Row(
-                        children: [
-                          CircleAvatar(
-                            child: Text(
-                              _group.users[index].user.getAcronym(),
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 14
-                              )
+                    InkWell(
+                      onTap: () => _userScreen(context, _group.users[index].user),
+                      child: Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 32,
+                          vertical: 16
+                        ),
+                        child: Row(
+                          children: [
+                            CircleAvatar(
+                              backgroundColor: _group.users[index].user.getColor(),
+                              child: Text(
+                                _group.users[index].user.getAcronym(),
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 14
+                                )
+                              ),
                             ),
-                          ),
-                          SizedBox(
-                            width: 16,
-                          ),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  _getUserNameText(_group.users[index].user),
-                                  style: Theme.of(context).textTheme.headline6
-                                ),
-                                Text(
-                                  _getGroupUserRoleText(_group.users[index].role),
-                                  style: Theme.of(context).textTheme.subtitle1
-                                ),
-                              ],
+                            SizedBox(
+                              width: 16,
+                            ),
+                            Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      _getUserNameText(_group.users[index].user),
+                                      style: Theme.of(context).textTheme.headline6
+                                    ),
+                                    Text(
+                                      _getGroupUserRoleText(_group.users[index].role),
+                                      style: Theme.of(context).textTheme.subtitle1
+                                    ),
+                                  ],
+                                )
+                            ),
+                            IconButton(
+                              icon: Icon(Icons.close),
+                              onPressed: () => _showRemoveUserDialog(context, _group.users[index].user.id)
                             )
-                          ),
-                          IconButton(
-                            icon: Icon(Icons.close),
-                            onPressed: () => _showRemoveUserDialog(context, _group.users[index].user.id)
-                          )
-                        ],
-                      )
+                          ],
+                        )
+                      ),
                     ),
                 ],
               );
