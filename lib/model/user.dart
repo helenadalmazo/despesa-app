@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 class User {
   final int id;
   final String username;
@@ -24,5 +26,15 @@ class User {
 
     String lastName = names.last;
     return firstName[0] + lastName[0];
+  }
+
+  Color getColor() {
+    int firstLetterCodeUnit = this.fullName.toLowerCase().codeUnitAt(0) - 96;
+
+    double slit = firstLetterCodeUnit / Colors.primaries.length;
+
+    int index = firstLetterCodeUnit - (Colors.primaries.length * slit.toInt());
+
+    return Colors.primaries[index];
   }
 }

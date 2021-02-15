@@ -279,6 +279,7 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
                           _updateUsers(groupUser.user, selected);
                         },
                         avatar: CircleAvatar(
+                          backgroundColor: groupUser.user.getColor(),
                           child: Text(
                             groupUser.user.getAcronym(),
                             style: TextStyle(
