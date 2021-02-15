@@ -292,38 +292,38 @@ class _GroupScreenState extends State<GroupScreen> {
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
                                 Expanded(
-                                    child: charts.PieChart(
-                                      [
-                                        charts.Series<Map<String, dynamic>, String>(
-                                          id: 'statisticValueByUser',
-                                          domainFn: (Map<String, dynamic> statistic, _) => statistic['user'],
-                                          measureFn: (Map<String, dynamic> statistic, _) => statistic['value'],
-                                          data: _statisticValueByUser,
-                                          labelAccessorFn: (Map<String, dynamic> statistic, _) => PercentageFormat.format(statistic['value']/_totalValue * 100),
-                                        )
+                                  child: charts.PieChart(
+                                    [
+                                      charts.Series<Map<String, dynamic>, String>(
+                                        id: 'statisticValueByUser',
+                                        domainFn: (Map<String, dynamic> statistic, _) => statistic['user'],
+                                        measureFn: (Map<String, dynamic> statistic, _) => statistic['value'],
+                                        data: _statisticValueByUser,
+                                        labelAccessorFn: (Map<String, dynamic> statistic, _) => PercentageFormat.format(statistic['value']/_totalValue * 100),
+                                      )
+                                    ],
+                                    animate: false,
+                                    layoutConfig: charts.LayoutConfig(
+                                      leftMarginSpec: charts.MarginSpec.fixedPixel(0),
+                                      topMarginSpec: charts.MarginSpec.fixedPixel(0),
+                                      rightMarginSpec: charts.MarginSpec.fixedPixel(8),
+                                      bottomMarginSpec:charts.MarginSpec.fixedPixel(0),
+                                    ),
+                                    behaviors: [
+                                      charts.DatumLegend(
+                                        position: charts.BehaviorPosition.top,
+                                        outsideJustification: charts.OutsideJustification.startDrawArea,
+                                      )
+                                    ],
+                                    defaultRenderer: charts.ArcRendererConfig(
+                                      arcWidth: 60,
+                                      arcRendererDecorators: [
+                                        charts.ArcLabelDecorator(
+                                          labelPosition: charts.ArcLabelPosition.inside
+                                        ),
                                       ],
-                                      animate: false,
-                                      layoutConfig: charts.LayoutConfig(
-                                        leftMarginSpec: charts.MarginSpec.fixedPixel(0),
-                                        topMarginSpec: charts.MarginSpec.fixedPixel(0),
-                                        rightMarginSpec: charts.MarginSpec.fixedPixel(8),
-                                        bottomMarginSpec:charts.MarginSpec.fixedPixel(0),
-                                      ),
-                                      behaviors: [
-                                        charts.DatumLegend(
-                                          position: charts.BehaviorPosition.top,
-                                          outsideJustification: charts.OutsideJustification.startDrawArea,
-                                        )
-                                      ],
-                                      defaultRenderer: charts.ArcRendererConfig(
-                                        arcWidth: 60,
-                                        arcRendererDecorators: [
-                                          charts.ArcLabelDecorator(
-                                            labelPosition: charts.ArcLabelPosition.inside
-                                          ),
-                                        ],
-                                      ),
-                                  )
+                                    ),
+                                )
                               ),
                             ],
                         )
