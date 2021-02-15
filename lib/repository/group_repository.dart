@@ -1,8 +1,8 @@
 import 'dart:convert';
 
 import 'package:despesa_app/auth/authentication.dart';
-import 'package:despesa_app/exception/not_found_exception.dart';
 import 'package:despesa_app/model/group.dart';
+import 'package:despesa_app/model/user.dart';
 import 'package:http/http.dart' as http;
 
 class GroupRepository {
@@ -99,19 +99,35 @@ class GroupRepository {
     throw Exception('TODO group delete exception');
   }
 
-  Future<Group> addUser(int id, String username) async {
+  Future<List<User>> searchNewUser(int id, String fullName) async {
     final response = await http.get(
-      '$_baseUrl/$id/adduser/$username',
+        '$_baseUrl/$id/searchnewuser?fullname=$fullName',
+        headers: <String, String> {
+          'Authorization': Authentication.instance.getAuthorization(),
+        }
+    );
+
+    if (response.statusCode == 200) {
+      List<dynamic> body = json.decode(response.body);
+      return body.map((dynamic item) => User.fromJson(item)).toList();
+    }
+
+    throw Exception('TODO group searchNewUser exception');
+  }
+
+  Future<Group> addUser(int id, int userId, String role) async {
+    final response = await http.post(
+      '$_baseUrl/$id/adduser/$userId',
       headers: <String, String> {
         'Authorization': Authentication.instance.getAuthorization(),
-      }
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: json.encode(<String, String> {
+        'role': role
+      }),
     );
 
     Map<String, dynamic> body = json.decode(response.body);
-
-    if (response.statusCode == 404) {
-      throw NotFoundException.fromJson(body);
-    }
 
     if (response.statusCode == 200) {
       return Group.fromJson(body);
@@ -121,11 +137,31 @@ class GroupRepository {
   }
 
   Future<Group> removeUser(int id, int userId) async {
-    final response = await http.get(
+    final response = await http.delete(
         '$_baseUrl/$id/removeuser/$userId',
         headers: <String, String> {
           'Authorization': Authentication.instance.getAuthorization(),
         }
+    );
+
+    if (response.statusCode == 200) {
+      Map<String, dynamic> body = json.decode(response.body);
+      return Group.fromJson(body);
+    }
+
+    throw Exception('TODO group removeUser exception');
+  }
+
+  Future<Group> updateUser(int id, int userId, String role) async {
+    final response = await http.put(
+        '$_baseUrl/$id/updateuser/$userId',
+        headers: <String, String> {
+          'Authorization': Authentication.instance.getAuthorization(),
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: json.encode(<String, String> {
+          'role': role
+        })
     );
 
     if (response.statusCode == 200) {

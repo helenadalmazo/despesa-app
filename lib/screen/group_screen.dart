@@ -1,6 +1,5 @@
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:despesa_app/auth/authentication.dart';
-import 'package:despesa_app/exception/not_found_exception.dart';
 import 'package:despesa_app/formatter/date_format.dart';
 import 'package:despesa_app/formatter/money_format.dart';
 import 'package:despesa_app/formatter/percentage_format.dart';
@@ -12,7 +11,7 @@ import 'package:despesa_app/repository/expense_repository.dart';
 import 'package:despesa_app/repository/group_repository.dart';
 import 'package:despesa_app/repository/statistic_repository.dart';
 import 'package:despesa_app/screen/expense_screen.dart';
-import 'package:despesa_app/utils/text_form_field_validator.dart';
+import 'package:despesa_app/screen/user_list_screen.dart';
 import 'package:despesa_app/widget/list_header.dart';
 import 'package:flutter/material.dart';
 
@@ -38,8 +37,6 @@ class _GroupScreenState extends State<GroupScreen> {
   bool _loading = true;
 
   int _bottomNavigationCurrentIndex = 0;
-
-  final TextEditingController _userNameTextEditingController = TextEditingController();
 
   final PageController _pageController = PageController(
     initialPage: 0
@@ -122,19 +119,7 @@ class _GroupScreenState extends State<GroupScreen> {
     }
   }
 
-  Future<void> _addUser(BuildContext context, String username) async {
-    try {
-      Group addUser = await GroupRepository.instance.addUser(_group.id, username);
-      setState(() {
-        _group = addUser;
-      });
-    } on NotFoundException catch(notFoundException) {
-      final snackBar = SnackBar(
-        content: Text(notFoundException.message),
-      );
-      Scaffold.of(context).showSnackBar(snackBar);
-    }
-  }
+
 
   Future<void> _removeUser(int userId) async {
     Group removeUser = await GroupRepository.instance.removeUser(_group.id, userId);
@@ -180,53 +165,15 @@ class _GroupScreenState extends State<GroupScreen> {
   void _showAddUserModalBottomSheet(Map<String, dynamic> params) {
     BuildContext context = params['context'];
 
-    _userNameTextEditingController.text = "";
+//    _userNameTextEditingController.text = "";
 
-    showModalBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
-      builder: (BuildContext modalBottomSheetContext) {
-        return Padding(
-          padding: MediaQuery.of(modalBottomSheetContext).viewInsets,
-          child: Container(
-            padding: EdgeInsets.symmetric(
-              horizontal: 32,
-              vertical: 16
-            ),
-            child: Wrap(
-              children: [
-                Column(
-                  children: [
-                    TextFormField(
-                      controller: _userNameTextEditingController,
-                      validator: TextFormFieldValidator.validateMandatory,
-                      decoration: InputDecoration(
-                        hintText: 'Novo usuário',
-                      ),
-                    ),
-                    SizedBox(
-                      height: 8,
-                    ),
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: TextButton(
-                        onPressed: () { 
-                          _addUser(context, _userNameTextEditingController.text);
-                          Navigator.pop(context);
-                        },
-                        child: Text(
-                          'Adicionar'
-                        )
-                      ),
-                    )
-                  ],
-                )
-              ],
-            )
-          ),
-        );
-      }
-    );
+//    showModalBottomSheet<void>(
+//      context: context,
+//      isScrollControlled: true,
+//      builder: (BuildContext modalBottomSheetContext) {
+//        return AddUserModalBottomSheet();
+//      }
+//    );
   }
 
   void _showRemoveUserDialog(BuildContext context, int userId) {
@@ -284,7 +231,26 @@ class _GroupScreenState extends State<GroupScreen> {
     }
   }
 
+  Future<void> _userListScreen(Map<String, dynamic> params) async {
+    BuildContext context = params['context'];
 
+    bool result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => UserListScreen(
+          groupId: _group.id,
+        )
+      )
+    );
+
+    if (result == null) {
+      return;
+    }
+
+    if (result) {
+      _getGroup();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -439,7 +405,7 @@ class _GroupScreenState extends State<GroupScreen> {
               return ListView(
                 children: [
                   ListHeader(
-                    buttonFunction: _showAddUserModalBottomSheet,
+                    buttonFunction: _userListScreen,
                     buttonFunctionParams: {
                       'context': context
                     }
@@ -452,7 +418,15 @@ class _GroupScreenState extends State<GroupScreen> {
                       ),
                       child: Row(
                         children: [
-                          Icon(Icons.account_circle, size: 48),
+                          CircleAvatar(
+                            child: Text(
+                              _group.users[index].user.getAcronym(),
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 14
+                              )
+                            ),
+                          ),
                           SizedBox(
                             width: 16,
                           ),
