@@ -119,8 +119,6 @@ class _GroupScreenState extends State<GroupScreen> {
     }
   }
 
-
-
   Future<void> _removeUser(int userId) async {
     Group removeUser = await GroupRepository.instance.removeUser(_group.id, userId);
     setState(() {
@@ -160,20 +158,6 @@ class _GroupScreenState extends State<GroupScreen> {
         );
       },
     );
-  }
-
-  void _showAddUserModalBottomSheet(Map<String, dynamic> params) {
-    BuildContext context = params['context'];
-
-//    _userNameTextEditingController.text = "";
-
-//    showModalBottomSheet<void>(
-//      context: context,
-//      isScrollControlled: true,
-//      builder: (BuildContext modalBottomSheetContext) {
-//        return AddUserModalBottomSheet();
-//      }
-//    );
   }
 
   void _showRemoveUserDialog(BuildContext context, int userId) {
