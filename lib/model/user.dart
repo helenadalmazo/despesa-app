@@ -29,7 +29,11 @@ class User {
   }
 
   Color getColor() {
-    int firstLetterCodeUnit = this.fullName.toLowerCase().codeUnitAt(0) - 96;
+    int firstLetterCodeUnit = this.fullName
+        .toUpperCase()
+        .split("")
+        .map((value) => value.codeUnitAt(0))
+        .reduce((value, element) => value + element) - 64;
 
     double slit = firstLetterCodeUnit / Colors.primaries.length;
 
