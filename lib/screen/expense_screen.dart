@@ -2,7 +2,6 @@ import 'package:despesa_app/formatter/date_format.dart';
 import 'package:despesa_app/formatter/money_format.dart';
 import 'package:despesa_app/model/expense.dart';
 import 'package:despesa_app/model/group.dart';
-import 'package:despesa_app/model/group_user_role.dart';
 import 'package:despesa_app/model/user.dart';
 import 'package:despesa_app/repository/expense_repository.dart';
 import 'package:despesa_app/repository/group_repository.dart';
