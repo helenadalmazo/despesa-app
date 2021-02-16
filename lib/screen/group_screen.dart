@@ -263,8 +263,11 @@ class _GroupScreenState extends State<GroupScreen> {
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Theme.of(context).primaryColorDark,
-        title: Text(
-          _group == null ? '' : _group.name,
+        title: Hero(
+          tag: "group_name_${_group.id}",
+          child: Text(
+            _group == null ? '' : _group.name,
+          ),
         ),
       ),
       body: PageView(
@@ -425,14 +428,17 @@ class _GroupScreenState extends State<GroupScreen> {
                         ),
                         child: Row(
                           children: [
-                            CircleAvatar(
-                              backgroundColor: _group.users[index].user.getColor(),
-                              child: Text(
-                                _group.users[index].user.getAcronym(),
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 14
-                                )
+                            Hero(
+                              tag: "user_avatar_${_group.users[index].user.id}",
+                              child: CircleAvatar(
+                                backgroundColor: _group.users[index].user.getColor(),
+                                child: Text(
+                                  _group.users[index].user.getAcronym(),
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 14
+                                  )
+                                ),
                               ),
                             ),
                             SizedBox(
@@ -442,9 +448,12 @@ class _GroupScreenState extends State<GroupScreen> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
-                                      _getUserNameText(_group.users[index].user),
-                                      style: Theme.of(context).textTheme.headline6
+                                    Hero(
+                                      tag: "user_fullName_${_group.users[index].user.id}",
+                                      child: Text(
+                                        _getUserNameText(_group.users[index].user),
+                                        style: Theme.of(context).textTheme.headline6
+                                      ),
                                     ),
                                     Text(
                                       _getGroupUserRoleText(_group.users[index].role),

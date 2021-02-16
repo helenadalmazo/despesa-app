@@ -1,6 +1,8 @@
 import 'package:despesa_app/auth/authentication.dart';
 import 'package:despesa_app/model/group.dart';
+import 'package:despesa_app/model/user.dart';
 import 'package:despesa_app/repository/group_repository.dart';
+import 'package:despesa_app/screen/current_user_screen.dart';
 import 'package:despesa_app/screen/group_screen.dart';
 import 'package:despesa_app/utils/text_form_field_validator.dart';
 import 'package:despesa_app/widget/list_header.dart';
@@ -14,7 +16,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
 
-  String _fullName;
+  User _currentUser = Authentication.instance.currentUser;
   List<Group> _groupList = [];
   bool _loading = true;
 
@@ -23,8 +25,6 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-
-    _fullName = Authentication.instance.currentUser.fullName;
     _getGroupList();
 
     setState(() {
@@ -182,11 +182,22 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  void _currentUserScreen(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => CurrentUserScreen()
+      )
+    );
+  }
+
   void _groupScreen(BuildContext context, int id) {
     Navigator.push(
       context,
       MaterialPageRoute(
-          builder: (context) => GroupScreen(id: id)
+        builder: (context) => GroupScreen(
+          id: id,
+        )
       )
     );
   }
@@ -203,9 +214,18 @@ class _HomeScreenState extends State<HomeScreen> {
             left: 16,
           ),
           child: Text(
-            'Olá, $_fullName',
+            "Olá, ${_currentUser.fullName}",
           ),
         ),
+        actions: [
+          IconButton(
+            icon: Icon(
+              Icons.settings,
+              color: Colors.white,
+            ),
+            onPressed: () => _currentUserScreen(context),
+          )
+        ],
       ),
       body: ListView(
         children: [
@@ -228,9 +248,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      _groupList[index].name,
-                      style: Theme.of(context).textTheme.headline6
+                    Hero(
+                      tag: "group_name_${_groupList[index].id}",
+                      child: Text(
+                        _groupList[index].name,
+                        style: Theme.of(context).textTheme.headline6
+                      ),
                     ),
                     Text(
                       _groupList[index].users.map((groupUser) => groupUser.user.fullName).join(", "),
