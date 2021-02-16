@@ -73,6 +73,12 @@ class Authentication {
     };
   }
 
+  void logout() {
+    _token = null;
+    _expiresIn = null;
+    currentUser = null;
+  }
+
   String getAuthorization() {
     return 'Bearer $_token';
   }
