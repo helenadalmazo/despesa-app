@@ -17,7 +17,9 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
 
   User _currentUser = Authentication.instance.currentUser;
+
   List<Group> _groupList = [];
+
   bool _loading = true;
 
   final TextEditingController _groupNameTextEditingController = TextEditingController();
@@ -191,12 +193,12 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  void _groupScreen(BuildContext context, int id) {
+  void _groupScreen(BuildContext context, Group group) {
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => GroupScreen(
-          id: id,
+          group: group,
         )
       )
     );
@@ -239,7 +241,7 @@ class _HomeScreenState extends State<HomeScreen> {
           for (var index = 0; index < _groupList.length; index++)
             InkWell(
               onLongPress: () => _showGroupOptionsModalBottomSheet(context, _groupList[index], index),
-              onTap: () => _groupScreen(context, _groupList[index].id),
+              onTap: () => _groupScreen(context, _groupList[index]),
               child: Container(
                 padding: EdgeInsets.symmetric(
                   horizontal: 32,

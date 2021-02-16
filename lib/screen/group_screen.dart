@@ -17,9 +17,12 @@ import 'package:despesa_app/widget/list_header.dart';
 import 'package:flutter/material.dart';
 
 class GroupScreen extends StatefulWidget {
-  final int id;
+  final Group group;
 
-  const GroupScreen({Key key, this.id}) : super(key: key);
+  const GroupScreen({
+    Key key,
+    this.group
+  }) : super(key: key);
 
   @override
   _GroupScreenState createState() => _GroupScreenState();
@@ -46,6 +49,7 @@ class _GroupScreenState extends State<GroupScreen> {
   @override
   void initState() {
     super.initState();
+    _group = widget.group;
     _load().then((_) {
       setState(() {
         _loading = true;
@@ -56,19 +60,19 @@ class _GroupScreenState extends State<GroupScreen> {
   Future<void> _load() async {
     await _getGroup();
     await _getStatistics();
-    await _listExpenses();
+    await _getExpenses();
   }
 
   Future<void> _getGroup() async {
-    Group get = await GroupRepository.instance.get(widget.id);
+    Group response = await GroupRepository.instance.get(_group.id);
     setState(() {
-      _group = get;
+      _group = response;
     });
   }
 
   Future<void> _getStatistics() async {
-    List<Map<String, dynamic>> statisticValueByUserResponse = await StatisticRepository.instance.listValueGroupedByUser(widget.id);
-    List<Map<String, dynamic>> statisticValueByYearMonthResponse = await StatisticRepository.instance.listValueGroupedByYearMonth(widget.id);
+    List<Map<String, dynamic>> statisticValueByUserResponse = await StatisticRepository.instance.listValueGroupedByUser(_group.id);
+    List<Map<String, dynamic>> statisticValueByYearMonthResponse = await StatisticRepository.instance.listValueGroupedByYearMonth(_group.id);
     setState(() {
       _totalValue = statisticValueByUserResponse.map((statistic) => statistic['value']).reduce((value, element) => value + element);
       _statisticValueByUser = statisticValueByUserResponse;
@@ -76,10 +80,10 @@ class _GroupScreenState extends State<GroupScreen> {
     });
   }
 
-  Future<void> _listExpenses() async {
-    List<Expense> list = await ExpenseRepository.instance.list(widget.id);
+  Future<void> _getExpenses() async {
+    List<Expense> response = await ExpenseRepository.instance.list(_group.id);
     setState(() {
-      _expenses = list;
+      _expenses = response;
     });
   }
 
@@ -212,7 +216,7 @@ class _GroupScreenState extends State<GroupScreen> {
     }
 
     if (result) {
-      _listExpenses();
+      _getExpenses();
     }
   }
 
@@ -266,7 +270,7 @@ class _GroupScreenState extends State<GroupScreen> {
         title: Hero(
           tag: "group_name_${_group.id}",
           child: Text(
-            _group == null ? '' : _group.name,
+            _group.name,
           ),
         ),
       ),
