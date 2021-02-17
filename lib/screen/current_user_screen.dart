@@ -1,6 +1,6 @@
 import 'package:despesa_app/auth/authentication.dart';
 import 'package:despesa_app/model/user.dart';
-import 'package:despesa_app/screen/login_screen.dart';
+import 'package:despesa_app/screen/welcome_screen.dart';
 import 'package:flutter/material.dart';
 
 class CurrentUserScreen extends StatelessWidget {
@@ -15,7 +15,7 @@ class CurrentUserScreen extends StatelessWidget {
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(
-        builder: (context) => LoginScreen()
+        builder: (context) => WelcomeScreen()
       ),
       (Route<dynamic> route) => false
     );
