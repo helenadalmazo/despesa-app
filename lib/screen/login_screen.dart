@@ -41,30 +41,36 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        iconTheme: IconThemeData(
+          color: Theme.of(context).primaryColor
+        ),
+      ),
       body: Builder(
         builder: (BuildContext context) {
-          return SafeArea(
-            child: Center(
-              child: SingleChildScrollView(
-                child: Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 32,
-                    vertical: 16
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Hero(
-                        tag: HeroTag.welcome_text,
-                        child: Text(
-                          'Bem vindo(a)',
-                          style: Theme.of(context).textTheme.headline4,
-                        ),
+          return Center(
+            child: SingleChildScrollView(
+              child: Container(
+                padding: EdgeInsets.symmetric(
+                  horizontal: 32,
+                  vertical: 16
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Hero(
+                      tag: HeroTag.welcome_text,
+                      child: Text(
+                        'Bem vindo(a)',
+                        style: Theme.of(context).textTheme.headline4,
                       ),
-                      SizedBox(
-                        height: 16,
-                      ),
-                      Form(
+                    ),
+                    SizedBox(
+                      height: 16,
+                    ),
+                    Form(
                         key: _formGlobalKey,
                         child: Column(
                           children: [
@@ -89,21 +95,20 @@ class LoginScreen extends StatelessWidget {
                             ),
                           ],
                         )
-                      ),
-                      SizedBox(
-                        height: 16,
-                      ),
-                      Hero(
-                        tag: HeroTag.login_button,
-                        child: TextButton(
-                          onPressed: () => _login(context),
-                          child: Text(
-                            'ENTRAR'
-                          ),
+                    ),
+                    SizedBox(
+                      height: 16,
+                    ),
+                    Hero(
+                      tag: HeroTag.login_button,
+                      child: TextButton(
+                        onPressed: () => _login(context),
+                        child: Text(
+                          'ENTRAR'
                         ),
-                      )
-                    ]
-                  ),
+                      ),
+                    )
+                  ]
                 ),
               ),
             ),

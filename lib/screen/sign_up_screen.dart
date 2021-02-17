@@ -56,94 +56,99 @@ class SignUpScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        iconTheme: IconThemeData(
+          color: Theme.of(context).primaryColor
+        ),
+      ),
       body: Builder(
         builder: (BuildContext context) {
-          return SafeArea(
-            child: Center(
-              child: SingleChildScrollView(
-                child: Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 32,
-                    vertical: 16
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Hero(
-                        tag: HeroTag.welcome_text,
-                        child: Text(
-                          'Bem vindo(a)',
-                          style: Theme.of(context).textTheme.headline4,
-                        ),
+          return Center(
+            child: SingleChildScrollView(
+              child: Container(
+                padding: EdgeInsets.symmetric(
+                  horizontal: 32,
+                  vertical: 16
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Hero(
+                      tag: HeroTag.welcome_text,
+                      child: Text(
+                        'Bem vindo(a)',
+                        style: Theme.of(context).textTheme.headline4,
                       ),
-                      SizedBox(
-                        height: 16,
-                      ),
-                      Form(
-                        key: _formGlobalKey,
-                        child: Column(
-                          children: [
-                            TextFormField(
-                              controller: _fullNameTextEditingController,
-                              validator: TextFormFieldValidator.validateMandatory,
-                              decoration: InputDecoration(
-                                labelText: 'Nome completo',
-                              ),
-                              textInputAction: TextInputAction.next,
+                    ),
+                    SizedBox(
+                      height: 16,
+                    ),
+                    Form(
+                      key: _formGlobalKey,
+                      child: Column(
+                        children: [
+                          TextFormField(
+                            controller: _fullNameTextEditingController,
+                            validator: TextFormFieldValidator.validateMandatory,
+                            decoration: InputDecoration(
+                              labelText: 'Nome completo',
                             ),
-                            SizedBox(
-                              height: 8,
-                            ),
-                            TextFormField(
-                              controller: _usernameTextEditingController,
-                              validator: TextFormFieldValidator.validateMandatory,
-                              decoration: InputDecoration(
-                                labelText: 'Usuário',
-                              ),
-                              textInputAction: TextInputAction.next,
-                            ),
-                            SizedBox(
-                              height: 8,
-                            ),
-                            TextFormField(
-                              controller: _passwordTextEditingController,
-                              validator: TextFormFieldValidator.validateMandatory,
-                              decoration: InputDecoration(
-                                labelText: 'Senha',
-                              ),
-                              obscureText: true,
-                            ),
-                            SizedBox(
-                              height: 8,
-                            ),
-                            TextFormField(
-                              controller: _confirmPasswordTextEditingController,
-                              validator: TextFormFieldValidator.validateMandatory,
-                              decoration: InputDecoration(
-                                labelText: 'Confirmar senha',
-                              ),
-                              obscureText: true,
-                            ),
-                          ],
-                        )
-                      ),
-                      SizedBox(
-                        height: 16,
-                      ),
-                      Hero(
-                        tag: HeroTag.sign_up_button,
-                        child: TextButton(
-                          onPressed: () => _login(context),
-                          child: Text(
-                            'REGISTRAR'
+                            textInputAction: TextInputAction.next,
                           ),
-                        ),
+                          SizedBox(
+                            height: 8,
+                          ),
+                          TextFormField(
+                            controller: _usernameTextEditingController,
+                            validator: TextFormFieldValidator.validateMandatory,
+                            decoration: InputDecoration(
+                              labelText: 'Usuário',
+                            ),
+                            textInputAction: TextInputAction.next,
+                          ),
+                          SizedBox(
+                            height: 8,
+                          ),
+                          TextFormField(
+                            controller: _passwordTextEditingController,
+                            validator: TextFormFieldValidator.validateMandatory,
+                            decoration: InputDecoration(
+                              labelText: 'Senha',
+                            ),
+                            obscureText: true,
+                          ),
+                          SizedBox(
+                            height: 8,
+                          ),
+                          TextFormField(
+                            controller: _confirmPasswordTextEditingController,
+                            validator: TextFormFieldValidator.validateMandatory,
+                            decoration: InputDecoration(
+                              labelText: 'Confirmar senha',
+                            ),
+                            obscureText: true,
+                          ),
+                        ],
                       )
-                    ]
-                  ),
+                    ),
+                    SizedBox(
+                      height: 16,
+                    ),
+                    Hero(
+                      tag: HeroTag.sign_up_button,
+                      child: TextButton(
+                        onPressed: () => _login(context),
+                        child: Text(
+                          'REGISTRAR'
+                        ),
+                      ),
+                    )
+                  ]
                 ),
               ),
-            )
+            ),
           );
         },
       ),
