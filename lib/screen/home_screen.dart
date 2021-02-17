@@ -18,7 +18,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   User _currentUser = Authentication.instance.currentUser;
 
-  List<Group> _groupList = [];
+  List<Group> _groupList;
 
   bool _loading = true;
 
@@ -204,6 +204,82 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  Widget _groupListView(BuildContext context) {
+    if (_groupList == null) {
+      return Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+
+    if (_groupList.isEmpty) {
+      return Container(
+        padding: EdgeInsets.all(32),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.group,
+                    size: 32,
+                  ),
+                  SizedBox(
+                    width: 8,
+                  ),
+                  Text(
+                    'Grupos',
+                    style: Theme.of(context).textTheme.headline6,
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: 16,
+              ),
+              Text(
+                  'Aqui você vai visualizar os grupos que faz parte, você pode ser adicionado pelos administradores de um grupo ou então inicie um novo grupo clicando no botão acima.'
+              )
+            ],
+          ),
+        )
+      );
+    }
+
+    return ListView.separated(
+      itemCount: _groupList.length,
+      itemBuilder: (BuildContext context, int index) {
+        return InkWell(
+          onLongPress: () => _showGroupOptionsModalBottomSheet(context, _groupList[index], index),
+          onTap: () => _groupScreen(context, _groupList[index]),
+          child: Container(
+            padding: EdgeInsets.symmetric(
+              horizontal: 32,
+              vertical: 32
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Hero(
+                  tag: "group_name_${_groupList[index].id}",
+                  child: Text(
+                    _groupList[index].name,
+                    style: Theme.of(context).textTheme.headline6
+                  ),
+                ),
+                Text(
+                  _groupList[index].users.map((groupUser) => groupUser.user.fullName).join(", "),
+                  style: Theme.of(context).textTheme.subtitle1
+                )
+              ],
+            ),
+          ),
+        );
+      },
+      separatorBuilder: (BuildContext context, int index) => Divider(),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -229,7 +305,7 @@ class _HomeScreenState extends State<HomeScreen> {
           )
         ],
       ),
-      body: ListView(
+      body: Column(
         children: [
           ListHeader(
             buttonFunction: _showGroupModalBottomSheetCallback,
@@ -238,33 +314,9 @@ class _HomeScreenState extends State<HomeScreen> {
               'function': _saveGroup
             }
           ),
-          for (var index = 0; index < _groupList.length; index++)
-            InkWell(
-              onLongPress: () => _showGroupOptionsModalBottomSheet(context, _groupList[index], index),
-              onTap: () => _groupScreen(context, _groupList[index]),
-              child: Container(
-                padding: EdgeInsets.symmetric(
-                  horizontal: 32,
-                  vertical: 32
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Hero(
-                      tag: "group_name_${_groupList[index].id}",
-                      child: Text(
-                        _groupList[index].name,
-                        style: Theme.of(context).textTheme.headline6
-                      ),
-                    ),
-                    Text(
-                      _groupList[index].users.map((groupUser) => groupUser.user.fullName).join(", "),
-                      style: Theme.of(context).textTheme.subtitle1
-                    )
-                  ],
-                ),
-              ),
-            ),
+          Expanded(
+            child: _groupListView(context),
+          )
         ]
       )
     );
