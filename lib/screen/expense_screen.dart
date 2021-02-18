@@ -403,6 +403,10 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
           elevation: 0,
           backgroundColor: Theme.of(context).primaryColor,
           title: Text('Nova despesa'),
+          leading: IconButton(
+            icon: Icon(Icons.close),
+            onPressed: () => _close(context),
+          ),
         ),
         body: _getBody(context),
         floatingActionButton: FloatingActionButton(
