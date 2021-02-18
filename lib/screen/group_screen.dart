@@ -216,10 +216,6 @@ class _GroupScreenState extends State<GroupScreen> {
       )
     );
 
-    if (result == null) {
-      return;
-    }
-
     if (result) {
       _getExpenses();
     }

@@ -158,16 +158,10 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
     Navigator.pop(context, false);
   }
 
-  String _getContinueButtonText() {
+  IconData _getContinueButtonIcon() {
     return _currentStep == _lastStep
-        ? "CONCLUIR"
-        : "AVANÇAR";
-  }
-
-  String _getCancelButtonText() {
-    return _currentStep == _firstStep
-        ? "CANCELAR"
-        : "VOLTAR";
+        ? Icons.check
+        : Icons.arrow_forward;
   }
 
   void _onStepContinue(BuildContext context) async {
@@ -179,10 +173,12 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
       : setState(() => _currentStep++);
   }
 
-  void _onStepCancel(BuildContext context) {
+  bool _onBackPressed(BuildContext context) {
     _currentStep == _firstStep
         ? _close(context)
         : setState(() => _currentStep--);
+
+      return false;
   }
 
   void _onStepTapped(BuildContext context, int nextStep) {
@@ -375,62 +371,45 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
       return Center(
         child: CircularProgressIndicator(),
       );
-    } else {
-      List<Step> steps = _steps(context);
-      _firstStep = 0;
-      _lastStep = steps.length - 1;
-
-      return Row(
-        children: [
-          Expanded(
-            child: Stepper(
-              steps: steps,
-              type: StepperType.horizontal,
-              currentStep: _currentStep,
-              onStepContinue: () => _onStepContinue(context),
-              onStepCancel: () => _onStepCancel(context),
-              onStepTapped: (int nextStep) => _onStepTapped(context, nextStep),
-              controlsBuilder: (BuildContext context, { VoidCallback onStepContinue, VoidCallback onStepCancel }) {
-                return Container(
-                  padding: EdgeInsets.only(top: 16),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      FlatButton(
-                        onPressed: onStepCancel,
-                        child: Text(
-                          _getCancelButtonText()
-                        ),
-                      ),
-                      SizedBox(
-                        width: 8,
-                      ),
-                      RaisedButton(
-                        onPressed: onStepContinue,
-                        child: Text(
-                          _getContinueButtonText()
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              },
-            )
-          ),
-        ]
-      );
     }
+
+    List<Step> steps = _steps(context);
+    _firstStep = 0;
+    _lastStep = steps.length - 1;
+
+    return Row(
+      children: [
+        Expanded(
+          child: Stepper(
+            steps: steps,
+            type: StepperType.horizontal,
+            currentStep: _currentStep,
+            onStepTapped: (int nextStep) => _onStepTapped(context, nextStep),
+            controlsBuilder: (BuildContext context, { VoidCallback onStepContinue, VoidCallback onStepCancel }) {
+              return SizedBox.shrink();
+            },
+          )
+        ),
+      ]
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Theme.of(context).primaryColorDark,
-        title: Text('Nova despesa'),
-      ),
-      body: _getBody(context)
+    return  WillPopScope(
+      onWillPop: () async => _onBackPressed(context),
+      child: Scaffold(
+        appBar: AppBar(
+          elevation: 0,
+          backgroundColor: Theme.of(context).primaryColorDark,
+          title: Text('Nova despesa'),
+        ),
+        body: _getBody(context),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () => _onStepContinue(context),
+          child: Icon(_getContinueButtonIcon()),
+        ),
+      )
     );
   }
 
