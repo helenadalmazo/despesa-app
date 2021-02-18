@@ -59,8 +59,8 @@ class _UserScreenState extends State<UserScreen> {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: Theme.of(context).primaryColorDark,
-        title: Text('Adicionar usuário'),
+        backgroundColor: Theme.of(context).primaryColor,
+        title: Text(_isNewUser ? "Adicionar usuário" : "Editar usuário"),
       ),
       body: SingleChildScrollView(
         child: Column(

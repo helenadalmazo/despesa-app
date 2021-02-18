@@ -209,6 +209,7 @@ class _GroupScreenState extends State<GroupScreen> {
     bool result = await Navigator.push(
       context,
       MaterialPageRoute(
+        fullscreenDialog: true,
         builder: (context) => ExpenseScreen(
           groupId: _group.id,
           expenseId: params['expenseId']
@@ -247,6 +248,7 @@ class _GroupScreenState extends State<GroupScreen> {
     bool result = await Navigator.push(
       context,
       MaterialPageRoute(
+        fullscreenDialog: true,
         builder: (context) => UserListScreen(
           group: _group,
         )
@@ -530,7 +532,7 @@ class _GroupScreenState extends State<GroupScreen> {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: Theme.of(context).primaryColorDark,
+        backgroundColor: Theme.of(context).primaryColor,
         title: Hero(
           tag: "group_name_${_group.id}",
           child: Text(

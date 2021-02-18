@@ -32,8 +32,8 @@ class UserListScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: Theme.of(context).primaryColorDark,
-        title: Text('Adicionar usuário'),
+        backgroundColor: Theme.of(context).primaryColor,
+        title: Text('Selecionar usuário'),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -47,9 +47,10 @@ class UserListScreen extends StatelessWidget {
               textFieldConfiguration: TextFieldConfiguration(
                 autofocus: true,
                 decoration: InputDecoration(
-                  hintText: "Procurar por nome completo"
+                  hintText: "Procurar por nome completo",
+                  suffixIcon: Icon(Icons.search)
                 ),
-                controller: _fullNameTextEditingController
+                controller: _fullNameTextEditingController,
               ),
               suggestionsCallback: (String query) async {
                 return await GroupRepository.instance.searchNewUser(group.id, query);

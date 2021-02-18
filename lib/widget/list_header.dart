@@ -12,7 +12,7 @@ class ListHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Theme.of(context).primaryColorDark
+        color: Theme.of(context).primaryColor
       ),
       child: Stack(
         children: [

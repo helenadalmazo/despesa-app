@@ -401,7 +401,7 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
       child: Scaffold(
         appBar: AppBar(
           elevation: 0,
-          backgroundColor: Theme.of(context).primaryColorDark,
+          backgroundColor: Theme.of(context).primaryColor,
           title: Text('Nova despesa'),
         ),
         body: _getBody(context),
