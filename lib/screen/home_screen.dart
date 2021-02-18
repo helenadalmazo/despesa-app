@@ -291,8 +291,21 @@ class _HomeScreenState extends State<HomeScreen> {
           padding: EdgeInsets.only(
             left: 16,
           ),
-          child: Text(
-            "Olá, ${_currentUser.fullName}",
+          child: Row(
+            children: [
+              Text("Olá, "),
+              Hero(
+                tag: "user_fullName_${_currentUser.id}",
+                child: Text(
+                  _currentUser.fullName,
+                  style: Theme.of(context).textTheme.headline6.merge(
+                    TextStyle(
+                      color: Colors.white
+                    )
+                  )
+                ),
+              )
+            ],
           ),
         ),
         actions: [
