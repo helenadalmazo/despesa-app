@@ -24,42 +24,85 @@ class CurrentUserScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).primaryColorDark,
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: Theme.of(context).primaryColorDark,
+        backgroundColor: Colors.transparent,
       ),
-      body: Center(
+      body: Container(
+        padding: EdgeInsets.symmetric(
+          horizontal: 32,
+        ),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            CircleAvatar(
-              radius: 24,
-              backgroundColor: _currentUser.getColor(),
-              child: Text(
-                _currentUser.getAcronym(),
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 14
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                CircleAvatar(
+                  radius: 40,
+                  backgroundColor: _currentUser.getColor(),
+                  child: Text(
+                    _currentUser.getAcronym(),
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 28
+                    )
+                  ),
+                ),
+                SizedBox(
+                  height: 16,
+                ),
+                Hero(
+                  tag: "user_fullName_${_currentUser.id}",
+                  child: Text(
+                    _currentUser.fullName,
+                    style: Theme.of(context).textTheme.headline6.merge(
+                      TextStyle(
+                        color: Colors.white
+                      )
+                    )
+                  ),
+                ),
+                SizedBox(
+                  height: 8,
+                ),
+                Text(
+                  _currentUser.username,
+                  style: Theme.of(context).textTheme.subtitle1.merge(
+                    TextStyle(
+                      color: Colors.white
+                    )
+                  )
                 )
-              ),
+              ],
             ),
-            Hero(
-              tag: "user_fullName_${_currentUser.id}",
+            SizedBox(
+              height: 24,
+            ),
+            OutlineButton(
+              onPressed: () => _settingScreen(context),
+              borderSide: BorderSide(
+                color: Colors.white,
+              ),
               child: Text(
-                _currentUser.fullName,
-                style: Theme.of(context).textTheme.headline6
+                'Configurações',
+                style: TextStyle(
+                  color: Colors.white
+                ),
+              )
+            ),
+            OutlineButton(
+              onPressed: () => _logout(context),
+              borderSide: BorderSide(
+                color: Colors.white,
               ),
-            ),
-            Text(
-                _currentUser.username,
-                style: Theme.of(context).textTheme.subtitle1
-            ),
-            TextButton(
-                onPressed: () => _settingScreen(context),
-                child: Text('Configurações')
-            ),
-            TextButton(
-                onPressed: () => _logout(context),
-                child: Text('Sair')
+              child: Text(
+                'Sair',
+                style: TextStyle(
+                  color: Colors.white
+                ),
+              )
             )
           ],
         ),
