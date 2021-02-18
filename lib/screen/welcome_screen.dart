@@ -26,58 +26,60 @@ class WelcomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: Container(
-          padding: EdgeInsets.symmetric(
-            horizontal: 32
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Hero(
-                tag: HeroTag.welcome_text,
-                child: Text(
-                  'Bem vindo(a)',
-                  style: Theme.of(context).textTheme.headline4,
-                ),
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+      ),
+      body: Container(
+        padding: EdgeInsets.symmetric(
+          horizontal: 32
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Hero(
+              tag: HeroTag.welcome_text,
+              child: Text(
+                'Bem vindo(a)',
+                style: Theme.of(context).textTheme.headline4,
               ),
-              SizedBox(
-                height: 8,
-              ),
-              Text(
-                'Pitch black malt barleywine specific gravity wort chiller balthazar pitch.',
-                style: Theme.of(context).textTheme.subtitle1,
-              ),
-              SizedBox(
-                height: 16,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Hero(
-                    tag: HeroTag.login_button,
-                    child: TextButton(
-                      onPressed: () => _loginScreen(context),
-                      child: Text(
-                        'ENTRAR'
-                      ),
+            ),
+            SizedBox(
+              height: 8,
+            ),
+            Text(
+              'Pitch black malt barleywine specific gravity wort chiller balthazar pitch.',
+              style: Theme.of(context).textTheme.subtitle1,
+            ),
+            SizedBox(
+              height: 16,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Hero(
+                  tag: HeroTag.login_button,
+                  child: TextButton(
+                    onPressed: () => _loginScreen(context),
+                    child: Text(
+                      'ENTRAR'
                     ),
                   ),
-                  Hero(
-                    tag: HeroTag.sign_up_button,
-                    child: TextButton(
-                      onPressed: () => _signUpScreen(context),
-                      child: Text(
-                        'REGISTRAR'
-                      ),
-                    )
+                ),
+                Hero(
+                  tag: HeroTag.sign_up_button,
+                  child: TextButton(
+                    onPressed: () => _signUpScreen(context),
+                    child: Text(
+                      'REGISTRAR'
+                    ),
                   )
-                ],
-              )
-            ],
-          ),
-        )
+                )
+              ],
+            )
+          ],
+        ),
       )
     );
   }
