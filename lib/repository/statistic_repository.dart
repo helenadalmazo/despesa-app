@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:despesa_app/auth/authentication.dart';
+import 'package:despesa_app/model/statistic_value_grouped_by_user.dart';
 import 'package:http/http.dart' as http;
 
 class StatisticRepository {
@@ -10,7 +11,7 @@ class StatisticRepository {
 
   static final String _baseUrl = 'http://10.0.2.2:5000/statistic';
 
-  Future<List<Map<String, dynamic>>> listValueGroupedByUser(int groupId) async {
+  Future<List<StatisticValueGroupedByUser>> listValueGroupedByUser(int groupId) async {
     final response = await http.get(
       '$_baseUrl/valuegroupedbyuser/group/$groupId',
       headers: <String, String> {
@@ -20,7 +21,7 @@ class StatisticRepository {
 
     if (response.statusCode == 200) {
       List<dynamic> body = json.decode(response.body);
-      return body.map((dynamic item) => { 'user': item['user'], 'value': item['value']}).toList();
+      return body.map((dynamic item) => StatisticValueGroupedByUser.fromJson(item)).toList();
     }
 
     throw Exception('TODO statistic listValueGroupedByUser exception');

@@ -6,6 +6,7 @@ import 'package:despesa_app/formatter/percentage_format.dart';
 import 'package:despesa_app/model/expense.dart';
 import 'package:despesa_app/model/group.dart';
 import 'package:despesa_app/model/group_user_role.dart';
+import 'package:despesa_app/model/statistic_value_grouped_by_user.dart';
 import 'package:despesa_app/model/user.dart';
 import 'package:despesa_app/repository/expense_repository.dart';
 import 'package:despesa_app/repository/group_repository.dart';
@@ -31,7 +32,7 @@ class GroupScreen extends StatefulWidget {
 class _GroupScreenState extends State<GroupScreen> {
 
   double _totalValue = 0;
-  List<Map<String, dynamic>> _statisticValueByUser;
+  List<StatisticValueGroupedByUser> _statisticValueByUser;
   List<Map<String, dynamic>> _statisticValueByYearMonth;
 
   Group _group;
@@ -71,7 +72,7 @@ class _GroupScreenState extends State<GroupScreen> {
   }
 
   Future<void> _getStatistics() async {
-    List<Map<String, dynamic>> statisticValueByUserResponse = await StatisticRepository.instance.listValueGroupedByUser(_group.id);
+    List<StatisticValueGroupedByUser> statisticValueByUserResponse = await StatisticRepository.instance.listValueGroupedByUser(_group.id);
     List<Map<String, dynamic>> statisticValueByYearMonthResponse = await StatisticRepository.instance.listValueGroupedByYearMonth(_group.id);
 
     if (statisticValueByUserResponse.isEmpty && statisticValueByYearMonthResponse.isEmpty) {
@@ -79,7 +80,7 @@ class _GroupScreenState extends State<GroupScreen> {
     }
 
     setState(() {
-      _totalValue = statisticValueByUserResponse.map((statistic) => statistic['value']).reduce((value, element) => value + element);
+      _totalValue = statisticValueByUserResponse.map((statistic) => statistic.value).reduce((value, element) => value + element);
       _statisticValueByUser = statisticValueByUserResponse;
       _statisticValueByYearMonth = statisticValueByYearMonthResponse;
     });
@@ -312,48 +313,45 @@ class _GroupScreenState extends State<GroupScreen> {
             style: Theme.of(context).textTheme.headline6,
           ),
           Expanded(
-              child: _statisticValueByUser == null
-                ? Center(child: CircularProgressIndicator())
-                : Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Expanded(
-                      child: charts.PieChart(
-                        [
-                          charts.Series<Map<String, dynamic>, String>(
-                            id: 'statisticValueByUser',
-                            domainFn: (Map<String, dynamic> statistic, _) => statistic['user'],
-                            measureFn: (Map<String, dynamic> statistic, _) => statistic['value'],
-                            data: _statisticValueByUser,
-                            labelAccessorFn: (Map<String, dynamic> statistic, _) => PercentageFormat.format(statistic['value']/_totalValue * 100),
-                          )
-                        ],
-                        animate: false,
-                        layoutConfig: charts.LayoutConfig(
-                          leftMarginSpec: charts.MarginSpec.fixedPixel(0),
-                          topMarginSpec: charts.MarginSpec.fixedPixel(0),
-                          rightMarginSpec: charts.MarginSpec.fixedPixel(8),
-                          bottomMarginSpec:charts.MarginSpec.fixedPixel(0),
-                        ),
-                        behaviors: [
-                          charts.DatumLegend(
-                            position: charts.BehaviorPosition.top,
-                            outsideJustification: charts.OutsideJustification.startDrawArea,
-                          )
-                        ],
-                        defaultRenderer: charts.ArcRendererConfig(
-                          arcWidth: 60,
-                          arcRendererDecorators: [
-                            charts.ArcLabelDecorator(
-                                labelPosition: charts.ArcLabelPosition.inside
-                            ),
-                          ],
-                        ),
-                      )
+            child: _statisticValueByUser == null
+              ? Center(child: CircularProgressIndicator())
+              : charts.PieChart(
+              [
+                charts.Series<StatisticValueGroupedByUser, String>(
+                  id: 'statisticValueByUser',
+                  colorFn: (StatisticValueGroupedByUser statistic, _) {
+                    Color color = statistic.user.getColor();
+                    return charts.Color(r: color.red, g: color.green, b: color.blue, a: color.alpha);
+                  },
+                  domainFn: (StatisticValueGroupedByUser statistic, _) => statistic.user.getFirstName(),
+                  measureFn: (StatisticValueGroupedByUser statistic, _) => statistic.value,
+                  data: _statisticValueByUser,
+                  labelAccessorFn: (StatisticValueGroupedByUser statistic, _) => PercentageFormat.format(statistic.value/_totalValue * 100),
+                )
+              ],
+              animate: false,
+              layoutConfig: charts.LayoutConfig(
+                leftMarginSpec: charts.MarginSpec.fixedPixel(0),
+                topMarginSpec: charts.MarginSpec.fixedPixel(0),
+                rightMarginSpec: charts.MarginSpec.fixedPixel(8),
+                bottomMarginSpec:charts.MarginSpec.fixedPixel(0),
+              ),
+              behaviors: [
+                charts.DatumLegend(
+                  position: charts.BehaviorPosition.top,
+                  outsideJustification: charts.OutsideJustification.startDrawArea,
+                  desiredMaxRows: 2,
+                )
+              ],
+              defaultRenderer: charts.ArcRendererConfig(
+                arcWidth: 60,
+                arcRendererDecorators: [
+                  charts.ArcLabelDecorator(
+                      labelPosition: charts.ArcLabelPosition.inside
                   ),
                 ],
-              )
+              ),
+            )
           ),
           SizedBox(
               height: 16

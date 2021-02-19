@@ -16,6 +16,10 @@ class User {
         username = json["username"],
         fullName = json["full_name"];
 
+  String getFirstName() {
+    return this.fullName.split(" ").first;
+  }
+
   String getAcronym() {
     List<String> names = this.fullName.toUpperCase().split(" ");
 
