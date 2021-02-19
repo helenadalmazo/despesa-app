@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:despesa_app/auth/authentication.dart';
 import 'package:despesa_app/model/statistic_value_grouped_by_user.dart';
+import 'package:despesa_app/model/statistic_value_grouped_by_year_month.dart';
 import 'package:http/http.dart' as http;
 
 class StatisticRepository {
@@ -27,7 +28,7 @@ class StatisticRepository {
     throw Exception('TODO statistic listValueGroupedByUser exception');
   }
 
-  Future<List<Map<String, dynamic>>> listValueGroupedByYearMonth(int groupId) async {
+  Future<List<StatisticValueGroupedByYearMonth>> listValueGroupedByYearMonth(int groupId) async {
     final response = await http.get(
         '$_baseUrl/valuegroupedbyyearmonth/group/$groupId',
         headers: <String, String> {
@@ -37,9 +38,7 @@ class StatisticRepository {
 
     if (response.statusCode == 200) {
       List<dynamic> body = json.decode(response.body);
-      return body.map((dynamic item) {
-        return { 'date': item['date'], 'value': item['value']};
-      }).toList();
+      return body.map((dynamic item) => StatisticValueGroupedByYearMonth.fromJson(item)).toList();
     }
 
     throw Exception('TODO statistic listValueGroupedByYearMonth exception');

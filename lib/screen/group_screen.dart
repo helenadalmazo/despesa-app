@@ -7,6 +7,7 @@ import 'package:despesa_app/model/expense.dart';
 import 'package:despesa_app/model/group.dart';
 import 'package:despesa_app/model/group_user_role.dart';
 import 'package:despesa_app/model/statistic_value_grouped_by_user.dart';
+import 'package:despesa_app/model/statistic_value_grouped_by_year_month.dart';
 import 'package:despesa_app/model/user.dart';
 import 'package:despesa_app/repository/expense_repository.dart';
 import 'package:despesa_app/repository/group_repository.dart';
@@ -33,7 +34,7 @@ class _GroupScreenState extends State<GroupScreen> {
 
   double _totalValue = 0;
   List<StatisticValueGroupedByUser> _statisticValueByUser;
-  List<Map<String, dynamic>> _statisticValueByYearMonth;
+  List<StatisticValueGroupedByYearMonth> _statisticValueByYearMonth;
 
   Group _group;
 
@@ -73,7 +74,7 @@ class _GroupScreenState extends State<GroupScreen> {
 
   Future<void> _getStatistics() async {
     List<StatisticValueGroupedByUser> statisticValueByUserResponse = await StatisticRepository.instance.listValueGroupedByUser(_group.id);
-    List<Map<String, dynamic>> statisticValueByYearMonthResponse = await StatisticRepository.instance.listValueGroupedByYearMonth(_group.id);
+    List<StatisticValueGroupedByYearMonth> statisticValueByYearMonthResponse = await StatisticRepository.instance.listValueGroupedByYearMonth(_group.id);
 
     if (statisticValueByUserResponse.isEmpty && statisticValueByYearMonthResponse.isEmpty) {
       return;
@@ -319,12 +320,12 @@ class _GroupScreenState extends State<GroupScreen> {
               [
                 charts.Series<StatisticValueGroupedByUser, String>(
                   id: 'statisticValueByUser',
+                  domainFn: (StatisticValueGroupedByUser statistic, _) => statistic.user.getFirstName(),
+                  measureFn: (StatisticValueGroupedByUser statistic, _) => statistic.value,
                   colorFn: (StatisticValueGroupedByUser statistic, _) {
                     Color color = statistic.user.getColor();
                     return charts.Color(r: color.red, g: color.green, b: color.blue, a: color.alpha);
                   },
-                  domainFn: (StatisticValueGroupedByUser statistic, _) => statistic.user.getFirstName(),
-                  measureFn: (StatisticValueGroupedByUser statistic, _) => statistic.value,
                   data: _statisticValueByUser,
                   labelAccessorFn: (StatisticValueGroupedByUser statistic, _) => PercentageFormat.format(statistic.value/_totalValue * 100),
                 )
@@ -364,10 +365,14 @@ class _GroupScreenState extends State<GroupScreen> {
               ? Center(child: CircularProgressIndicator())
               : charts.BarChart(
               [
-                charts.Series<Map<String, dynamic>, String>(
+                charts.Series<StatisticValueGroupedByYearMonth, String>(
                   id: 'statisticValueByYearMonth',
-                  domainFn: (Map<String, dynamic> statistic, _) => DateFormat.formatYearMonth(statistic['date']),
-                  measureFn: (Map<String, dynamic> statistic, _) => statistic['value'],
+                  domainFn: (StatisticValueGroupedByYearMonth statistic, _) => DateFormat.formatYearMonth(statistic.date),
+                  measureFn: (StatisticValueGroupedByYearMonth statistic, _) => statistic.value,
+                  colorFn: (StatisticValueGroupedByYearMonth statistic, _) {
+                    Color color = Theme.of(context).primaryColorLight;
+                    return charts.Color(r: color.red, g: color.green, b: color.blue, a: color.alpha);
+                  },
                   data: _statisticValueByYearMonth,
                 )
               ],
