@@ -402,7 +402,7 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
         appBar: AppBar(
           elevation: 0,
           backgroundColor: Theme.of(context).primaryColor,
-          title: Text('Nova despesa'),
+          title: Text(widget.expenseId == null ? "Nova despesa" : "Editar despesa"),
           leading: IconButton(
             icon: Icon(Icons.close),
             onPressed: () => _close(context),
