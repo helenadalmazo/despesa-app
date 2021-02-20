@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-class MyRaisedButton extends StatelessWidget {
+class AccentColorRaisedButton extends StatelessWidget {
 
   final VoidCallback onPressed;
   final String text;
 
-  const MyRaisedButton({
+  const AccentColorRaisedButton({
     Key key,
     @required this.onPressed,
     @required this.text

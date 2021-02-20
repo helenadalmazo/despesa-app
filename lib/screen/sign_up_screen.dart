@@ -3,7 +3,7 @@ import 'package:despesa_app/constant/hero_tag.dart';
 import 'package:despesa_app/screen/home_screen.dart';
 import 'package:despesa_app/utils/scaffold_utils.dart';
 import 'package:despesa_app/utils/text_form_field_validator.dart';
-import 'package:despesa_app/widget/my_raised_button.dart';
+import 'package:despesa_app/widget/accent_color_raised_button.dart';
 import 'package:flutter/material.dart';
 
 class SignUpScreen extends StatelessWidget {
@@ -145,7 +145,7 @@ class SignUpScreen extends StatelessWidget {
                       height: Theme.of(context).buttonTheme.height,
                       child: Hero(
                         tag: HeroTag.sign_up_button,
-                        child: MyRaisedButton(
+                        child: AccentColorRaisedButton(
                           onPressed: () => _login(context),
                           text: "REGISTRAR"
                         ),

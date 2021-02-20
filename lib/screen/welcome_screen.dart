@@ -1,7 +1,7 @@
 import 'package:despesa_app/constant/hero_tag.dart';
 import 'package:despesa_app/screen/login_screen.dart';
 import 'package:despesa_app/screen/sign_up_screen.dart';
-import 'package:despesa_app/widget/my_raised_button.dart';
+import 'package:despesa_app/widget/accent_color_raised_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -72,14 +72,14 @@ class WelcomeScreen extends StatelessWidget {
                 children: [
                   Hero(
                     tag: HeroTag.login_button,
-                    child: MyRaisedButton(
+                    child: AccentColorRaisedButton(
                       onPressed: () => _loginScreen(context),
                       text: "ENTRAR",
                     ),
                   ),
                   Hero(
                     tag: HeroTag.sign_up_button,
-                    child: MyRaisedButton(
+                    child: AccentColorRaisedButton(
                       onPressed: () => _signUpScreen(context),
                       text: "REGISTRAR"
                     )
