@@ -104,11 +104,14 @@ class LoginScreen extends StatelessWidget {
                     SizedBox(
                       height: 16,
                     ),
-                    Hero(
-                      tag: HeroTag.login_button,
-                      child: MyRaisedButton(
-                        onPressed: () => _login(context),
-                        text: "ENTRAR"
+                    Container(
+                      height: Theme.of(context).buttonTheme.height,
+                      child: Hero(
+                        tag: HeroTag.login_button,
+                        child: MyRaisedButton(
+                          onPressed: () => _login(context),
+                          text: "ENTRAR"
+                        ),
                       ),
                     )
                   ]
