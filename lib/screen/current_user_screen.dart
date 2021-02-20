@@ -1,5 +1,6 @@
 import 'package:despesa_app/auth/authentication.dart';
 import 'package:despesa_app/model/user.dart';
+import 'package:despesa_app/screen/setting_screen.dart';
 import 'package:despesa_app/screen/welcome_screen.dart';
 import 'package:despesa_app/widget/user_circle_avatar.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +9,12 @@ class CurrentUserScreen extends StatelessWidget {
   final User _currentUser = Authentication.instance.currentUser;
 
   void _settingScreen(BuildContext context) {
-
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => SettingScreen()
+      )
+    );
   }
 
   void _logout(BuildContext context) {
