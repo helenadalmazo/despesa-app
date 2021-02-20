@@ -1,9 +1,9 @@
-import 'package:despesa_app/constant/hero_tag.dart';
 import 'package:despesa_app/model/group.dart';
 import 'package:despesa_app/model/group_user.dart';
 import 'package:despesa_app/model/group_user_role.dart';
 import 'package:despesa_app/model/user.dart';
 import 'package:despesa_app/repository/group_repository.dart';
+import 'package:despesa_app/widget/user_circle_avatar.dart';
 import 'package:flutter/material.dart';
 
 class UserScreen extends StatefulWidget {
@@ -78,15 +78,8 @@ class _UserScreenState extends State<UserScreen> {
                 children: [
                   Hero(
                     tag: "user_avatar_${widget.user.id}",
-                    child: CircleAvatar(
-                      backgroundColor: widget.user.getColor(),
-                      child: Text(
-                        widget.user.getAcronym(),
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 14
-                        )
-                      ),
+                    child: UserCircleAvatar(
+                      user: widget.user
                     )
                   ),
                   SizedBox(

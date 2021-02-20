@@ -2,6 +2,7 @@ import 'package:despesa_app/model/group.dart';
 import 'package:despesa_app/model/user.dart';
 import 'package:despesa_app/repository/group_repository.dart';
 import 'package:despesa_app/screen/user_screen.dart';
+import 'package:despesa_app/widget/user_circle_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 
@@ -57,15 +58,8 @@ class UserListScreen extends StatelessWidget {
               },
               itemBuilder: (BuildContext context, User user) {
                 return ListTile(
-                  leading: CircleAvatar(
-                    backgroundColor: user.getColor(),
-                    child: Text(
-                      user.getAcronym(),
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 14
-                      )
-                    ),
+                  leading: UserCircleAvatar(
+                    user: user
                   ),
                   title: Text(user.fullName),
                 );

@@ -1,6 +1,7 @@
 import 'package:despesa_app/auth/authentication.dart';
 import 'package:despesa_app/model/user.dart';
 import 'package:despesa_app/screen/welcome_screen.dart';
+import 'package:despesa_app/widget/user_circle_avatar.dart';
 import 'package:flutter/material.dart';
 
 class CurrentUserScreen extends StatelessWidget {
@@ -24,7 +25,7 @@ class CurrentUserScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).primaryColorDark,
+      backgroundColor: Theme.of(context).primaryColor,
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.transparent,
@@ -39,16 +40,9 @@ class CurrentUserScreen extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                CircleAvatar(
-                  radius: 40,
-                  backgroundColor: _currentUser.getColor(),
-                  child: Text(
-                    _currentUser.getAcronym(),
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 28
-                    )
-                  ),
+                UserCircleAvatar(
+                  user: _currentUser,
+                  size: 2,
                 ),
                 SizedBox(
                   height: 16,

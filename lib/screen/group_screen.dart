@@ -17,6 +17,7 @@ import 'package:despesa_app/screen/user_list_screen.dart';
 import 'package:despesa_app/screen/user_screen.dart';
 import 'package:despesa_app/widget/empty_state.dart';
 import 'package:despesa_app/widget/list_header.dart';
+import 'package:despesa_app/widget/user_circle_avatar.dart';
 import 'package:flutter/material.dart';
 
 class GroupScreen extends StatefulWidget {
@@ -435,15 +436,8 @@ class _GroupScreenState extends State<GroupScreen> {
               children: [
                 Hero(
                   tag: "user_avatar_${_group.users[index].user.id}",
-                  child: CircleAvatar(
-                    backgroundColor: _group.users[index].user.getColor(),
-                    child: Text(
-                      _group.users[index].user.getAcronym(),
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 14
-                      )
-                    ),
+                  child: UserCircleAvatar(
+                    user: _group.users[index].user
                   ),
                 ),
                 SizedBox(

@@ -7,6 +7,7 @@ import 'package:despesa_app/model/user.dart';
 import 'package:despesa_app/repository/expense_repository.dart';
 import 'package:despesa_app/repository/group_repository.dart';
 import 'package:despesa_app/utils/text_form_field_validator.dart';
+import 'package:despesa_app/widget/user_circle_avatar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -274,15 +275,8 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
                         onSelected: (bool selected) {
                           _updateUsers(groupUser.user, selected);
                         },
-                        avatar: CircleAvatar(
-                          backgroundColor: groupUser.user.getColor(),
-                          child: Text(
-                            groupUser.user.getAcronym(),
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 14
-                            )
-                          ),
+                        avatar: UserCircleAvatar(
+                          user: groupUser.user
                         ),
                         label: Text(groupUser.user.fullName),
                       )
