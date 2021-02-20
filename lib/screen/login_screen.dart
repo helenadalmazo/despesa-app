@@ -3,6 +3,7 @@ import 'package:despesa_app/constant/hero_tag.dart';
 import 'package:despesa_app/screen/home_screen.dart';
 import 'package:despesa_app/utils/scaffold_utils.dart';
 import 'package:despesa_app/utils/text_form_field_validator.dart';
+import 'package:despesa_app/widget/my_raised_button.dart';
 import 'package:flutter/material.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -64,7 +65,11 @@ class LoginScreen extends StatelessWidget {
                       tag: HeroTag.welcome_text,
                       child: Text(
                         'Bem vindo(a)',
-                        style: Theme.of(context).textTheme.headline4,
+                        style: Theme.of(context).textTheme.headline4.merge(
+                          TextStyle(
+                            color: Theme.of(context).primaryColor
+                          )
+                        ),
                       ),
                     ),
                     SizedBox(
@@ -101,11 +106,9 @@ class LoginScreen extends StatelessWidget {
                     ),
                     Hero(
                       tag: HeroTag.login_button,
-                      child: TextButton(
+                      child: MyRaisedButton(
                         onPressed: () => _login(context),
-                        child: Text(
-                          'ENTRAR'
-                        ),
+                        text: "ENTRAR"
                       ),
                     )
                   ]

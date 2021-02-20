@@ -3,6 +3,7 @@ import 'package:despesa_app/constant/hero_tag.dart';
 import 'package:despesa_app/screen/home_screen.dart';
 import 'package:despesa_app/utils/scaffold_utils.dart';
 import 'package:despesa_app/utils/text_form_field_validator.dart';
+import 'package:despesa_app/widget/my_raised_button.dart';
 import 'package:flutter/material.dart';
 
 class SignUpScreen extends StatelessWidget {
@@ -79,7 +80,11 @@ class SignUpScreen extends StatelessWidget {
                       tag: HeroTag.welcome_text,
                       child: Text(
                         'Bem vindo(a)',
-                        style: Theme.of(context).textTheme.headline4,
+                        style: Theme.of(context).textTheme.headline4.merge(
+                          TextStyle(
+                            color: Theme.of(context).primaryColor
+                          )
+                        ),
                       ),
                     ),
                     SizedBox(
@@ -136,12 +141,13 @@ class SignUpScreen extends StatelessWidget {
                     SizedBox(
                       height: 16,
                     ),
-                    Hero(
-                      tag: HeroTag.sign_up_button,
-                      child: TextButton(
-                        onPressed: () => _login(context),
-                        child: Text(
-                          'REGISTRAR'
+                    Container(
+                      height: Theme.of(context).buttonTheme.height,
+                      child: Hero(
+                        tag: HeroTag.sign_up_button,
+                        child: MyRaisedButton(
+                          onPressed: () => _login(context),
+                          text: "REGISTRAR"
                         ),
                       ),
                     )

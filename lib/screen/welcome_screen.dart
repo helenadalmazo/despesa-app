@@ -1,6 +1,8 @@
 import 'package:despesa_app/constant/hero_tag.dart';
 import 'package:despesa_app/screen/login_screen.dart';
 import 'package:despesa_app/screen/sign_up_screen.dart';
+import 'package:despesa_app/widget/my_raised_button.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class WelcomeScreen extends StatelessWidget {
@@ -18,7 +20,7 @@ class WelcomeScreen extends StatelessWidget {
     Navigator.push(
       context,
       MaterialPageRoute(
-          builder: (context) => SignUpScreen()
+        builder: (context) => SignUpScreen()
       )
     );
   }
@@ -26,6 +28,7 @@ class WelcomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).primaryColor,
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.transparent,
@@ -42,7 +45,11 @@ class WelcomeScreen extends StatelessWidget {
               tag: HeroTag.welcome_text,
               child: Text(
                 'Bem vindo(a)',
-                style: Theme.of(context).textTheme.headline4,
+                style: Theme.of(context).textTheme.headline4.merge(
+                  TextStyle(
+                    color: Colors.white,
+                  )
+                ),
               ),
             ),
             SizedBox(
@@ -50,33 +57,35 @@ class WelcomeScreen extends StatelessWidget {
             ),
             Text(
               'Pitch black malt barleywine specific gravity wort chiller balthazar pitch.',
-              style: Theme.of(context).textTheme.subtitle1,
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.white.withOpacity(0.80)
+              ),
             ),
             SizedBox(
               height: 16,
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Hero(
-                  tag: HeroTag.login_button,
-                  child: TextButton(
-                    onPressed: () => _loginScreen(context),
-                    child: Text(
-                      'ENTRAR'
+            Container(
+              height: Theme.of(context).buttonTheme.height,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Hero(
+                    tag: HeroTag.login_button,
+                    child: MyRaisedButton(
+                      onPressed: () => _loginScreen(context),
+                      text: "ENTRAR",
                     ),
                   ),
-                ),
-                Hero(
-                  tag: HeroTag.sign_up_button,
-                  child: TextButton(
-                    onPressed: () => _signUpScreen(context),
-                    child: Text(
-                      'REGISTRAR'
-                    ),
+                  Hero(
+                    tag: HeroTag.sign_up_button,
+                    child: MyRaisedButton(
+                      onPressed: () => _signUpScreen(context),
+                      text: "REGISTRAR"
+                    )
                   )
-                )
-              ],
+                ],
+              ),
             )
           ],
         ),
