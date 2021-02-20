@@ -15,6 +15,7 @@ import 'package:despesa_app/repository/statistic_repository.dart';
 import 'package:despesa_app/screen/expense_screen.dart';
 import 'package:despesa_app/screen/user_list_screen.dart';
 import 'package:despesa_app/screen/user_screen.dart';
+import 'package:despesa_app/widget/empty_state.dart';
 import 'package:despesa_app/widget/list_header.dart';
 import 'package:flutter/material.dart';
 
@@ -35,6 +36,8 @@ class _GroupScreenState extends State<GroupScreen> {
   double _totalValue = 0;
   List<StatisticValueGroupedByUser> _statisticValueByUser;
   List<StatisticValueGroupedByYearMonth> _statisticValueByYearMonth;
+
+  bool _animateCharts = true;
 
   Group _group;
 
@@ -96,12 +99,14 @@ class _GroupScreenState extends State<GroupScreen> {
 
   void _onPageChanged(int index) {
     setState(() {
+      _animateCharts = false;
       _bottomNavigationCurrentIndex = index;
     });
   }
 
   void _onTapButtonNavigation(int index) {
     setState(() {
+      _animateCharts = false;
       _bottomNavigationCurrentIndex = index;
       _pageController.animateToPage(
         index,
@@ -268,37 +273,10 @@ class _GroupScreenState extends State<GroupScreen> {
 
   Widget _homePageView(BuildContext context) {
     if (_totalValue == 0) {
-      return Container(
-        padding: EdgeInsets.all(32),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.dashboard,
-                    size: 32,
-                  ),
-                  SizedBox(
-                    width: 8,
-                  ),
-                  Text(
-                    'Resumo',
-                    style: Theme.of(context).textTheme.headline6,
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 16,
-              ),
-              Text(
-                'Aqui você vai visualizar a divisão dos valores do grupo por usuário e por mês/ano.'
-              )
-            ],
-          ),
-        )
+      return EmptyState(
+        icon: Icons.dashboard,
+        title: "Resumo",
+        description: "Aqui você vai visualizar a divisão dos valores do grupo por usuário e por mês/ano.",
       );
     }
 
@@ -311,7 +289,7 @@ class _GroupScreenState extends State<GroupScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text('Divisão dos valores por usuário',
-            style: Theme.of(context).textTheme.headline6,
+            style: Theme.of(context).textTheme.subtitle1,
           ),
           Expanded(
             child: _statisticValueByUser == null
@@ -330,7 +308,7 @@ class _GroupScreenState extends State<GroupScreen> {
                   labelAccessorFn: (StatisticValueGroupedByUser statistic, _) => PercentageFormat.format(statistic.value/_totalValue * 100),
                 )
               ],
-              animate: false,
+              animate: _animateCharts,
               layoutConfig: charts.LayoutConfig(
                 leftMarginSpec: charts.MarginSpec.fixedPixel(0),
                 topMarginSpec: charts.MarginSpec.fixedPixel(0),
@@ -358,7 +336,7 @@ class _GroupScreenState extends State<GroupScreen> {
               height: 16
           ),
           Text('Divisão dos valores por mês/ano',
-            style: Theme.of(context).textTheme.headline6,
+            style: Theme.of(context).textTheme.subtitle1,
           ),
           Expanded(
             child: _statisticValueByYearMonth == null
@@ -376,7 +354,7 @@ class _GroupScreenState extends State<GroupScreen> {
                   data: _statisticValueByYearMonth,
                 )
               ],
-              animate: false,
+              animate: _animateCharts,
             ),
           )
         ]
@@ -392,37 +370,10 @@ class _GroupScreenState extends State<GroupScreen> {
     }
 
     if (_expenses.isEmpty) {
-      return Container(
-        padding: EdgeInsets.all(32),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.attach_money,
-                    size: 32,
-                  ),
-                  SizedBox(
-                    width: 8,
-                  ),
-                  Text(
-                    'Despesas',
-                    style: Theme.of(context).textTheme.headline6,
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 16,
-              ),
-              Text(
-                'Aqui você vai visualizar as depesas do grupo, para começar clique no botão acima.'
-              )
-            ],
-          ),
-        )
+      return EmptyState(
+        icon: Icons.attach_money,
+        title: "Despesas",
+        description: "Aqui você vai visualizar as depesas do grupo, para começar clique no botão acima.",
       );
     }
 
@@ -444,11 +395,10 @@ class _GroupScreenState extends State<GroupScreen> {
                     children: [
                       Text(
                         _expenses[index].name,
-                        style: Theme.of(context).textTheme.headline6
+                        style: Theme.of(context).textTheme.subtitle1
                       ),
                       Text(
                         MoneyFormat.formatCurrency(_expenses[index].value),
-                        style: Theme.of(context).textTheme.subtitle1
                       ),
                       Text(
                         _expenses[index].description ?? 'Sem descrição',
@@ -458,7 +408,7 @@ class _GroupScreenState extends State<GroupScreen> {
                   )
                 ),
                 IconButton(
-                  icon: Icon(Icons.delete),
+                  icon: Icon(Icons.delete_outline),
                   onPressed: () => _showDeleteExpenseDialog(context, _expenses[index])
                 )
               ],
@@ -507,12 +457,11 @@ class _GroupScreenState extends State<GroupScreen> {
                         tag: "user_fullName_${_group.users[index].user.id}",
                         child: Text(
                           _getUserNameText(_group.users[index].user),
-                          style: Theme.of(context).textTheme.headline6
+                          style: Theme.of(context).textTheme.subtitle1
                         ),
                       ),
                       Text(
                         _getGroupUserRoleText(_group.users[index].role),
-                        style: Theme.of(context).textTheme.subtitle1
                       ),
                     ],
                   )
@@ -536,11 +485,8 @@ class _GroupScreenState extends State<GroupScreen> {
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Theme.of(context).primaryColor,
-        title: Hero(
-          tag: "group_name_${_group.id}",
-          child: Text(
-            _group.name,
-          ),
+        title: Text(
+          _group.name
         ),
       ),
       body: PageView(
