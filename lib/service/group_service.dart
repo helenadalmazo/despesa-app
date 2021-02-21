@@ -5,10 +5,10 @@ import 'package:despesa_app/model/group.dart';
 import 'package:despesa_app/model/user.dart';
 import 'package:http/http.dart' as http;
 
-class GroupRepository {
+class GroupService {
 
-  GroupRepository.privateConstructor();
-  static final GroupRepository instance = GroupRepository.privateConstructor();
+  GroupService.privateConstructor();
+  static final GroupService instance = GroupService.privateConstructor();
 
   static final String _baseUrl = 'http://10.0.2.2:5000/group';
 

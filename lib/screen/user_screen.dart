@@ -2,7 +2,7 @@ import 'package:despesa_app/model/group.dart';
 import 'package:despesa_app/model/group_user.dart';
 import 'package:despesa_app/model/group_user_role.dart';
 import 'package:despesa_app/model/user.dart';
-import 'package:despesa_app/repository/group_repository.dart';
+import 'package:despesa_app/service/group_service.dart';
 import 'package:despesa_app/widget/user_circle_avatar.dart';
 import 'package:flutter/material.dart';
 
@@ -45,10 +45,10 @@ class _UserScreenState extends State<UserScreen> {
     String role = _groupUserRole.toString().split(".").last;
 
     if (_isNewUser) {
-      await GroupRepository.instance.addUser(widget.group.id, widget.user.id, role);
+      await GroupService.instance.addUser(widget.group.id, widget.user.id, role);
       Navigator.pop(context);
     } else {
-      await GroupRepository.instance.updateUser(widget.group.id, widget.user.id, role);
+      await GroupService.instance.updateUser(widget.group.id, widget.user.id, role);
     }
 
     Navigator.pop(context, true);

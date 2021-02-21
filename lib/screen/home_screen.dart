@@ -1,9 +1,9 @@
 import 'package:despesa_app/auth/authentication.dart';
 import 'package:despesa_app/model/group.dart';
 import 'package:despesa_app/model/user.dart';
-import 'package:despesa_app/repository/group_repository.dart';
 import 'package:despesa_app/screen/current_user_screen.dart';
 import 'package:despesa_app/screen/group_screen.dart';
+import 'package:despesa_app/service/group_service.dart';
 import 'package:despesa_app/utils/text_form_field_validator.dart';
 import 'package:despesa_app/widget/empty_state.dart';
 import 'package:despesa_app/widget/list_header.dart';
@@ -36,14 +36,14 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _getGroupList() async {
-    List<Group> list = await GroupRepository.instance.list();
+    List<Group> list = await GroupService.instance.list();
     setState(() {
       _groupList = list;
     });
   }
 
   void _saveGroup(String name) async {
-    Group save = await GroupRepository.instance.save(name);
+    Group save = await GroupService.instance.save(name);
     setState(() {
       _groupList.add(save);
     });
@@ -51,14 +51,14 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _updateGroup(String name, int id,  int index) async {
     final String groupName = _groupNameTextEditingController.text;
-    Group update = await GroupRepository.instance.update(id, groupName);
+    Group update = await GroupService.instance.update(id, groupName);
     setState(() {
       _groupList[index] = update;
     });
   }
 
   void _deleteGroup(int id, int index) async {
-    Map<String, dynamic> delete = await GroupRepository.instance.delete(id);
+    Map<String, dynamic> delete = await GroupService.instance.delete(id);
     setState(() {
       _groupList.removeAt(index);
     });

@@ -1,7 +1,7 @@
 import 'package:despesa_app/model/group.dart';
 import 'package:despesa_app/model/user.dart';
-import 'package:despesa_app/repository/group_repository.dart';
 import 'package:despesa_app/screen/user_screen.dart';
+import 'package:despesa_app/service/group_service.dart';
 import 'package:despesa_app/widget/user_circle_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
@@ -54,7 +54,7 @@ class UserListScreen extends StatelessWidget {
                 controller: _fullNameTextEditingController,
               ),
               suggestionsCallback: (String query) async {
-                return await GroupRepository.instance.searchNewUser(group.id, query);
+                return await GroupService.instance.searchNewUser(group.id, query);
               },
               itemBuilder: (BuildContext context, User user) {
                 return ListTile(

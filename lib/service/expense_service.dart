@@ -4,10 +4,10 @@ import 'package:despesa_app/auth/authentication.dart';
 import 'package:despesa_app/model/expense.dart';
 import 'package:http/http.dart' as http;
 
-class ExpenseRepository {
+class ExpenseService {
 
-  ExpenseRepository.privateConstructor();
-  static final ExpenseRepository instance = ExpenseRepository.privateConstructor();
+  ExpenseService.privateConstructor();
+  static final ExpenseService instance = ExpenseService.privateConstructor();
 
   static final String _baseUrl = 'http://10.0.2.2:5000/expense/group';
 

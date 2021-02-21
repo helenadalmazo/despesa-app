@@ -9,12 +9,12 @@ import 'package:despesa_app/model/group_user_role.dart';
 import 'package:despesa_app/model/statistic_value_grouped_by_user.dart';
 import 'package:despesa_app/model/statistic_value_grouped_by_year_month.dart';
 import 'package:despesa_app/model/user.dart';
-import 'package:despesa_app/repository/expense_repository.dart';
-import 'package:despesa_app/repository/group_repository.dart';
-import 'package:despesa_app/repository/statistic_repository.dart';
 import 'package:despesa_app/screen/expense_screen.dart';
 import 'package:despesa_app/screen/user_list_screen.dart';
 import 'package:despesa_app/screen/user_screen.dart';
+import 'package:despesa_app/service/expense_service.dart';
+import 'package:despesa_app/service/group_service.dart';
+import 'package:despesa_app/service/statistic_service.dart';
 import 'package:despesa_app/widget/empty_state.dart';
 import 'package:despesa_app/widget/list_header.dart';
 import 'package:despesa_app/widget/user_circle_avatar.dart';
@@ -70,15 +70,15 @@ class _GroupScreenState extends State<GroupScreen> {
   }
 
   Future<void> _getGroup() async {
-    Group response = await GroupRepository.instance.get(_group.id);
+    Group response = await GroupService.instance.get(_group.id);
     setState(() {
       _group = response;
     });
   }
 
   Future<void> _getStatistics() async {
-    List<StatisticValueGroupedByUser> statisticValueByUserResponse = await StatisticRepository.instance.listValueGroupedByUser(_group.id);
-    List<StatisticValueGroupedByYearMonth> statisticValueByYearMonthResponse = await StatisticRepository.instance.listValueGroupedByYearMonth(_group.id);
+    List<StatisticValueGroupedByUser> statisticValueByUserResponse = await StatisticService.instance.listValueGroupedByUser(_group.id);
+    List<StatisticValueGroupedByYearMonth> statisticValueByYearMonthResponse = await StatisticService.instance.listValueGroupedByYearMonth(_group.id);
 
     if (statisticValueByUserResponse.isEmpty && statisticValueByYearMonthResponse.isEmpty) {
       return;
@@ -92,7 +92,7 @@ class _GroupScreenState extends State<GroupScreen> {
   }
 
   Future<void> _getExpenses() async {
-    List<Expense> response = await ExpenseRepository.instance.list(_group.id);
+    List<Expense> response = await ExpenseService.instance.list(_group.id);
     setState(() {
       _expenses = response;
     });
@@ -129,7 +129,7 @@ class _GroupScreenState extends State<GroupScreen> {
   }
 
   Future<void> _deleteExpense(Expense expense) async {
-    Map<String, dynamic> deleteResponse = await ExpenseRepository.instance.delete(_group.id, expense.id);
+    Map<String, dynamic> deleteResponse = await ExpenseService.instance.delete(_group.id, expense.id);
     if (deleteResponse['success']) {
       setState(() {
         _expenses.remove(expense);
@@ -138,7 +138,7 @@ class _GroupScreenState extends State<GroupScreen> {
   }
 
   Future<void> _removeUser(int userId) async {
-    Group removeUser = await GroupRepository.instance.removeUser(_group.id, userId);
+    Group removeUser = await GroupService.instance.removeUser(_group.id, userId);
     setState(() {
       _group = removeUser;
     });

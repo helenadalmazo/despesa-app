@@ -4,8 +4,8 @@ import 'package:despesa_app/formatter/money_format.dart';
 import 'package:despesa_app/model/expense.dart';
 import 'package:despesa_app/model/group.dart';
 import 'package:despesa_app/model/user.dart';
-import 'package:despesa_app/repository/expense_repository.dart';
-import 'package:despesa_app/repository/group_repository.dart';
+import 'package:despesa_app/service/expense_service.dart';
+import 'package:despesa_app/service/group_service.dart';
 import 'package:despesa_app/utils/text_form_field_validator.dart';
 import 'package:despesa_app/widget/user_circle_avatar.dart';
 import 'package:flutter/cupertino.dart';
@@ -61,7 +61,7 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
   }
 
   Future<void> _getGroup() async {
-    Group get = await GroupRepository.instance.get(widget.groupId);
+    Group get = await GroupService.instance.get(widget.groupId);
     setState(() {
       _group = get;
       _users = _group.users.map((groupUserRole) => groupUserRole.user).toList();
@@ -71,7 +71,7 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
   Future<void> _getExpense() async {
     if (widget.expenseId == null) return;
 
-    Expense get = await ExpenseRepository.instance.get(widget.groupId, widget.expenseId);
+    Expense get = await ExpenseService.instance.get(widget.groupId, widget.expenseId);
     setState(() {
       _expense = get;
       _users = _expense.items.map((item) => item.user).toList();
@@ -147,9 +147,9 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
     }
 
     if (_expense == null) {
-      await ExpenseRepository.instance.save(_group.id, name, value, description, items);
+      await ExpenseService.instance.save(_group.id, name, value, description, items);
     } else {
-      await ExpenseRepository.instance.update(_group.id, _expense.id, name, value, description, items);
+      await ExpenseService.instance.update(_group.id, _expense.id, name, value, description, items);
     }
 
     Navigator.pop(context, true);

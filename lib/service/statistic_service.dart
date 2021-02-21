@@ -5,10 +5,10 @@ import 'package:despesa_app/model/statistic_value_grouped_by_user.dart';
 import 'package:despesa_app/model/statistic_value_grouped_by_year_month.dart';
 import 'package:http/http.dart' as http;
 
-class StatisticRepository {
+class StatisticService {
 
-  StatisticRepository.privateConstructor();
-  static final StatisticRepository instance = StatisticRepository.privateConstructor();
+  StatisticService.privateConstructor();
+  static final StatisticService instance = StatisticService.privateConstructor();
 
   static final String _baseUrl = 'http://10.0.2.2:5000/statistic';
 
