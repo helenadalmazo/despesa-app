@@ -1,8 +1,8 @@
-import 'package:despesa_app/auth/authentication.dart';
 import 'package:despesa_app/model/group.dart';
 import 'package:despesa_app/model/user.dart';
 import 'package:despesa_app/screen/current_user_screen.dart';
 import 'package:despesa_app/screen/group_screen.dart';
+import 'package:despesa_app/service/authentication_service.dart';
 import 'package:despesa_app/service/group_service.dart';
 import 'package:despesa_app/utils/text_form_field_validator.dart';
 import 'package:despesa_app/widget/empty_state.dart';
@@ -17,7 +17,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
 
-  User _currentUser = Authentication.instance.currentUser;
+  User _currentUser = AuthenticationService.instance.currentUser;
 
   List<Group> _groupList;
 

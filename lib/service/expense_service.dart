@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:despesa_app/auth/authentication.dart';
 import 'package:despesa_app/model/expense.dart';
+import 'package:despesa_app/service/authentication_service.dart';
 import 'package:http/http.dart' as http;
 
 class ExpenseService {
@@ -15,7 +15,7 @@ class ExpenseService {
     final response = await http.get(
       "$_baseUrl/$groupId",
       headers: <String, String> {
-        'Authorization': Authentication.instance.getAuthorization(),
+        'Authorization': AuthenticationService.instance.getAuthorization(),
       }
     );
 
@@ -31,7 +31,7 @@ class ExpenseService {
     final response = await http.post(
       '$_baseUrl/$groupId',
       headers: <String, String> {
-        'Authorization': Authentication.instance.getAuthorization(),
+        'Authorization': AuthenticationService.instance.getAuthorization(),
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: json.encode(<String, dynamic> {
@@ -55,7 +55,7 @@ class ExpenseService {
     final response = await http.put(
       '$_baseUrl/$groupId/$id',
       headers: <String, String> {
-        'Authorization': Authentication.instance.getAuthorization(),
+        'Authorization': AuthenticationService.instance.getAuthorization(),
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: json.encode(<String, dynamic> {
@@ -78,7 +78,7 @@ class ExpenseService {
     final response = await http.get(
         '$_baseUrl/$groupId/$id',
         headers: <String, String> {
-          'Authorization': Authentication.instance.getAuthorization(),
+          'Authorization': AuthenticationService.instance.getAuthorization(),
         }
     );
 
@@ -94,7 +94,7 @@ class ExpenseService {
     final response = await http.delete(
       '$_baseUrl/$groupId/$id',
       headers: <String, String> {
-        'Authorization': Authentication.instance.getAuthorization(),
+        'Authorization': AuthenticationService.instance.getAuthorization(),
       },
     );
 

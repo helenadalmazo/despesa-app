@@ -1,5 +1,4 @@
 import 'package:charts_flutter/flutter.dart' as charts;
-import 'package:despesa_app/auth/authentication.dart';
 import 'package:despesa_app/formatter/date_format.dart';
 import 'package:despesa_app/formatter/money_format.dart';
 import 'package:despesa_app/formatter/percentage_format.dart';
@@ -12,6 +11,7 @@ import 'package:despesa_app/model/user.dart';
 import 'package:despesa_app/screen/expense_screen.dart';
 import 'package:despesa_app/screen/user_list_screen.dart';
 import 'package:despesa_app/screen/user_screen.dart';
+import 'package:despesa_app/service/authentication_service.dart';
 import 'package:despesa_app/service/expense_service.dart';
 import 'package:despesa_app/service/group_service.dart';
 import 'package:despesa_app/service/statistic_service.dart';
@@ -118,7 +118,7 @@ class _GroupScreenState extends State<GroupScreen> {
   }
 
   String _getUserNameText(User user) {
-    bool isCurrentUser = Authentication.instance.currentUser.username == user.username;
+    bool isCurrentUser = AuthenticationService.instance.currentUser.username == user.username;
     return '${user.fullName} ${isCurrentUser ? '(Você)' : ''}';
   }
 

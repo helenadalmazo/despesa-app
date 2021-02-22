@@ -1,8 +1,8 @@
 import 'dart:convert';
 
-import 'package:despesa_app/auth/authentication.dart';
 import 'package:despesa_app/model/statistic_value_grouped_by_user.dart';
 import 'package:despesa_app/model/statistic_value_grouped_by_year_month.dart';
+import 'package:despesa_app/service/authentication_service.dart';
 import 'package:http/http.dart' as http;
 
 class StatisticService {
@@ -16,7 +16,7 @@ class StatisticService {
     final response = await http.get(
       '$_baseUrl/valuegroupedbyuser/group/$groupId',
       headers: <String, String> {
-        'Authorization': Authentication.instance.getAuthorization(),
+        'Authorization': AuthenticationService.instance.getAuthorization(),
       }
     );
 
@@ -32,7 +32,7 @@ class StatisticService {
     final response = await http.get(
         '$_baseUrl/valuegroupedbyyearmonth/group/$groupId',
         headers: <String, String> {
-          'Authorization': Authentication.instance.getAuthorization(),
+          'Authorization': AuthenticationService.instance.getAuthorization(),
         }
     );
 

@@ -1,6 +1,6 @@
-import 'package:despesa_app/auth/authentication.dart';
 import 'package:despesa_app/constant/hero_tag.dart';
 import 'package:despesa_app/screen/home_screen.dart';
+import 'package:despesa_app/service/authentication_service.dart';
 import 'package:despesa_app/utils/scaffold_utils.dart';
 import 'package:despesa_app/utils/text_form_field_validator.dart';
 import 'package:despesa_app/widget/accent_color_raised_button.dart';
@@ -21,7 +21,7 @@ class LoginScreen extends StatelessWidget {
     final String username = _usernameTextEditingController.text;
     final String password = _passwordTextEditingController.text;
 
-    final Map<String, dynamic> loginResult = await Authentication.instance.login(username, password);
+    final Map<String, dynamic> loginResult = await AuthenticationService.instance.login(username, password);
     if (loginResult['success']) {
       _homeScreen(context);
     } else {

@@ -1,8 +1,8 @@
 import 'dart:convert';
 
-import 'package:despesa_app/auth/authentication.dart';
 import 'package:despesa_app/model/group.dart';
 import 'package:despesa_app/model/user.dart';
+import 'package:despesa_app/service/authentication_service.dart';
 import 'package:http/http.dart' as http;
 
 class GroupService {
@@ -16,7 +16,7 @@ class GroupService {
     final response = await http.get(
       _baseUrl,
       headers: <String, String> {
-        'Authorization': Authentication.instance.getAuthorization(),
+        'Authorization': AuthenticationService.instance.getAuthorization(),
       }
     );
 
@@ -32,7 +32,7 @@ class GroupService {
     final response = await http.post(
       '$_baseUrl',
       headers: <String, String> {
-        'Authorization': Authentication.instance.getAuthorization(),
+        'Authorization': AuthenticationService.instance.getAuthorization(),
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: json.encode(<String, String> {
@@ -52,7 +52,7 @@ class GroupService {
     final response = await http.put(
       '$_baseUrl/$id',
       headers: <String, String> {
-        'Authorization': Authentication.instance.getAuthorization(),
+        'Authorization': AuthenticationService.instance.getAuthorization(),
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: json.encode(<String, String> {
@@ -72,7 +72,7 @@ class GroupService {
     final response = await http.get(
       '$_baseUrl/$id',
       headers: <String, String> {
-        'Authorization': Authentication.instance.getAuthorization(),
+        'Authorization': AuthenticationService.instance.getAuthorization(),
       }
     );
 
@@ -88,7 +88,7 @@ class GroupService {
     final response = await http.delete(
       '$_baseUrl/$id',
       headers: <String, String> {
-        'Authorization': Authentication.instance.getAuthorization(),
+        'Authorization': AuthenticationService.instance.getAuthorization(),
       },
     );
 
@@ -103,7 +103,7 @@ class GroupService {
     final response = await http.get(
         '$_baseUrl/$id/searchnewuser?fullname=$fullName',
         headers: <String, String> {
-          'Authorization': Authentication.instance.getAuthorization(),
+          'Authorization': AuthenticationService.instance.getAuthorization(),
         }
     );
 
@@ -119,7 +119,7 @@ class GroupService {
     final response = await http.post(
       '$_baseUrl/$id/adduser/$userId',
       headers: <String, String> {
-        'Authorization': Authentication.instance.getAuthorization(),
+        'Authorization': AuthenticationService.instance.getAuthorization(),
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: json.encode(<String, String> {
@@ -140,7 +140,7 @@ class GroupService {
     final response = await http.delete(
         '$_baseUrl/$id/removeuser/$userId',
         headers: <String, String> {
-          'Authorization': Authentication.instance.getAuthorization(),
+          'Authorization': AuthenticationService.instance.getAuthorization(),
         }
     );
 
@@ -156,7 +156,7 @@ class GroupService {
     final response = await http.put(
         '$_baseUrl/$id/updateuser/$userId',
         headers: <String, String> {
-          'Authorization': Authentication.instance.getAuthorization(),
+          'Authorization': AuthenticationService.instance.getAuthorization(),
           'Content-Type': 'application/json; charset=UTF-8',
         },
         body: json.encode(<String, String> {

@@ -4,15 +4,15 @@ import 'package:despesa_app/model/user.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:http/http.dart' as http;
 
-class Authentication {
+class AuthenticationService {
 
   String _token;
   int _expiresIn;
 
   User currentUser;
 
-  Authentication._privateConstructor();
-  static final Authentication instance = Authentication._privateConstructor();
+  AuthenticationService._privateConstructor();
+  static final AuthenticationService instance = AuthenticationService._privateConstructor();
 
   static final String _baseUrl = 'http://10.0.2.2:5000/auth';
 

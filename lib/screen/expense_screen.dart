@@ -1,9 +1,9 @@
-import 'package:despesa_app/auth/authentication.dart';
 import 'package:despesa_app/formatter/date_format.dart';
 import 'package:despesa_app/formatter/money_format.dart';
 import 'package:despesa_app/model/expense.dart';
 import 'package:despesa_app/model/group.dart';
 import 'package:despesa_app/model/user.dart';
+import 'package:despesa_app/service/authentication_service.dart';
 import 'package:despesa_app/service/expense_service.dart';
 import 'package:despesa_app/service/group_service.dart';
 import 'package:despesa_app/utils/text_form_field_validator.dart';
@@ -115,7 +115,7 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
 
   String _getCreatedBy() {
     if (_expense == null) {
-      return Authentication.instance.currentUser.fullName;
+      return AuthenticationService.instance.currentUser.fullName;
     }
     return _expense.createdBy.fullName;
   }
