@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:despesa_app/model/user.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:http/http.dart' as http;
 
 class Authentication {
@@ -44,14 +45,19 @@ class Authentication {
   }
 
   Future<Map<String, dynamic>> login(String username, String password) async {
+    final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+
     final response = await http.post(
       '$_baseUrl/token/',
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
-      body: json.encode(<String, String> {
+      body: json.encode(<String, dynamic> {
         'username': username,
-        'password': password
+        'password': password,
+        'device': <String, String>{
+          'token': await _firebaseMessaging.getToken()
+        }
       }),
     );
 
