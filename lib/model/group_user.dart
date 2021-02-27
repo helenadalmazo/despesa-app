@@ -11,7 +11,6 @@ class GroupUser {
   });
 
   factory GroupUser.fromJson(Map<String, dynamic> json) {
-
     return GroupUser(
       user: User.fromJson(json["user"]),
       role: GroupUserRole.values.firstWhere((role) => role.toString() == "GroupUserRole.${json["role"]}")
