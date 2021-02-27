@@ -129,12 +129,12 @@ class _GroupScreenState extends State<GroupScreen> {
   }
 
   Future<void> _deleteExpense(Expense expense) async {
-//    Map<String, dynamic> deleteResponse = await ExpenseService.instance.delete(_group.id, expense.id);
-//    if (deleteResponse['success']) {
-//      setState(() {
-//        _expenses.remove(expense);
-//      });
-//    }
+    bool deleteResponse = await ExpenseService.instance.delete(_group.id, expense.id);
+    if (deleteResponse) {
+      setState(() {
+        _expenses.remove(expense);
+      });
+    }
   }
 
   Future<void> _removeUser(int userId) async {
