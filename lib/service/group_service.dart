@@ -1,174 +1,90 @@
-import 'dart:convert';
-
 import 'package:despesa_app/model/group.dart';
 import 'package:despesa_app/model/user.dart';
-import 'package:despesa_app/service/authentication_service.dart';
-import 'package:http/http.dart' as http;
+import 'package:despesa_app/service/base_service.dart';
 
 class GroupService {
 
   GroupService.privateConstructor();
   static final GroupService instance = GroupService.privateConstructor();
 
-  static final String _baseUrl = 'http://10.0.2.2:5000/group';
+  static final _baseService = BaseService("/group");
 
   Future<List<Group>> list() async {
-    final response = await http.get(
-      _baseUrl,
-      headers: <String, String> {
-        'Authorization': AuthenticationService.instance.getAuthorization(),
-      }
+    dynamic response = await _baseService.get(
+      ""
     );
-
-    if (response.statusCode == 200) {
-      List<dynamic> body = json.decode(response.body);
-      return body.map((dynamic item) => Group.fromJson(item)).toList();
-    }
-
-    throw Exception('TODO group list exception');
+    List<dynamic> responseList = response;
+    return responseList
+        .map((dynamic item) => Group.fromJson(item))
+        .toList();
   }
 
   Future<Group> save(String name) async {
-    final response = await http.post(
-      '$_baseUrl',
-      headers: <String, String> {
-        'Authorization': AuthenticationService.instance.getAuthorization(),
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: json.encode(<String, String> {
-        'name': name
-      }),
+    dynamic response = await _baseService.post(
+      "",
+      <String, String> {
+        "name": name
+      }
     );
-
-    if (response.statusCode == 200) {
-      Map<String, dynamic> body = json.decode(response.body);
-      return Group.fromJson(body);
-    }
-
-    throw Exception('TODO group save exception');
+    return Group.fromJson(response);
   }
 
   Future<Group> update(int id, String name) async {
-    final response = await http.put(
-      '$_baseUrl/$id',
-      headers: <String, String> {
-        'Authorization': AuthenticationService.instance.getAuthorization(),
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: json.encode(<String, String> {
+    dynamic response = await _baseService.put(
+      "/$id",
+      <String, String> {
         'name': name
-      }),
+      }
     );
-
-    if (response.statusCode == 200) {
-      Map<String, dynamic> body = json.decode(response.body);
-      return Group.fromJson(body);
-    }
-
-    throw Exception('TODO group save exception');
+    return Group.fromJson(response);
   }
 
   Future<Group> get(int id) async {
-    final response = await http.get(
-      '$_baseUrl/$id',
-      headers: <String, String> {
-        'Authorization': AuthenticationService.instance.getAuthorization(),
-      }
+    dynamic response = await _baseService.get(
+      "/$id"
     );
-
-    if (response.statusCode == 200) {
-      Map<String, dynamic> body = json.decode(response.body);
-      return Group.fromJson(body);
-    }
-
-    throw Exception('TODO group get exception');
+    return Group.fromJson(response);
   }
 
   Future<Map<String, dynamic>> delete(int id) async {
-    final response = await http.delete(
-      '$_baseUrl/$id',
-      headers: <String, String> {
-        'Authorization': AuthenticationService.instance.getAuthorization(),
-      },
+    dynamic response = await _baseService.delete(
+      "/$id",
     );
-
-    if (response.statusCode == 200) {
-      return json.decode(response.body);
-    }
-
-    throw Exception('TODO group delete exception');
+    return response["success"];
   }
 
   Future<List<User>> searchNewUser(int id, String fullName) async {
-    final response = await http.get(
-        '$_baseUrl/$id/searchnewuser?fullname=$fullName',
-        headers: <String, String> {
-          'Authorization': AuthenticationService.instance.getAuthorization(),
-        }
+    dynamic response = await _baseService.get(
+      "/$id/searchnewuser?fullname=$fullName"
     );
-
-    if (response.statusCode == 200) {
-      List<dynamic> body = json.decode(response.body);
-      return body.map((dynamic item) => User.fromJson(item)).toList();
-    }
-
-    throw Exception('TODO group searchNewUser exception');
+    List<dynamic> body = response;
+    return body.map((dynamic item) => User.fromJson(item)).toList();
   }
 
   Future<Group> addUser(int id, int userId, String role) async {
-    final response = await http.post(
-      '$_baseUrl/$id/adduser/$userId',
-      headers: <String, String> {
-        'Authorization': AuthenticationService.instance.getAuthorization(),
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: json.encode(<String, String> {
-        'role': role
-      }),
+    dynamic response = await _baseService.post(
+      "/$id/adduser/$userId",
+      <String, String> {
+        "role": role
+      }
     );
-
-    Map<String, dynamic> body = json.decode(response.body);
-
-    if (response.statusCode == 200) {
-      return Group.fromJson(body);
-    }
-
-    throw Exception('TODO group addUser exception');
+    return Group.fromJson(response);
   }
 
   Future<Group> removeUser(int id, int userId) async {
-    final response = await http.delete(
-        '$_baseUrl/$id/removeuser/$userId',
-        headers: <String, String> {
-          'Authorization': AuthenticationService.instance.getAuthorization(),
-        }
+    dynamic response = await _baseService.delete(
+      "/$id/removeuser/$userId",
     );
-
-    if (response.statusCode == 200) {
-      Map<String, dynamic> body = json.decode(response.body);
-      return Group.fromJson(body);
-    }
-
-    throw Exception('TODO group removeUser exception');
+    return Group.fromJson(response);
   }
 
   Future<Group> updateUser(int id, int userId, String role) async {
-    final response = await http.put(
-        '$_baseUrl/$id/updateuser/$userId',
-        headers: <String, String> {
-          'Authorization': AuthenticationService.instance.getAuthorization(),
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: json.encode(<String, String> {
-          'role': role
-        })
+    dynamic response = await _baseService.put(
+      "/$id/updateuser/$userId",
+      <String, String> {
+        'role': role
+      }
     );
-
-    if (response.statusCode == 200) {
-      Map<String, dynamic> body = json.decode(response.body);
-      return Group.fromJson(body);
-    }
-
-    throw Exception('TODO group removeUser exception');
+    return Group.fromJson(response);
   }
 }

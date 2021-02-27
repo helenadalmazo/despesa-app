@@ -17,7 +17,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
 
-  User _currentUser = AuthenticationService.instance.currentUser;
+  User _currentUser = AuthenticationService.currentUser;
 
   List<Group> _groupList;
 

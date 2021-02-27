@@ -6,7 +6,7 @@ import 'package:despesa_app/widget/user_circle_avatar.dart';
 import 'package:flutter/material.dart';
 
 class CurrentUserScreen extends StatelessWidget {
-  final User _currentUser = AuthenticationService.instance.currentUser;
+  final User _currentUser = AuthenticationService.currentUser;
 
   void _settingScreen(BuildContext context) {
     Navigator.push(

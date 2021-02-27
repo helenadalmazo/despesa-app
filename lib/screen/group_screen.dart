@@ -77,17 +77,17 @@ class _GroupScreenState extends State<GroupScreen> {
   }
 
   Future<void> _getStatistics() async {
-    List<StatisticValueGroupedByUser> statisticValueByUserResponse = await StatisticService.instance.listValueGroupedByUser(_group.id);
-    List<StatisticValueGroupedByYearMonth> statisticValueByYearMonthResponse = await StatisticService.instance.listValueGroupedByYearMonth(_group.id);
+    List<StatisticValueGroupedByUser> statisticValueGroupedByUserResponse = await StatisticService.instance.listValueGroupedByUser(_group.id);
+    List<StatisticValueGroupedByYearMonth> statisticValueGroupedByYearMonthResponse = await StatisticService.instance.listValueGroupedByYearMonth(_group.id);
 
-    if (statisticValueByUserResponse.isEmpty && statisticValueByYearMonthResponse.isEmpty) {
+    if (statisticValueGroupedByUserResponse.isEmpty && statisticValueGroupedByYearMonthResponse.isEmpty) {
       return;
     }
 
     setState(() {
-      _totalValue = statisticValueByUserResponse.map((statistic) => statistic.value).reduce((value, element) => value + element);
-      _statisticValueByUser = statisticValueByUserResponse;
-      _statisticValueByYearMonth = statisticValueByYearMonthResponse;
+      _totalValue = statisticValueGroupedByUserResponse.map((statistic) => statistic.value).reduce((value, element) => value + element);
+      _statisticValueByUser = statisticValueGroupedByUserResponse;
+      _statisticValueByYearMonth = statisticValueGroupedByYearMonthResponse;
     });
   }
 
@@ -118,7 +118,7 @@ class _GroupScreenState extends State<GroupScreen> {
   }
 
   String _getUserNameText(User user) {
-    bool isCurrentUser = AuthenticationService.instance.currentUser.username == user.username;
+    bool isCurrentUser = AuthenticationService.currentUser.username == user.username;
     return '${user.fullName} ${isCurrentUser ? '(Você)' : ''}';
   }
 
@@ -129,12 +129,12 @@ class _GroupScreenState extends State<GroupScreen> {
   }
 
   Future<void> _deleteExpense(Expense expense) async {
-    Map<String, dynamic> deleteResponse = await ExpenseService.instance.delete(_group.id, expense.id);
-    if (deleteResponse['success']) {
-      setState(() {
-        _expenses.remove(expense);
-      });
-    }
+//    Map<String, dynamic> deleteResponse = await ExpenseService.instance.delete(_group.id, expense.id);
+//    if (deleteResponse['success']) {
+//      setState(() {
+//        _expenses.remove(expense);
+//      });
+//    }
   }
 
   Future<void> _removeUser(int userId) async {

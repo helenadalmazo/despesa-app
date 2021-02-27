@@ -1,3 +1,4 @@
+import 'package:despesa_app/exception/ApiException.dart';
 import 'package:despesa_app/formatter/date_format.dart';
 import 'package:despesa_app/formatter/money_format.dart';
 import 'package:despesa_app/model/expense.dart';
@@ -6,6 +7,7 @@ import 'package:despesa_app/model/user.dart';
 import 'package:despesa_app/service/authentication_service.dart';
 import 'package:despesa_app/service/expense_service.dart';
 import 'package:despesa_app/service/group_service.dart';
+import 'package:despesa_app/utils/scaffold_utils.dart';
 import 'package:despesa_app/utils/text_form_field_validator.dart';
 import 'package:despesa_app/widget/user_circle_avatar.dart';
 import 'package:flutter/cupertino.dart';
@@ -115,7 +117,7 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
 
   String _getCreatedBy() {
     if (_expense == null) {
-      return AuthenticationService.instance.currentUser.fullName;
+      return AuthenticationService.currentUser.fullName;
     }
     return _expense.createdBy.fullName;
   }
@@ -146,13 +148,12 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
       );
     }
 
-    if (_expense == null) {
+    try {
       await ExpenseService.instance.save(_group.id, name, value, description, items);
-    } else {
-      await ExpenseService.instance.update(_group.id, _expense.id, name, value, description, items);
+      Navigator.pop(context, true);
+    } on ApiException catch (apiException) {
+      ScaffoldUtils.showSnackBar(context, apiException.message);
     }
-
-    Navigator.pop(context, true);
   }
 
   void _close(BuildContext context) {

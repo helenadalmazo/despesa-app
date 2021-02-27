@@ -1,107 +1,61 @@
-import 'dart:convert';
-
 import 'package:despesa_app/model/expense.dart';
-import 'package:despesa_app/service/authentication_service.dart';
-import 'package:http/http.dart' as http;
+import 'package:despesa_app/service/base_service.dart';
 
 class ExpenseService {
 
   ExpenseService.privateConstructor();
   static final ExpenseService instance = ExpenseService.privateConstructor();
 
-  static final String _baseUrl = 'http://10.0.2.2:5000/expense/group';
+  static final _baseService = BaseService("/expense/group");
 
   Future<List<Expense>> list(int groupId) async {
-    final response = await http.get(
-      "$_baseUrl/$groupId",
-      headers: <String, String> {
-        'Authorization': AuthenticationService.instance.getAuthorization(),
-      }
+    dynamic response = await _baseService.get(
+      "/$groupId"
     );
-
-    if (response.statusCode == 200) {
-      List<dynamic> body = json.decode(response.body);
-      return body.map((dynamic item) => Expense.fromJson(item)).toList();
-    }
-
-    throw Exception('TODO expense list exception');
+    List<dynamic> responseList = response;
+    return responseList
+        .map((dynamic item) => Expense.fromJson(item))
+        .toList();
   }
 
   Future<Expense> save(int groupId, String name, double value, String description, List<Map<String, dynamic>> items) async {
-    final response = await http.post(
-      '$_baseUrl/$groupId',
-      headers: <String, String> {
-        'Authorization': AuthenticationService.instance.getAuthorization(),
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: json.encode(<String, dynamic> {
-        'group_id': groupId,
-        'name': name,
-        'value': value,
-        'description': description,
-        'items': items
-      }),
+    dynamic response = await _baseService.post(
+      "/$groupId",
+      <String, dynamic> {
+        "group_id": groupId,
+        "name": name,
+        "value": value,
+        "description": description,
+        "items": items
+      }
     );
-
-    if (response.statusCode == 200) {
-      Map<String, dynamic> body = json.decode(response.body);
-      return Expense.fromJson(body);
-    }
-
-    throw Exception('TODO expense save exception');
+    return Expense.fromJson(response);
   }
 
   Future<Expense> update(int groupId, int id, String name, double value, String description, List<Map<String, dynamic>> items) async {
-    final response = await http.put(
-      '$_baseUrl/$groupId/$id',
-      headers: <String, String> {
-        'Authorization': AuthenticationService.instance.getAuthorization(),
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: json.encode(<String, dynamic> {
-        'name': name,
-        'value': value,
-        'description': description,
-        'items': items
-      }),
+    dynamic response = await _baseService.put(
+      "$groupId/$id",
+      <String, dynamic> {
+        "name": name,
+        "value": value,
+        "description": description,
+        "items": items
+      }
     );
-
-    if (response.statusCode == 200) {
-      Map<String, dynamic> body = json.decode(response.body);
-      return Expense.fromJson(body);
-    }
-
-    throw Exception('TODO expense update exception');
+    return Expense.fromJson(response);
   }
 
   Future<Expense> get(int groupId, int id) async {
-    final response = await http.get(
-        '$_baseUrl/$groupId/$id',
-        headers: <String, String> {
-          'Authorization': AuthenticationService.instance.getAuthorization(),
-        }
+    dynamic response = await _baseService.get(
+      "/$groupId/$id"
     );
-
-    if (response.statusCode == 200) {
-      Map<String, dynamic> body = json.decode(response.body);
-      return Expense.fromJson(body);
-    }
-
-    throw Exception('TODO expense get exception');
+    return Expense.fromJson(response);
   }
 
-  Future<Map<String, dynamic>> delete(int groupId, int id) async {
-    final response = await http.delete(
-      '$_baseUrl/$groupId/$id',
-      headers: <String, String> {
-        'Authorization': AuthenticationService.instance.getAuthorization(),
-      },
+  Future<bool> delete(int groupId, int id) async {
+    dynamic response = await _baseService.delete(
+      "/$groupId/$id"
     );
-
-    if (response.statusCode == 200) {
-      return json.decode(response.body);
-    }
-
-    throw Exception('TODO expense delete exception');
+    return response["success"];
   }
 }

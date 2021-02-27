@@ -1,107 +1,62 @@
-import 'dart:convert';
-
 import 'package:despesa_app/model/user.dart';
+import 'package:despesa_app/service/base_service.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:http/http.dart' as http;
 
 class AuthenticationService {
 
-  String _token;
-  int _expiresIn;
-
-  User currentUser;
+  static String token;
+  static int expiresIn;
+  static User currentUser;
 
   AuthenticationService._privateConstructor();
   static final AuthenticationService instance = AuthenticationService._privateConstructor();
 
-  static final String _baseUrl = 'http://10.0.2.2:5000/auth';
+  static final _baseService = BaseService("/auth");
 
-  Future<Map<String, dynamic>> signUp(String fullName, String username, String password, String confirmPassword) async {
-    final response = await http.post(
-      '$_baseUrl/signup/',
-      headers: <String, String> {
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: json.encode(<String, String> {
-        'full_name': fullName,
-        'username': username,
-        'password': password,
-        'confirm_password': confirmPassword
-      }),
+  Future<bool> signUp(String fullName, String username, String password, String confirmPassword) async {
+    dynamic response = await _baseService.post(
+      "/signup",
+      <String, String> {
+        "full_name": fullName,
+        "username": username,
+        "password": password,
+        "confirm_password": confirmPassword
+      }
     );
-
-    Map<String, dynamic> body = json.decode(response.body);
-
-    if (response.statusCode == 200) {
-      return {
-        'success': true
-      };
-    }
-
-    return {
-      'success': false,
-      'message': body['message']
-    };
+    return true;
   }
 
-  Future<Map<String, dynamic>> login(String username, String password) async {
+  Future<bool> login(String username, String password) async {
     final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
 
-    final response = await http.post(
-      '$_baseUrl/token/',
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: json.encode(<String, dynamic> {
-        'username': username,
-        'password': password,
-        'device': <String, String>{
-          'token': await _firebaseMessaging.getToken()
+    final response = await _baseService.post(
+      "/token",
+      <String, dynamic> {
+        "username": username,
+        "password": password,
+        "device": <String, String> {
+          "token": await _firebaseMessaging.getToken()
         }
-      }),
+      }
     );
 
-    Map<String, dynamic> body = json.decode(response.body);
+    token = response["token"];
+    expiresIn = response["expires_in"];
+    currentUser = await _me();
 
-    if (response.statusCode == 200) {
-      _token = body['token'];
-      _expiresIn = body['expires_in'];
-      currentUser = await _me();
-
-      return {
-        'success': true
-      };
-    }
-
-    return {
-      'success': false,
-      'message': body['message']
-    };
+    return true;
   }
 
   void logout() {
-    _token = null;
-    _expiresIn = null;
+    token = null;
+    expiresIn = null;
     currentUser = null;
   }
 
-  String getAuthorization() {
-    return 'Bearer $_token';
-  }
-
   Future<User> _me() async {
-    final response = await http.get(
-      '$_baseUrl/me/',
-      headers: <String, String> {
-        'Authorization': getAuthorization(),
-      },
+    dynamic response = await _baseService.get(
+      "/me"
     );
-
-    if (response.statusCode == 200) {
-      Map<String, dynamic> body = json.decode(response.body);
-      return User.fromJson(body);
-    }
-
-    throw Exception('TODO me exception');
+    return User.fromJson(response);
   }
 }

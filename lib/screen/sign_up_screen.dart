@@ -1,4 +1,5 @@
 import 'package:despesa_app/constant/hero_tag.dart';
+import 'package:despesa_app/exception/ApiException.dart';
 import 'package:despesa_app/screen/home_screen.dart';
 import 'package:despesa_app/service/authentication_service.dart';
 import 'package:despesa_app/utils/scaffold_utils.dart';
@@ -25,22 +26,18 @@ class SignUpScreen extends StatelessWidget {
     final String password = _passwordTextEditingController.text;
     final String confirmPassword = _confirmPasswordTextEditingController.text;
 
-    final Map<String, dynamic> signUpResult = await AuthenticationService.instance.signUp(
-      fullName, username, password, confirmPassword
-    );
-
-    if (signUpResult['success']) {
-      final Map<String, dynamic> loginResult = await AuthenticationService.instance.login(
-          username, password
+    try {
+      await AuthenticationService.instance.signUp(
+        fullName, username, password, confirmPassword
       );
 
-      if (loginResult['success']) {
-        _homeScreen(context);
-      } else {
-        ScaffoldUtils.showSnackBar(context, loginResult['message']);
-      }
-    } else {
-      ScaffoldUtils.showSnackBar(context, signUpResult['message']);
+      await AuthenticationService.instance.login(
+        username, password
+      );
+
+      _homeScreen(context);
+    } on ApiException catch (apiException) {
+      ScaffoldUtils.showSnackBar(context, apiException.message);
     }
   }
 
