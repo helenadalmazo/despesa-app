@@ -58,7 +58,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _deleteGroup(int id, int index) async {
-    Map<String, dynamic> delete = await GroupService.instance.delete(id);
+    bool delete = await GroupService.instance.delete(id);
     setState(() {
       _groupList.removeAt(index);
     });

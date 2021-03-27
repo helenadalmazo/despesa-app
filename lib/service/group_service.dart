@@ -46,7 +46,7 @@ class GroupService {
     return Group.fromJson(response);
   }
 
-  Future<Map<String, dynamic>> delete(int id) async {
+  Future<bool> delete(int id) async {
     dynamic response = await _baseService.delete(
       "/$id",
     );
