@@ -1,4 +1,5 @@
 import 'package:despesa_app/model/expense.dart';
+import 'package:despesa_app/model/expense_category.dart';
 import 'package:despesa_app/service/base_service.dart';
 
 class ExpenseService {
@@ -6,11 +7,11 @@ class ExpenseService {
   ExpenseService.privateConstructor();
   static final ExpenseService instance = ExpenseService.privateConstructor();
 
-  static final _baseService = BaseService("/expense/group");
+  static final _baseService = BaseService("/expense");
 
   Future<List<Expense>> list(int groupId) async {
     dynamic response = await _baseService.get(
-      "/$groupId"
+      "/group/$groupId"
     );
     List<dynamic> responseList = response;
     return responseList
@@ -18,12 +19,12 @@ class ExpenseService {
         .toList();
   }
 
-  Future<Expense> save(int groupId, String name, double value, String description, List<Map<String, dynamic>> items) async {
+  Future<Expense> save(int groupId, String name, int _categoryId, double value, String description, List<Map<String, dynamic>> items) async {
     dynamic response = await _baseService.post(
-      "/$groupId",
+      "/group/$groupId",
       <String, dynamic> {
-        "group_id": groupId,
         "name": name,
+        "category_id": _categoryId,
         "value": value,
         "description": description,
         "items": items
@@ -34,7 +35,7 @@ class ExpenseService {
 
   Future<Expense> update(int groupId, int id, String name, double value, String description, List<Map<String, dynamic>> items) async {
     dynamic response = await _baseService.put(
-      "$groupId/$id",
+      "/group/$groupId/$id",
       <String, dynamic> {
         "name": name,
         "value": value,
@@ -47,15 +48,25 @@ class ExpenseService {
 
   Future<Expense> get(int groupId, int id) async {
     dynamic response = await _baseService.get(
-      "/$groupId/$id"
+      "/group/$groupId/$id"
     );
     return Expense.fromJson(response);
   }
 
   Future<bool> delete(int groupId, int id) async {
     dynamic response = await _baseService.delete(
-      "/$groupId/$id"
+      "/group/$groupId/$id"
     );
     return response["success"];
+  }
+
+  Future<List<ExpenseCategory>> listCategories() async {
+    dynamic response = await _baseService.get(
+      "/categories"
+    );
+    List<dynamic> responseList = response;
+    return responseList
+        .map((dynamic item) => ExpenseCategory.fromJson(item))
+        .toList();
   }
 }

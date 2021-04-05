@@ -2,8 +2,10 @@ import 'package:despesa_app/exception/ApiException.dart';
 import 'package:despesa_app/formatter/date_format.dart';
 import 'package:despesa_app/formatter/money_format.dart';
 import 'package:despesa_app/model/expense.dart';
+import 'package:despesa_app/model/expense_category.dart';
 import 'package:despesa_app/model/group.dart';
 import 'package:despesa_app/model/user.dart';
+import 'package:despesa_app/screen/expense_category_screen.dart';
 import 'package:despesa_app/service/authentication_service.dart';
 import 'package:despesa_app/service/expense_service.dart';
 import 'package:despesa_app/service/group_service.dart';
@@ -35,6 +37,9 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
   List<User> _users = [];
   Expense _expense;
 
+  List<ExpenseCategory> _categories = [];
+  ExpenseCategory _category;
+
   bool _loading = true;
 
   int _currentStep = 0;
@@ -59,6 +64,7 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
 
   Future<void> _load() async {
     await _getGroup();
+    await _getCategories();
     await _getExpense();
   }
 
@@ -67,6 +73,13 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
     setState(() {
       _group = get;
       _users = _group.users.map((groupUserRole) => groupUserRole.user).toList();
+    });
+  }
+
+  Future<void> _getCategories() async {
+    List<ExpenseCategory> response = await ExpenseService.instance.listCategories();
+    setState(() {
+      _categories = response;
     });
   }
 
@@ -79,6 +92,7 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
       _users = _expense.items.map((item) => item.user).toList();
 
       _nameTextEditingController.value = TextEditingValue(text: _expense.name);
+      _category = _expense.category;
       _valueTextEditingController.value = TextEditingValue(text: _expense.value.toString());
       if (_expense.description != null) {
         _descriptionTextEditingController.value = TextEditingValue(text: _expense.description);
@@ -131,7 +145,9 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
 
   void _complete(BuildContext context) async {
     String name = _nameTextEditingController.text;
+    int categoryId = _category.id;
     double value = double.parse(_valueTextEditingController.text);
+
     String description = _descriptionTextEditingController.text;
     if (description.isEmpty) {
       description = null;
@@ -142,14 +158,14 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
     for (var user in _users) {
       items.add(
         {
-          'value': splitValue,
-          'user_id': user.id
+          "value": splitValue,
+          "user_id": user.id
         }
       );
     }
 
     try {
-      await ExpenseService.instance.save(_group.id, name, value, description, items);
+      await ExpenseService.instance.save(_group.id, name, categoryId, value, description, items);
       Navigator.pop(context, true);
     } on ApiException catch (apiException) {
       ScaffoldUtils.showSnackBar(context, apiException.message);
@@ -204,6 +220,21 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
     () { return true; },
   ];
 
+  Future<void> _expenseCategoryScreen(BuildContext context) async {
+    ExpenseCategory result = await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ExpenseCategoryScreen(_categories)
+        )
+    );
+
+    if (result != null) {
+      setState(() {
+        _category = result;
+      });
+    }
+  }
+
   List<Step> _steps(BuildContext context) => [
     Step(
       title: Text('Despesa'),
@@ -219,9 +250,49 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
               controller: _nameTextEditingController,
               validator: TextFormFieldValidator.validateMandatory,
               textInputAction: TextInputAction.next,
+              onChanged: (value) {
+                String suggestion = ExpenseCategory.getSuggestion(value);
+                setState(() {
+                  _category = _categories.where((element) => element.name == suggestion).first;
+                });
+              },
               decoration: InputDecoration(
                 labelText: 'Despesa',
               ),
+            ),
+            SizedBox(
+              height: 16,
+            ),
+            Row(
+              children: [
+                InkWell(
+                  onTap: () => _expenseCategoryScreen(context),
+                  child: Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 8
+                    ),
+                    child: Row(
+                      children: [
+                        Text(
+                          _category == null ? "\u{1F4C4}" : _category.getEmoji(),
+                          style: TextStyle(
+                            fontSize: 24
+                          ),
+                        ),
+                        SizedBox(
+                          width: 8
+                        ),
+                        Text(
+                          _category == null ? "Categoria" : _category.name,
+                          style: Theme.of(context).textTheme.subtitle1
+                        ),
+                      ],
+                    )
+                  ),
+                ),
+                Spacer()
+              ],
             ),
             SizedBox(
               height: 8,
