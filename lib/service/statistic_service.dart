@@ -1,3 +1,4 @@
+import 'package:despesa_app/model/statistic_value_grouped_by_category.dart';
 import 'package:despesa_app/model/statistic_value_grouped_by_user.dart';
 import 'package:despesa_app/model/statistic_value_grouped_by_year_month.dart';
 import 'package:despesa_app/service/base_service.dart';
@@ -16,6 +17,16 @@ class StatisticService {
     List<dynamic> responseList = response;
     return responseList
         .map((dynamic item) => StatisticValueGroupedByUser.fromJson(item))
+        .toList();
+  }
+
+  Future<List<StatisticValueGroupedByCategory>> listValueGroupedByCategory(int groupId) async {
+    dynamic response = await _baseService.get(
+        "/valuegroupedbycategory/group/$groupId"
+    );
+    List<dynamic> responseList = response;
+    return responseList
+        .map((dynamic item) => StatisticValueGroupedByCategory.fromJson(item))
         .toList();
   }
 

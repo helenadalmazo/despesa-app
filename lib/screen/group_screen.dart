@@ -1,14 +1,15 @@
-import 'package:charts_flutter/flutter.dart' as charts;
-import 'package:despesa_app/formatter/date_format.dart';
 import 'package:despesa_app/formatter/money_format.dart';
-import 'package:despesa_app/formatter/percentage_format.dart';
 import 'package:despesa_app/model/expense.dart';
 import 'package:despesa_app/model/group.dart';
 import 'package:despesa_app/model/group_user_role.dart';
+import 'package:despesa_app/model/statistic_value_grouped_by_category.dart';
 import 'package:despesa_app/model/statistic_value_grouped_by_user.dart';
 import 'package:despesa_app/model/statistic_value_grouped_by_year_month.dart';
 import 'package:despesa_app/model/user.dart';
 import 'package:despesa_app/screen/expense_screen.dart';
+import 'package:despesa_app/screen/group/statistic_value_by_category_pie.dart';
+import 'package:despesa_app/screen/group/statistic_value_by_user_pie_chart.dart';
+import 'package:despesa_app/screen/group/statistic_value_by_year_month_bar_chart.dart';
 import 'package:despesa_app/screen/user_list_screen.dart';
 import 'package:despesa_app/screen/user_screen.dart';
 import 'package:despesa_app/service/authentication_service.dart';
@@ -36,6 +37,7 @@ class _GroupScreenState extends State<GroupScreen> {
 
   double _totalValue = 0;
   List<StatisticValueGroupedByUser> _statisticValueByUser;
+  List<StatisticValueGroupedByCategory> _statisticValueByCategory;
   List<StatisticValueGroupedByYearMonth> _statisticValueByYearMonth;
 
   bool _animateCharts = true;
@@ -78,6 +80,7 @@ class _GroupScreenState extends State<GroupScreen> {
 
   Future<void> _getStatistics() async {
     List<StatisticValueGroupedByUser> statisticValueGroupedByUserResponse = await StatisticService.instance.listValueGroupedByUser(_group.id);
+    List<StatisticValueGroupedByCategory> statisticValueGroupedByCategoryResponse = await StatisticService.instance.listValueGroupedByCategory(_group.id);
     List<StatisticValueGroupedByYearMonth> statisticValueGroupedByYearMonthResponse = await StatisticService.instance.listValueGroupedByYearMonth(_group.id);
 
     if (statisticValueGroupedByUserResponse.isEmpty && statisticValueGroupedByYearMonthResponse.isEmpty) {
@@ -87,6 +90,7 @@ class _GroupScreenState extends State<GroupScreen> {
     setState(() {
       _totalValue = statisticValueGroupedByUserResponse.map((statistic) => statistic.value).reduce((value, element) => value + element);
       _statisticValueByUser = statisticValueGroupedByUserResponse;
+      _statisticValueByCategory = statisticValueGroupedByCategoryResponse;
       _statisticValueByYearMonth = statisticValueGroupedByYearMonthResponse;
     });
   }
@@ -281,85 +285,48 @@ class _GroupScreenState extends State<GroupScreen> {
       );
     }
 
-    return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: 16,
-        vertical: 8
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+    return ListView(
         children: [
-          Text('Divisão dos valores por usuário',
-            style: Theme.of(context).textTheme.subtitle1,
-          ),
-          Expanded(
-            child: _statisticValueByUser == null
-              ? Center(child: CircularProgressIndicator())
-              : charts.PieChart(
-              [
-                charts.Series<StatisticValueGroupedByUser, String>(
-                  id: 'statisticValueByUser',
-                  domainFn: (StatisticValueGroupedByUser statistic, _) => statistic.user.getFirstName(),
-                  measureFn: (StatisticValueGroupedByUser statistic, _) => statistic.value,
-                  colorFn: (StatisticValueGroupedByUser statistic, _) {
-                    Color color = statistic.user.getColor();
-                    return charts.Color(r: color.red, g: color.green, b: color.blue, a: color.alpha);
-                  },
-                  data: _statisticValueByUser,
-                  labelAccessorFn: (StatisticValueGroupedByUser statistic, _) => PercentageFormat.format(statistic.value/_totalValue * 100),
-                )
+          Container(
+            height: MediaQuery.of(context).size.width * 0.50,
+            margin: EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Divisão dos valores por usuário',
+                  style: Theme.of(context).textTheme.subtitle1,
+                ),
+                StatisticValueByUserPieChart(animate: _animateCharts, statisticValueByUser: _statisticValueByUser),
               ],
-              animate: _animateCharts,
-              layoutConfig: charts.LayoutConfig(
-                leftMarginSpec: charts.MarginSpec.fixedPixel(0),
-                topMarginSpec: charts.MarginSpec.fixedPixel(0),
-                rightMarginSpec: charts.MarginSpec.fixedPixel(8),
-                bottomMarginSpec:charts.MarginSpec.fixedPixel(0),
-              ),
-              behaviors: [
-                charts.DatumLegend(
-                  position: charts.BehaviorPosition.top,
-                  outsideJustification: charts.OutsideJustification.startDrawArea,
-                  desiredMaxRows: 2,
-                )
-              ],
-              defaultRenderer: charts.ArcRendererConfig(
-                arcWidth: 60,
-                arcRendererDecorators: [
-                  charts.ArcLabelDecorator(
-                      labelPosition: charts.ArcLabelPosition.inside
-                  ),
-                ],
-              ),
-            )
-          ),
-          SizedBox(
-              height: 16
-          ),
-          Text('Divisão dos valores por mês/ano',
-            style: Theme.of(context).textTheme.subtitle1,
-          ),
-          Expanded(
-            child: _statisticValueByYearMonth == null
-              ? Center(child: CircularProgressIndicator())
-              : charts.BarChart(
-              [
-                charts.Series<StatisticValueGroupedByYearMonth, String>(
-                  id: 'statisticValueByYearMonth',
-                  domainFn: (StatisticValueGroupedByYearMonth statistic, _) => DateFormat.formatYearMonth(statistic.date),
-                  measureFn: (StatisticValueGroupedByYearMonth statistic, _) => statistic.value,
-                  colorFn: (StatisticValueGroupedByYearMonth statistic, _) {
-                    Color color = Theme.of(context).primaryColorLight;
-                    return charts.Color(r: color.red, g: color.green, b: color.blue, a: color.alpha);
-                  },
-                  data: _statisticValueByYearMonth,
-                )
-              ],
-              animate: _animateCharts,
             ),
-          )
+          ),
+          Container(
+            height: MediaQuery.of(context).size.width * 0.50,
+            margin: EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Divisão dos valores por categoria',
+                  style: Theme.of(context).textTheme.subtitle1,
+                ),
+                StatisticValueByCategoryPieChart(animate: _animateCharts, statisticValueByCategory: _statisticValueByCategory),
+              ],
+            ),
+          ),
+          Container(
+            height: MediaQuery.of(context).size.width * 0.70,
+            margin: EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Divisão dos valores por mês/ano',
+                  style: Theme.of(context).textTheme.subtitle1,
+                ),
+                StatisticValueByYearMonthBarChart(animate: _animateCharts, statisticValueByYearMonth: _statisticValueByYearMonth)
+              ],
+            ),
+          ),
         ]
-      ),
     );
   }
 
