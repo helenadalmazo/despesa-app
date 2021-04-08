@@ -1,3 +1,4 @@
+import 'package:despesa_app/exception/ApiException.dart';
 import 'package:despesa_app/formatter/money_format.dart';
 import 'package:despesa_app/model/expense.dart';
 import 'package:despesa_app/model/group.dart';
@@ -16,6 +17,7 @@ import 'package:despesa_app/service/authentication_service.dart';
 import 'package:despesa_app/service/expense_service.dart';
 import 'package:despesa_app/service/group_service.dart';
 import 'package:despesa_app/service/statistic_service.dart';
+import 'package:despesa_app/utils/scaffold_utils.dart';
 import 'package:despesa_app/widget/empty_state.dart';
 import 'package:despesa_app/widget/list_header.dart';
 import 'package:despesa_app/widget/user_circle_avatar.dart';
@@ -141,11 +143,15 @@ class _GroupScreenState extends State<GroupScreen> {
     }
   }
 
-  Future<void> _removeUser(int userId) async {
-    Group removeUser = await GroupService.instance.removeUser(_group.id, userId);
-    setState(() {
-      _group = removeUser;
-    });
+  Future<void> _removeUser(int userId, BuildContext context) async {
+    try {
+      Group removeUser = await GroupService.instance.removeUser(_group.id, userId);
+      setState(() {
+        _group = removeUser;
+      });
+    } on ApiException catch (apiException) {
+      ScaffoldUtils.showSnackBar(context, apiException.message);
+    }
   }
 
   void _showDeleteExpenseDialog(BuildContext context, Expense expense) {
@@ -182,7 +188,7 @@ class _GroupScreenState extends State<GroupScreen> {
     );
   }
 
-  void _showRemoveUserDialog(BuildContext context, int userId) {
+  void _showRemoveUserDialog(BuildContext builderContext, int userId) {
     showDialog<void>(
       context: context,
       builder: (BuildContext context) {
@@ -205,7 +211,7 @@ class _GroupScreenState extends State<GroupScreen> {
             TextButton(
               child: Text('Sim'),
               onPressed: () {
-                _removeUser(userId);
+                _removeUser(userId, builderContext);
                 Navigator.pop(context, true);
               },
             ),
@@ -388,7 +394,7 @@ class _GroupScreenState extends State<GroupScreen> {
     );
   }
 
-  Widget _usersListView(BuildContext context) {
+  Widget _usersListView(BuildContext builderContext) {
     return ListView.separated(
       itemCount: _group.users.length,
       itemBuilder: (BuildContext context, int index) {
@@ -429,7 +435,7 @@ class _GroupScreenState extends State<GroupScreen> {
                 ),
                 IconButton(
                   icon: Icon(Icons.close),
-                  onPressed: () => _showRemoveUserDialog(context, _group.users[index].user.id)
+                  onPressed: () => _showRemoveUserDialog(builderContext, _group.users[index].user.id)
                 )
               ],
             )

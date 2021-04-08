@@ -1,8 +1,10 @@
+import 'package:despesa_app/exception/ApiException.dart';
 import 'package:despesa_app/model/group.dart';
 import 'package:despesa_app/model/group_user.dart';
 import 'package:despesa_app/model/group_user_role.dart';
 import 'package:despesa_app/model/user.dart';
 import 'package:despesa_app/service/group_service.dart';
+import 'package:despesa_app/utils/scaffold_utils.dart';
 import 'package:despesa_app/widget/user_circle_avatar.dart';
 import 'package:flutter/material.dart';
 
@@ -44,14 +46,18 @@ class _UserScreenState extends State<UserScreen> {
   Future<void> _addUser(BuildContext context) async {
     String role = _groupUserRole.toString().split(".").last;
 
-    if (_isNewUser) {
-      await GroupService.instance.addUser(widget.group.id, widget.user.id, role);
-      Navigator.pop(context);
-    } else {
-      await GroupService.instance.updateUser(widget.group.id, widget.user.id, role);
-    }
+    try {
+      if (_isNewUser) {
+        await GroupService.instance.addUser(widget.group.id, widget.user.id, role);
+        Navigator.pop(context);
+      } else {
+        await GroupService.instance.updateUser(widget.group.id, widget.user.id, role);
+      }
 
-    Navigator.pop(context, true);
+      Navigator.pop(context, true);
+    } on ApiException catch (apiException) {
+      ScaffoldUtils.showSnackBar(context, apiException.message);
+    }
   }
 
   @override
@@ -103,6 +109,28 @@ class _UserScreenState extends State<UserScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
+                    'Dono',
+                    style: Theme.of(context).textTheme.subtitle1,
+                  ),
+                  Text(
+                    'Pode editar e remover o grupo, inserir e remover usuários, adicionar, editar e excluir despesas.',
+                    style: Theme.of(context).textTheme.bodyText2,
+                  )
+                ],
+              ),
+              value: GroupUserRole.OWNER,
+              groupValue: _groupUserRole,
+              onChanged: (GroupUserRole role) {
+                setState(() {
+                  _groupUserRole = role;
+                });
+              },
+            ),
+            RadioListTile(
+              title: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
                     'Administrador',
                     style: Theme.of(context).textTheme.subtitle1,
                   ),
@@ -145,9 +173,13 @@ class _UserScreenState extends State<UserScreen> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => _addUser(context),
-        child: Icon(Icons.check),
+      floatingActionButton: Builder(
+        builder: (BuildContext context) {
+          return FloatingActionButton(
+            onPressed: () => _addUser(context),
+            child: Icon(Icons.check),
+          );
+        },
       ),
     );
   }
