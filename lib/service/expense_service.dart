@@ -33,11 +33,12 @@ class ExpenseService {
     return Expense.fromJson(response);
   }
 
-  Future<Expense> update(int groupId, int id, String name, double value, String description, List<Map<String, dynamic>> items) async {
+  Future<Expense> update(int groupId, int id, String name, int categoryId, double value, String description, List<Map<String, dynamic>> items) async {
     dynamic response = await _baseService.put(
       "/group/$groupId/$id",
       <String, dynamic> {
         "name": name,
+        "category_id": categoryId,
         "value": value,
         "description": description,
         "items": items
