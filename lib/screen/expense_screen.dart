@@ -165,7 +165,12 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
     }
 
     try {
-      await ExpenseService.instance.save(_group.id, name, categoryId, value, description, items);
+      if (_expense == null) {
+        await ExpenseService.instance.save(_group.id, name, categoryId, value, description, items);
+      } else {
+        await ExpenseService.instance.update(_group.id, _expense.id, name, categoryId, value, description, items);
+      }
+
       Navigator.pop(context, true);
     } on ApiException catch (apiException) {
       ScaffoldUtils.showSnackBar(context, apiException.message);
