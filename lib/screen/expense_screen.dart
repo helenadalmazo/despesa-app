@@ -138,7 +138,7 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
 
   String _getDateCreated() {
     if (_expense == null) {
-      return DateFormat.now();
+      return DateFormat.formatNow();
     }
     return DateFormat.format(_expense.dateCreated);
   }

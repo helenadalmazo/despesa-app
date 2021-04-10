@@ -1,6 +1,6 @@
 class DateFormat {
 
-  static String now() {
+  static String formatNow() {
     DateTime now = DateTime.now();
 
     String day = now.day.toString().padLeft(2, "0");
