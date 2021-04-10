@@ -16,6 +16,12 @@ class DespesaApp extends StatelessWidget {
         primaryColorDark: Color.fromRGBO(0, 76, 119, 1),
 
         accentColor: Color.fromRGBO(68, 70, 166, 1),
+
+        textButtonTheme: TextButtonThemeData(
+          style: TextButton.styleFrom(
+            primary: Color.fromRGBO(68, 70, 166, 1),
+          ),
+        )
       ),
       home: WelcomeScreen(),
     );
