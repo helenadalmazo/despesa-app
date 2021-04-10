@@ -109,7 +109,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           Navigator.pop(context);
                         },
                         child: Text(
-                          'Salvar'
+                          'SALVAR'
                         )
                       ),
                     )
@@ -139,13 +139,13 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           actions: <Widget> [
             TextButton(
-              child: Text('Não'),
+              child: Text('NÃO'),
               onPressed: () {
                 Navigator.pop(context, false);
               },
             ),
             TextButton(
-              child: Text('Sim'),
+              child: Text('SIM'),
               onPressed: () {
                 _deleteGroup(group.id, index);
                 Navigator.pop(context, true);
