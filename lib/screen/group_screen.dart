@@ -1,4 +1,5 @@
 import 'package:despesa_app/exception/ApiException.dart';
+import 'package:despesa_app/formatter/date_format.dart';
 import 'package:despesa_app/formatter/money_format.dart';
 import 'package:despesa_app/model/expense.dart';
 import 'package:despesa_app/model/group.dart';
@@ -17,10 +18,12 @@ import 'package:despesa_app/service/authentication_service.dart';
 import 'package:despesa_app/service/expense_service.dart';
 import 'package:despesa_app/service/group_service.dart';
 import 'package:despesa_app/service/statistic_service.dart';
+import 'package:despesa_app/utils/date_time_utils.dart';
 import 'package:despesa_app/utils/scaffold_utils.dart';
 import 'package:despesa_app/widget/empty_state.dart';
 import 'package:despesa_app/widget/list_header.dart';
 import 'package:despesa_app/widget/user_circle_avatar.dart';
+import 'package:despesa_app/widget/year_month_date_picker.dart';
 import 'package:flutter/material.dart';
 
 class GroupScreen extends StatefulWidget {
@@ -36,6 +39,8 @@ class GroupScreen extends StatefulWidget {
 }
 
 class _GroupScreenState extends State<GroupScreen> {
+
+  DateTime _date = DateTime.now();
 
   double _totalValue = 0;
   List<StatisticValueGroupedByUser> _statisticValueByUser;
@@ -98,10 +103,17 @@ class _GroupScreenState extends State<GroupScreen> {
   }
 
   Future<void> _getExpenses() async {
-    List<Expense> response = await ExpenseService.instance.list(_group.id);
+    List<Expense> response = await ExpenseService.instance.list(_group.id, _date.year, _date.month);
     setState(() {
       _expenses = response;
     });
+  }
+
+  void _filterExpenses(DateTime dateTime) {
+    setState(() {
+      _date = dateTime;
+    });
+    _getExpenses();
   }
 
   void _onPageChanged(int index) {
@@ -134,6 +146,16 @@ class _GroupScreenState extends State<GroupScreen> {
     return "Usuário";
   }
 
+  String _getFilterButtonText() {
+    DateTime dateTime = DateTime.now();
+    if (_date.year == dateTime.year && _date.month == dateTime.month) {
+      return "ESTE MÊS";
+    } else {
+      String month = DateFormat.getMonthAbbreviation(_date.month);
+      return "${month.toUpperCase()}/${_date.year}";
+    }
+  }
+
   Future<void> _deleteExpense(Expense expense) async {
     bool deleteResponse = await ExpenseService.instance.delete(_group.id, expense.id);
     if (deleteResponse) {
@@ -154,6 +176,23 @@ class _GroupScreenState extends State<GroupScreen> {
     }
   }
 
+  void _showYearMonthDatePicker(BuildContext context) async {
+    DateTime dateTime = await showDialog<DateTime>(
+      context: context,
+      builder: (BuildContext context) {
+        return YearMonthDatePicker(
+          firstDate: DateTimeUtils.fromYearMonthString(_statisticValueByYearMonth.first.date),
+          lastDate: DateTime.now(),
+          initialDate: DateTime.now(),
+        );
+      },
+    );
+
+    if (dateTime != null) {
+      _filterExpenses(dateTime);
+    }
+  }
+
   void _showDeleteExpenseDialog(BuildContext context, Expense expense) {
     showDialog<void>(
       context: context,
@@ -170,13 +209,13 @@ class _GroupScreenState extends State<GroupScreen> {
           ),
           actions: <Widget> [
             TextButton(
-              child: Text('Não'),
+              child: Text('NÃO'),
               onPressed: () {
                 Navigator.pop(context, false);
               },
             ),
             TextButton(
-              child: Text('Sim'),
+              child: Text('SIM'),
               onPressed: () {
                 _deleteExpense(expense);
                 Navigator.pop(context, true);
@@ -203,13 +242,13 @@ class _GroupScreenState extends State<GroupScreen> {
           ),
           actions: <Widget> [
             TextButton(
-              child: Text('Não'),
+              child: Text('NÃO'),
               onPressed: () {
                 Navigator.pop(context, false);
               },
             ),
             TextButton(
-              child: Text('Sim'),
+              child: Text('SIM'),
               onPressed: () {
                 _removeUser(userId, builderContext);
                 Navigator.pop(context, true);
@@ -280,6 +319,36 @@ class _GroupScreenState extends State<GroupScreen> {
     if (result) {
       _getGroup();
     }
+  }
+
+  Widget _getActionsButton(BuildContext context) {
+    return Container(
+      color: Theme.of(context).primaryColor,
+      padding: EdgeInsets.symmetric(
+        horizontal: 32
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          OutlineButton.icon(
+              onPressed: () => _showYearMonthDatePicker(context),
+              borderSide: BorderSide(
+                color: Colors.white,
+              ),
+              icon: Icon(
+                Icons.filter_alt,
+                color: Colors.white,
+              ),
+              label: Text(
+                _getFilterButtonText(),
+                style: TextStyle(
+                    color: Colors.white
+                ),
+              )
+          ),
+        ],
+      ),
+    );
   }
 
   Widget _homePageView(BuildContext context) {
@@ -462,13 +531,25 @@ class _GroupScreenState extends State<GroupScreen> {
         children: <Widget>[
           Builder(
             builder: (BuildContext context) {
-              return _homePageView(context);
+              return Column(
+                children: [
+                  _getActionsButton(context),
+                  Container(
+                    color: Theme.of(context).primaryColor,
+                    padding: EdgeInsets.only(bottom: 16),
+                  ),
+                  Expanded(
+                    child: _homePageView(context)
+                  )
+                ],
+              );
             },
           ),
           Builder(
             builder: (BuildContext context) {
               return Column(
                 children: [
+                  _getActionsButton(context),
                   ListHeader(
                     buttonFunction: _expenseScreen,
                     buttonFunctionParams: {

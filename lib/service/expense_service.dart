@@ -9,9 +9,9 @@ class ExpenseService {
 
   static final _baseService = BaseService("/expense");
 
-  Future<List<Expense>> list(int groupId) async {
+  Future<List<Expense>> list(int groupId, int year, int month) async {
     dynamic response = await _baseService.get(
-      "/group/$groupId"
+      "/group/$groupId?year=$year&month=$month"
     );
     List<dynamic> responseList = response;
     return responseList
