@@ -55,7 +55,7 @@ class ExpenseCategory {
         return Colors.redAccent;
       case "Educação":
         return Colors.greenAccent;
-      case "Entretenimento e lazer":
+      case "Entretenimento":
         return Colors.purpleAccent;
       case "Moradia":
         return Colors.orangeAccent;
@@ -68,7 +68,7 @@ class ExpenseCategory {
       case "Outros":
         return Colors.blueGrey;
       default:
-        return Colors.blueGrey;
+        return Colors.grey;
     }
   }
 
