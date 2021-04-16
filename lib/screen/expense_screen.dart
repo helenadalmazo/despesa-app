@@ -480,10 +480,14 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
           ),
         ),
         body: _getBody(context),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () => _onStepContinue(context),
-          child: Icon(_getContinueButtonIcon()),
-        ),
+        floatingActionButton: Builder(
+          builder: (BuildContext context) {
+            return FloatingActionButton(
+              onPressed: () => _onStepContinue(context),
+              child: Icon(_getContinueButtonIcon()),
+            );
+          },
+        )
       )
     );
   }
