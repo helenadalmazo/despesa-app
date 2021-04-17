@@ -8,6 +8,7 @@ import 'package:despesa_app/model/statistic_value_grouped_by_category.dart';
 import 'package:despesa_app/model/statistic_value_grouped_by_user.dart';
 import 'package:despesa_app/model/statistic_value_grouped_by_year_month.dart';
 import 'package:despesa_app/model/user.dart';
+import 'package:despesa_app/screen/balance_screen.dart';
 import 'package:despesa_app/screen/expense_screen.dart';
 import 'package:despesa_app/screen/group/statistic_value_by_category_pie.dart';
 import 'package:despesa_app/screen/group/statistic_value_by_user_pie_chart.dart';
@@ -260,6 +261,19 @@ class _GroupScreenState extends State<GroupScreen> {
     );
   }
 
+  void _balanceScreen(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => BalanceScreen(
+          groupId: _group.id,
+          year: _date.year,
+          month: _date.month,
+        )
+      )
+    );
+  }
+
   Future<void> _expenseScreen(Map<String, dynamic> params) async {
     BuildContext context = params['context'];
 
@@ -331,21 +345,40 @@ class _GroupScreenState extends State<GroupScreen> {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           OutlineButton.icon(
-              onPressed: () => _showYearMonthDatePicker(context),
-              borderSide: BorderSide(
-                color: Colors.white,
+            onPressed: () => _showYearMonthDatePicker(context),
+            borderSide: BorderSide(
+              color: Colors.white,
+            ),
+            icon: Icon(
+              Icons.filter_alt,
+              color: Colors.white,
+            ),
+            label: Text(
+              _getFilterButtonText(),
+              style: TextStyle(
+                color: Colors.white
               ),
-              icon: Icon(
-                Icons.filter_alt,
-                color: Colors.white,
-              ),
-              label: Text(
-                _getFilterButtonText(),
-                style: TextStyle(
-                    color: Colors.white
-                ),
-              )
+            )
           ),
+          SizedBox(
+            width: 16,
+          ),
+          OutlineButton.icon(
+            onPressed: () => _balanceScreen(context),
+            borderSide: BorderSide(
+              color: Colors.white,
+            ),
+            icon: Icon(
+              Icons.line_style,
+              color: Colors.white,
+            ),
+            label: Text(
+              "SALDO",
+              style: TextStyle(
+                color: Colors.white
+              ),
+            )
+          )
         ],
       ),
     );

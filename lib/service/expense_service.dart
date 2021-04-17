@@ -1,3 +1,4 @@
+import 'package:despesa_app/model/balance.dart';
 import 'package:despesa_app/model/expense.dart';
 import 'package:despesa_app/model/expense_category.dart';
 import 'package:despesa_app/service/base_service.dart';
@@ -69,5 +70,12 @@ class ExpenseService {
     return responseList
         .map((dynamic item) => ExpenseCategory.fromJson(item))
         .toList();
+  }
+
+  Future<Balance> balance(int groupId, int year, int month) async {
+    dynamic response = await _baseService.get(
+      "/group/$groupId/balance?year=$year&month=$month"
+    );
+    return Balance.fromJson(response);
   }
 }
