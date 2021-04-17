@@ -390,7 +390,7 @@ class _GroupScreenState extends State<GroupScreen> {
       return EmptyState(
         icon: Icons.dashboard,
         title: "Resumo",
-        description: "Aqui você vai visualizar a divisão dos valores do grupo por usuário e por mês/ano.",
+        description: "Aqui você vai visualizar a divisão dos valores do grupo por usuário, categoria e por mês/ano.",
       );
     }
 
