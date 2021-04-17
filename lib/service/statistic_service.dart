@@ -10,9 +10,9 @@ class StatisticService {
 
   static final _baseService = BaseService("/statistic");
 
-  Future<List<StatisticValueGroupedByUser>> listValueGroupedByUser(int groupId) async {
+  Future<List<StatisticValueGroupedByUser>> listValueGroupedByUser(int groupId, int year, int month) async {
     dynamic response = await _baseService.get(
-      "/valuegroupedbyuser/group/$groupId"
+      "/valuegroupedbyuser/group/$groupId?year=$year&month=$month"
     );
     List<dynamic> responseList = response;
     return responseList
@@ -20,9 +20,9 @@ class StatisticService {
         .toList();
   }
 
-  Future<List<StatisticValueGroupedByCategory>> listValueGroupedByCategory(int groupId) async {
+  Future<List<StatisticValueGroupedByCategory>> listValueGroupedByCategory(int groupId, int year, int month) async {
     dynamic response = await _baseService.get(
-        "/valuegroupedbycategory/group/$groupId"
+        "/valuegroupedbycategory/group/$groupId?year=$year&month=$month"
     );
     List<dynamic> responseList = response;
     return responseList

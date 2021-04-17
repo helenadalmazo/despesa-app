@@ -87,16 +87,16 @@ class _GroupScreenState extends State<GroupScreen> {
   }
 
   Future<void> _getStatistics() async {
-    List<StatisticValueGroupedByUser> statisticValueGroupedByUserResponse = await StatisticService.instance.listValueGroupedByUser(_group.id);
-    List<StatisticValueGroupedByCategory> statisticValueGroupedByCategoryResponse = await StatisticService.instance.listValueGroupedByCategory(_group.id);
+    List<StatisticValueGroupedByUser> statisticValueGroupedByUserResponse = await StatisticService.instance.listValueGroupedByUser(_group.id, _date.year, _date.month);
+    List<StatisticValueGroupedByCategory> statisticValueGroupedByCategoryResponse = await StatisticService.instance.listValueGroupedByCategory(_group.id, _date.year, _date.month);
     List<StatisticValueGroupedByYearMonth> statisticValueGroupedByYearMonthResponse = await StatisticService.instance.listValueGroupedByYearMonth(_group.id);
 
-    if (statisticValueGroupedByUserResponse.isEmpty && statisticValueGroupedByYearMonthResponse.isEmpty) {
+    if (statisticValueGroupedByYearMonthResponse.isEmpty) {
       return;
     }
 
     setState(() {
-      _totalValue = statisticValueGroupedByUserResponse.map((statistic) => statistic.value).reduce((value, element) => value + element);
+      _totalValue = statisticValueGroupedByYearMonthResponse.map((statistic) => statistic.value).reduce((value, element) => value + element);
       _statisticValueByUser = statisticValueGroupedByUserResponse;
       _statisticValueByCategory = statisticValueGroupedByCategoryResponse;
       _statisticValueByYearMonth = statisticValueGroupedByYearMonthResponse;
@@ -110,11 +110,12 @@ class _GroupScreenState extends State<GroupScreen> {
     });
   }
 
-  void _filterExpenses(DateTime dateTime) {
+  void _updateFilter(DateTime dateTime) {
     setState(() {
       _date = dateTime;
     });
     _getExpenses();
+    _getStatistics();
   }
 
   void _onPageChanged(int index) {
@@ -190,7 +191,7 @@ class _GroupScreenState extends State<GroupScreen> {
     );
 
     if (dateTime != null) {
-      _filterExpenses(dateTime);
+      _updateFilter(dateTime);
     }
   }
 
