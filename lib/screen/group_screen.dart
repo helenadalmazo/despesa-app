@@ -182,8 +182,12 @@ class _GroupScreenState extends State<GroupScreen> {
     DateTime dateTime = await showDialog<DateTime>(
       context: context,
       builder: (BuildContext context) {
+        DateTime firstDate = DateTime.now();
+        if (_statisticValueByYearMonth != null) {
+          firstDate = DateTimeUtils.fromYearMonthString(_statisticValueByYearMonth.first.date);
+        }
         return YearMonthDatePicker(
-          firstDate: DateTimeUtils.fromYearMonthString(_statisticValueByYearMonth.first.date),
+          firstDate: firstDate,
           lastDate: DateTime.now(),
           initialDate: DateTime.now(),
         );
