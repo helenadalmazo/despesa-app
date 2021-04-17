@@ -339,6 +339,16 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
       content: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          TextFormField(
+            enabled: false,
+            initialValue: _getCreatedBy(),
+            decoration: InputDecoration(
+              labelText: 'Pago por',
+            )
+          ),
+          SizedBox(
+            height: 8,
+          ),
           Row(
             children: [
               Expanded(
