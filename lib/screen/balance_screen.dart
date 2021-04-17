@@ -63,6 +63,14 @@ class _BalanceScreenState extends State<BalanceScreen> {
       );
     }
 
+    if (_balance.balance == null) {
+      return Center(
+        child: Text(
+          "Nenhum resultado para exibir"
+        ),
+      );
+    }
+
     return ListView.separated(
       itemCount: _balance.statement.length,
       itemBuilder: (BuildContext context, int index) {
@@ -102,7 +110,7 @@ class _BalanceScreenState extends State<BalanceScreen> {
   }
 
   Widget _getFooter(BuildContext context) {
-    if (_balance == null) {
+    if (_balance == null || _balance.balance == null) {
       return SizedBox.shrink();
     }
 
