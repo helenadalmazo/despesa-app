@@ -216,7 +216,7 @@ class _HomeScreenState extends State<HomeScreen> {
       return EmptyState(
         icon: Icons.group,
         title: "Grupos",
-        description: "Aqui você vai visualizar os grupos que faz parte, você pode ser adicionado pelos administradores de um grupo ou então inicie um novo grupo clicando no botão acima.",
+        description: "Aqui você vai visualizar os grupos que faz parte, você pode ser adicionado pelos administradores de um grupo ou então iniciar um novo grupo clicando no botão acima.",
       );
     }
 
