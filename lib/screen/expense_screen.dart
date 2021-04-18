@@ -282,7 +282,8 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
                         Text(
                           _category == null ? "\u{1F4C4}" : _category.getEmoji(),
                           style: TextStyle(
-                            fontSize: 24
+                            fontSize: 24,
+                            fontFamily: "NotoColorEmoji"
                           ),
                         ),
                         SizedBox(

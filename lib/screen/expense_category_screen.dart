@@ -52,7 +52,8 @@ class ExpenseCategoryScreen extends StatelessWidget {
                   Text(
                     expenseCategory.getEmoji(),
                     style: TextStyle(
-                      fontSize: 24
+                      fontSize: 24,
+                      fontFamily: "NotoColorEmoji"
                     ),
                   ),
                   SizedBox(
