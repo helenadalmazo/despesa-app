@@ -11,10 +11,13 @@ class User {
     this.fullName
   });
 
-  User.fromJson(Map<String, dynamic> json)
-      : id = json["id"],
-        username = json["username"],
-        fullName = json["full_name"];
+  factory User.fromJson(Map<String, dynamic> json) {
+    return User(
+      id: json["id"],
+      username: json["username"],
+      fullName: json["full_name"]
+    );
+  }
 
   String getFirstName() {
     return this.fullName.split(" ").first;
@@ -33,7 +36,8 @@ class User {
   }
 
   Color getColor() {
-    int firstLetterCodeUnit = this.fullName
+    String unique = this.fullName + this.username;
+    int firstLetterCodeUnit = unique
         .split("")
         .map((value) => value.codeUnitAt(0))
         .reduce((value, element) => value + element);
