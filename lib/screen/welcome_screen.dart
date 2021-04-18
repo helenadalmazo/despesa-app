@@ -56,7 +56,7 @@ class WelcomeScreen extends StatelessWidget {
               height: 8,
             ),
             Text(
-              'Pitch black malt barleywine specific gravity wort chiller balthazar pitch.',
+              "Despesa App vai te ajudar a dividir e controlar despesas em grupo, simplicando o acerto de contas no final do mês.",
               style: TextStyle(
                 fontSize: 16,
                 color: Colors.white.withOpacity(0.80)
